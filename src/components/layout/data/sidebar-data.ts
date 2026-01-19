@@ -1,38 +1,39 @@
 import {
-  IconBarrierBlock,
-  IconBrowserCheck,
-  IconBug,
-  IconChecklist,
-  IconError404,
-  IconHelp,
-  IconLayoutDashboard,
-  IconLock,
-  IconLockAccess,
-  IconMessages,
-  IconNotification,
-  IconPackages,
-  IconPalette,
-  IconServerOff,
-  IconSettings,
-  IconTool,
-  IconUserCog,
-  IconUserOff,
-  IconUsers,
-} from '@tabler/icons-react'
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
+    AudioWaveform,
+    Brain,
+    GalleryVerticalEnd,
+    LayoutDashboard,
+    Activity,
+    Construction,
+    FileText,
+    Megaphone,
+    Bell,
+    MessageSquare,
+    Users,
+    Trophy,
+    HelpCircle,
+    Mail,
+    Clock,
+    Settings,
+    Wrench,
+    Receipt,
+    Palette,
+    Monitor,
+} from 'lucide-react'
 import { type SidebarData } from '../types'
+import { ROUTES } from '@/lib/routes/client-routes'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'reoring',
-    email: 'reoring@gmail.com',
+    name: '',
+    email: '',
     avatar: '/avatars/default.svg',
   },
   teams: [
     {
-      name: 'Next Shadcn Admin',
-      logo: Command,
-      plan: 'Next.js + ShadcnUI',
+      name: 'My App',
+      logo: GalleryVerticalEnd,
+      plan: 'Admin',
     },
     {
       name: 'Acme Inc',
@@ -46,137 +47,169 @@ export const sidebarData: SidebarData = {
     },
   ],
   navGroups: [
+    // ============================================================================
+    // OVERVIEW - Admin & Super Admin only
+    // ============================================================================
     {
-      title: 'General',
+      title: 'Overview',
+      roles: ['ADMIN', 'SUPER_ADMIN'],
       items: [
         {
           title: 'Dashboard',
-          url: '/',
-          icon: IconLayoutDashboard,
+          url: ROUTES.dashboard.href,
+          icon: LayoutDashboard,
         },
         {
-          title: 'Tasks',
-          url: '/tasks',
-          icon: IconChecklist,
-        },
-        {
-          title: 'Apps',
-          url: '/apps',
-          icon: IconPackages,
-        },
-        {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
-          icon: IconMessages,
-        },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: IconUsers,
+          title: 'Activities',
+          url: ROUTES.dashboardActivities.href,
+          icon: Activity,
         },
       ],
     },
+
+    // ============================================================================
+    // CONTENT MANAGEMENT - Admin & Super Admin (Blog), All roles (Blog Posts)
+    // ============================================================================
     {
-      title: 'Pages',
+      title: 'Content Management',
+      roles: ['ADMIN', 'SUPER_ADMIN'],
       items: [
         {
-          title: 'Auth',
-          icon: IconLockAccess,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/auth/sign-in',
-            },
-            {
-              title: 'Sign In (2 Col)',
-              url: '/auth/sign-in-2',
-            },
-            {
-              title: 'Sign Up',
-              url: '/sign-up',
-            },
-            {
-              title: 'Forgot Password',
-              url: '/forgot-password',
-            },
-            {
-              title: 'OTP',
-              url: '/otp',
-            },
-          ],
+          title: 'Site Settings',
+          url: ROUTES.siteSettings.href,
+          icon: Construction,
         },
         {
-          title: 'Errors',
-          icon: IconBug,
-          items: [
-            {
-              title: 'Unauthorized',
-              url: '/401',
-              icon: IconLock,
-            },
-            {
-              title: 'Forbidden',
-              url: '/403',
-              icon: IconUserOff,
-            },
-            {
-              title: 'Not Found',
-              url: '/404',
-              icon: IconError404,
-            },
-            {
-              title: 'Internal Server Error',
-              url: '/500',
-              icon: IconServerOff,
-            },
-            {
-              title: 'Maintenance Error',
-              url: '/503',
-              icon: IconBarrierBlock,
-            },
-          ],
+          title: 'Blog Posts',
+          url: ROUTES.dashboardBlog.href,
+          icon: FileText,
+        },
+        {
+          title: 'Pricing Content',
+          url: ROUTES.dashboardAdminContent.href,
+          icon: FileText,
+        },
+        {
+          title: 'Legal Content',
+          url: ROUTES.dashboardLegal.href,
+          icon: FileText,
+          roles: ['SUPER_ADMIN'],
+        },
+        {
+          title: 'Notices',
+          url: ROUTES.dashboardNotices.href,
+          icon: Megaphone,
+        },
+        {
+          title: 'Help Center FAQs',
+          url: ROUTES.dashboardHelpCenterFaqs.href,
+          icon: HelpCircle,
         },
       ],
     },
+
+    // ============================================================================
+    // BLOG - All roles (view), Admin & Super Admin (manage)
+    // ============================================================================
     {
-      title: 'Other',
+      title: 'Blog',
+      items: [
+        {
+          title: 'Blog Posts',
+          url: ROUTES.dashboardBlog.href,
+          icon: FileText,
+          roles: ['ADMIN', 'SUPER_ADMIN', 'USER'],
+        },
+        {
+          title: 'Comments',
+          url: ROUTES.dashboardBlogComments.href,
+          icon: MessageSquare,
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+      ],
+    },
+
+    // ============================================================================
+    // USER MANAGEMENT - Admin & Super Admin only
+    // ============================================================================
+    {
+      title: 'User Management',
+      roles: ['ADMIN', 'SUPER_ADMIN'],
+      items: [
+        {
+          title: 'Users',
+          url: ROUTES.dashboardUsers.href,
+          icon: Users,
+        },
+        {
+          title: 'Campaigns',
+          url: ROUTES.dashboardCampaigns.href,
+          icon: Megaphone,
+        },
+        {
+          title: 'Support Tickets',
+          url: ROUTES.dashboardSupportTickets.href,
+          icon: MessageSquare,
+        },
+        {
+          title: 'Contact Submissions',
+          url: ROUTES.dashboardAdminContactSubmissions.href,
+          icon: Mail,
+        },
+      ],
+    },
+
+    // ============================================================================
+    // SETTINGS - All roles
+    // ============================================================================
+    {
+      title: 'Settings',
       items: [
         {
           title: 'Settings',
-          icon: IconSettings,
+          icon: Settings,
           items: [
             {
-              title: 'Profile',
-              url: '/settings',
-              icon: IconUserCog,
+              title: 'General',
+              url: ROUTES.settings.href,
+              icon: Settings,
             },
             {
               title: 'Account',
-              url: '/settings/account',
-              icon: IconTool,
+              url: ROUTES.settingsAccount.href,
+              icon: Wrench,
+            },
+            {
+              title: 'Subscription',
+              url: ROUTES.settingsSubscription.href,
+              icon: Trophy,
+            },
+            {
+              title: 'Billing',
+              url: ROUTES.settingsBilling.href,
+              icon: Receipt,
             },
             {
               title: 'Appearance',
-              url: '/settings/appearance',
-              icon: IconPalette,
+              url: ROUTES.settingsAppearance.href,
+              icon: Palette,
             },
             {
               title: 'Notifications',
-              url: '/settings/notifications',
-              icon: IconNotification,
+              url: ROUTES.settingsNotifications.href,
+              icon: Bell,
             },
             {
               title: 'Display',
-              url: '/settings/display',
-              icon: IconBrowserCheck,
+              url: ROUTES.settingsDisplay.href,
+              icon: Monitor,
             },
           ],
         },
         {
-          title: 'Help Center',
-          url: '/help-center',
-          icon: IconHelp,
+          title: 'My Activity',
+          url: ROUTES.dashboardActivity.href,
+          icon: Clock,
         },
       ],
     },

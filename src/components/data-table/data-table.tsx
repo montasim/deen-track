@@ -4,6 +4,7 @@ import * as React from 'react'
 import {
   ColumnDef,
   ColumnFiltersState,
+  PaginationState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -37,6 +38,10 @@ interface DataTableProps<TData, TValue> {
   responsiveColumns?: {
     [key: string]: number // breakpoint width
   }
+  pagination?: PaginationState
+  onPaginationChange?: (pagination: PaginationState) => void
+  totalCount?: number
+  onSelectedRowsChange?: (selectedRows: string[]) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -47,9 +52,33 @@ export function DataTable<TData, TValue>({
   filters,
   defaultVisibility = {},
   responsiveColumns = {},
+  pagination: externalPagination,
+  onPaginationChange: externalOnPaginationChange,
+  totalCount,
+  onSelectedRowsChange,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
+
+  // Notify parent of selection changes
+  React.useEffect(() => {
+    if (onSelectedRowsChange) {
+      const selectedIds = Object.keys(rowSelection).filter(key => rowSelection[key as keyof typeof rowSelection])
+      onSelectedRowsChange(selectedIds)
+    }
+  }, [rowSelection, onSelectedRowsChange])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(defaultVisibility)
+
+  // Use external pagination if provided, otherwise use internal state
+  const [internalPagination, setInternalPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  const pagination = externalPagination ?? internalPagination
+  const setPagination = externalOnPaginationChange ?? setInternalPagination
+
+  // Determine if using API-based pagination
+  const isApiPagination = !!externalPagination && totalCount !== undefined
 
   // Apply responsive columns on client-side only
   React.useEffect(() => {
@@ -92,18 +121,33 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange: (updaterOrValue) => {
+      setPagination(
+        typeof updaterOrValue === 'function'
+          ? updaterOrValue(pagination)
+          : updaterOrValue
+      )
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // Only use client-side pagination if not using API pagination
+    ...(!isApiPagination && {
+      getPaginationRowModel: getPaginationRowModel(),
+    }),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    // When using API pagination, auto-reset pagination index when data changes
+    ...(isApiPagination && {
+      autoResetPageIndex: false,
+    }),
   })
 
   return (
@@ -166,7 +210,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} totalCount={totalCount} isApiPagination={isApiPagination} />
     </div>
   )
 }
