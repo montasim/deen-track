@@ -1,100 +1,190 @@
-# Next.js Shadcn Admin Dashboard
+# Next.js Admin Template
+
+A production-ready, feature-rich admin dashboard template built with Next.js 15, React 19, TypeScript, and shadcn/ui. Perfect for building modern web applications quickly.
 
 ![Dashboard Preview](public/dashboard.png)
 
-A modern admin dashboard UI built with Next.js and Shadcn UI. This project is a Next.js port of the [original Shadcn Admin Dashboard](https://github.com/satnaing/shadcn-admin) by [@satnaing](https://github.com/satnaing), adapted to leverage Next.js features while maintaining the original's elegant design and functionality. The project has been restructured to use the Next.js App Router, providing better performance and developer experience while keeping all the powerful features of the original dashboard.
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/next-shadcn-admin.git
+cd next-shadcn-admin
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+
+# Run database migrations
+npx prisma generate
+npx prisma db push
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## Features
 
-- 🌓 Light/Dark mode support
-- 📱 Fully responsive design
-- ♿️ Accessible components
-- 🧭 Built-in Sidebar component
-- 🔍 Global Search Command (⌘K)
-- 📄 10+ pre-built pages
-- 🧩 Extra custom components
-- 📊 Dashboard analytics
-- 📋 Data tables with advanced features
-- 👥 Team management
-- 🔐 Authentication layouts
+### Core Functionality
+- **Authentication** - Email-based registration with OTP verification
+- **User Management** - Admin-only user management with role assignments
+- **Blog System** - Full-featured blog with categories and tags
+- **Support Tickets** - Ticket-based support with WebSocket updates
+- **Notices** - Site-wide announcement system
+- **Email Campaigns** - Resend integration for emails
+- **Site Settings** - Dynamic configuration with caching
+- **Analytics** - Activity logging and dashboard statistics
+- **Stripe Integration** - Subscription management
+
+### UI/UX
+- Built with **shadcn/ui** and **Tailwind CSS**
+- Mobile-optimized with bottom navigation
+- Data tables with sorting and filtering
+- Form validation with Zod
+- Toast notifications
+- Skeleton loading states
+
+## Documentation
+
+Complete documentation is available in the `/doc` folder:
+
+### Essential Reading
+- [Getting Started Guide](doc/getting-started.md) - Installation and setup
+- [Deployment Guide](doc/deployment.md) - Deploy to production
+- [Customization Guide](doc/customization.md) - Tailor to your needs
+- [Troubleshooting](doc/troubleshooting.md) - Common issues and solutions
+
+### Feature Documentation
+- [Authentication & Authorization](doc/features/authentication.md) - JWT auth and RBAC
+- [Blog Management](doc/features/blog-management.md) - Blog system
+- [Support Tickets](doc/features/support-tickets.md) - Ticket system
+- [Notices](doc/features/notices.md) - Announcement system
+- [Email Campaigns](doc/features/email-campaigns.md) - Email system
+- [Site Settings](doc/features/site-settings.md) - Configuration
+- [Stripe Integration](doc/features/stripe.md) - Payment processing
 
 ## Tech Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/)
-- **UI Components**: [Shadcn UI](https://ui.shadcn.com/)
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
+- **UI**: [React 19](https://react.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Icons**: [Tabler Icons](https://tabler-icons.io/)
-- **Type Safety**: TypeScript
-- **Code Quality**: ESLint & Prettier
-
-## Getting Started
-
-1. Clone the repository:
-```bash
-git clone https://github.com/reoring/next-shadcn-admin.git
-```
-
-2. Navigate to the project directory:
-```bash
-cd next-shadcn-admin
-```
-
-3. Install dependencies:
-```bash
-pnpm install
-```
-
-4. Start the development server:
-```bash
-pnpm dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+- **Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma](https://www.prisma.io/)
+- **Authentication**: Custom JWT-based system
+- **Email**: [Resend](https://resend.com/)
+- **Payments**: [Stripe](https://stripe.com/)
 
 ## Project Structure
 
 ```
-src/
-├── app/                   # Next.js app router
-│   ├── (auth)/           # Authentication routes
-│   ├── (dashboard)/      # Dashboard routes
-│   └── (errors)/         # Error pages
-├── components/
-│   ├── dashboard/        # Dashboard-specific components
-│   ├── data-table/       # Advanced table components
-│   ├── layout/          # Layout components (sidebar, header)
-│   └── ui/              # Shadcn UI components
-├── context/              # React Context providers
-├── hooks/                # Custom React hooks
-└── lib/                  # Utility functions
+next-shadcn-admin/
+├── doc/                     # Documentation
+├── prisma/
+│   └── schema.prisma       # Database schema
+├── public/                  # Static assets
+├── src/
+│   ├── app/                # Next.js app directory
+│   │   ├── (auth)/        # Auth routes
+│   │   ├── (dashboard)/   # Dashboard routes
+│   │   └── api/           # API routes
+│   ├── components/        # React components
+│   │   ├── ui/           # shadcn/ui components
+│   │   └── dashboard/    # Dashboard components
+│   ├── lib/              # Utility libraries
+│   └── config/           # Configuration files
+├── .env.example          # Environment variables template
+└── package.json         # Dependencies
 ```
 
-## Key Components
+## Environment Variables
 
-- **Dashboard Overview**: Analytics charts and recent sales data
-- **Data Tables**: Advanced tables with sorting, filtering, and pagination
-- **Team Switcher**: Easy organization switching
-- **Command Menu**: Quick navigation and actions (⌘K)
-- **Profile Dropdown**: User account management
-- **Theme Switch**: Light/dark mode toggle
-- **Responsive Sidebar**: Collapsible navigation menu
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/myapp"
 
-## Customization
+# Authentication
+JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
 
-The project uses Shadcn UI components which are fully customizable. You can modify the design system by editing:
+# Email (Resend)
+RESEND_API_KEY="your-resend-api-key"
+EMAIL_FROM="noreply@myapp.com"
 
-- `tailwind.config.ts` for theme customization
-- `components.json` for component configurations
-- Individual components in `src/components/ui`
+# Stripe (optional)
+STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
+STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_your_publishable_key"
 
-## Contributing
+# Application
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+See `.env.example` for all available variables.
 
-## Credits
+## Default Credentials
 
-This project is a Next.js adaptation of the [original Shadcn Admin Dashboard](https://github.com/satnaing/shadcn-admin) created by [@satnaing](https://github.com/satnaing).
+After setting up the application:
+
+```
+Email: admin@example.com
+Password: admin123
+```
+
+**Important**: Change these credentials in production!
+
+## Scripts
+
+```bash
+# Development
+npm run dev              # Start dev server
+
+# Building
+npm run build            # Build for production
+npm run start            # Start production server
+
+# Database
+npx prisma generate      # Generate Prisma Client
+npx prisma db push       # Push schema to database
+npx prisma studio        # Open Prisma Studio
+npx prisma migrate dev   # Create migration
+
+# Linting
+npm run lint            # Run ESLint
+```
+
+## Role-Based Access Control
+
+| Feature | USER | ADMIN | SUPER_ADMIN |
+|---------|------|-------|-------------|
+| View content | ✅ | ✅ | ✅ |
+| Create support tickets | ✅ | ✅ | ✅ |
+| Access dashboard | ❌ | ✅ | ✅ |
+| Manage blog posts | ❌ | ✅ | ✅ |
+| Manage users | ❌ | ❌ | ✅ |
+| Manage site settings | ❌ | ❌ | ✅ |
+
+## Support
+
+- 📖 Read the [documentation](doc/)
+- 🐛 Report issues on [GitHub Issues](https://github.com/yourusername/next-shadcn-admin/issues)
+- 💬 Ask questions in [Discussions](https://github.com/yourusername/next-shadcn-admin/discussions)
 
 ## License
 
-Licensed under the MIT License. See LICENSE for more information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+Built with:
+- [Next.js](https://nextjs.org/)
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Prisma](https://www.prisma.io/)
+- [Resend](https://resend.com/)
+- [Stripe](https://stripe.com/)
