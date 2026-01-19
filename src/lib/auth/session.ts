@@ -1,0 +1,153 @@
+/**
+ * Session Management Module
+ * 
+ * Following Single Responsibility Principle (SRP):
+ * This module handles session creation, validation, and deletion
+ * using HttpOnly cookies for security
+ * 
+ * Features:
+ * - HttpOnly cookie-based sessions
+ * - Secure and SameSite attributes
+ * - Session expiry management
+ * - Type-safe session data
+ */
+
+import { cookies } from 'next/headers'
+import { LoginSessionData, SessionExpiredError } from './types'
+import { config } from '@/config'
+
+// ============================================================================
+// SESSION CONFIGURATION
+// ============================================================================
+
+const SESSION_COOKIE_NAME = 'user_session'
+const SESSION_MAX_AGE = 7 * 24 * 60 * 60 // 7 days in seconds
+
+// ============================================================================
+// SESSION CREATION
+// ============================================================================
+
+/**
+ * Create a login session and set HttpOnly cookie
+ *
+ * @param {string} userId - User ID
+ * @param {string} email - User email
+ * @param {string} name - User name
+ * @param {string} role - User role
+ * @param {string} firstName - User first name
+ * @param {string | null} lastName - User last name
+ * @param {boolean} isPremium - User premium status
+ * @param {string | null} avatar - User avatar URL
+ *
+ * Security: Uses HttpOnly, Secure (in production), SameSite=Lax
+ */
+export async function createLoginSession(
+    userId: string,
+    email: string,
+    name: string,
+    role: string,
+    firstName: string = '',
+    lastName: string | null = null,
+    isPremium: boolean = false,
+    avatar: string | null = null
+): Promise<void> {
+    const sessionData: LoginSessionData = {
+        userId,
+        email,
+        name,
+        firstName,
+        lastName,
+        role,
+        isPremium,
+        avatar,
+    }
+
+    const cookieStore = await cookies()
+
+    cookieStore.set(SESSION_COOKIE_NAME, JSON.stringify(sessionData), {
+        httpOnly: true,
+        secure: config.isProduction,
+        sameSite: 'lax',
+        maxAge: SESSION_MAX_AGE,
+        path: '/',
+    })
+}
+
+// ============================================================================
+// SESSION RETRIEVAL
+// ============================================================================
+
+/**
+ * Get current session from HttpOnly cookie
+ * 
+ * @returns {Promise<LoginSessionData | null>} Session data or null if not found
+ */
+export async function getSession(): Promise<LoginSessionData | null> {
+    try {
+        const cookieStore = await cookies()
+        const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)
+
+        if (!sessionCookie || !sessionCookie.value) {
+            return null
+        }
+
+        const sessionData = JSON.parse(sessionCookie.value) as LoginSessionData
+
+        // Validate session data structure
+        if (
+            !sessionData.userId ||
+            !sessionData.email ||
+            !sessionData.name ||
+            !sessionData.role
+        ) {
+            return null
+        }
+
+        return sessionData
+    } catch (error) {
+        console.error('Error parsing session:', error)
+        return null
+    }
+}
+
+/**
+ * Require authenticated session (throws if not authenticated)
+ * 
+ * @returns {Promise<LoginSessionData>} Session data
+ * @throws {SessionExpiredError} If session not found
+ */
+export async function requireAuth(): Promise<LoginSessionData> {
+    const session = await getSession()
+
+    if (!session) {
+        throw new SessionExpiredError('Authentication required. Please login.')
+    }
+
+    return session
+}
+
+// ============================================================================
+// SESSION DELETION
+// ============================================================================
+
+/**
+ * Delete session (logout)
+ */
+export async function deleteSession(): Promise<void> {
+    const cookieStore = await cookies()
+    cookieStore.delete(SESSION_COOKIE_NAME)
+}
+
+// ============================================================================
+// SESSION VALIDATION
+// ============================================================================
+
+/**
+ * Check if user is authenticated
+ * 
+ * @returns {Promise<boolean>} True if authenticated
+ */
+export async function isAuthenticated(): Promise<boolean> {
+    const session = await getSession()
+    return session !== null
+}

@@ -114,6 +114,43 @@ body {
       font-size: 16px !important;
     }
   }
+
+  /* Support for mobile safe areas (notches, home indicators) */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* Safe area padding utilities */
+    .pb-safe {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .pt-safe {
+      padding-top: max(1rem, env(safe-area-inset-top));
+    }
+
+    .px-safe {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+  }
+
+  /* Ensure full viewport height on mobile */
+  html {
+    height: 100%;
+    height: -moz-available; /* Firefox */
+    height: -webkit-fill-available; /* Chrome, Safari */
+    height: fill-available;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: -moz-available; /* Firefox */
+    min-height: -webkit-fill-available; /* Chrome, Safari */
+    min-height: fill-available;
+  }
 }
 
 @layer utilities {
@@ -127,8 +164,41 @@ body {
     scrollbar-width: none; /* Firefox */
   }
 
+  /* Stronger scrollbar hiding - use this for stubborn scrollbars */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .faded-bottom {
     @apply after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:hidden after:h-32 after:w-full after:bg-[linear-gradient(180deg,_transparent_10%,_hsl(var(--background))_70%)] after:md:block;
+  }
+
+  /* Padding for mobile bottom navigation */
+  .pb-mobile-nav {
+    padding-bottom: 4rem; /* 64px for mobile bottom nav */
+  }
+
+  @media (min-width: 768px) {
+    .pb-mobile-nav {
+      padding-bottom: 0; /* No padding on desktop */
+    }
+  }
+
+  /* Support for mobile safe areas with bottom nav */
+  @supports (padding: max(0px)) {
+    .pb-mobile-nav-safe {
+      padding-bottom: max(4rem, env(safe-area-inset-bottom));
+    }
+
+    @media (min-width: 768px) {
+      .pb-mobile-nav-safe {
+        padding-bottom: 0;
+      }
+    }
   }
 }
 
@@ -142,4 +212,25 @@ body {
   body {
     @apply min-h-svh w-full bg-background text-foreground;
   }
+
+  /* Hide all scrollbars for clean mobile appearance */
+  *::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+  }
+}
+
+/* Infinite scroll animation for featured posts carousel */
+@keyframes scroll-right-to-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-right-to-left {
+  animation: scroll-right-to-left 40s linear infinite;
 }
