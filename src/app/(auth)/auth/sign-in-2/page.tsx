@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { UserAuthForm } from '../components/user-auth-form'
+import { ROUTES } from '@/lib/routes/client-routes'
 
 export default function SignIn2() {
   return (
@@ -23,7 +24,7 @@ export default function SignIn2() {
               >
                 <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
               </svg>
-              Next Shadcn Admin
+              My App
             </div>
           </header>
 
@@ -53,7 +54,7 @@ export default function SignIn2() {
       <div className='relative flex items-center justify-center p-8'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
           <div className='flex flex-col space-y-2 text-left'>
-            <h1 className='text-2xl font-semibold tracking-tight'>Login</h1>
+            <h1 className='text-xl font-semibold tracking-tight'>Login</h1>
             <p className='text-sm text-muted-foreground'>
               Enter your email and password below <br />
               to log into your account
@@ -63,14 +64,14 @@ export default function SignIn2() {
           <p className='px-8 text-center text-sm text-muted-foreground'>
             By clicking login, you agree to our{' '}
             <a
-              href='/terms'
+              href={ROUTES.terms.href}
               className='underline underline-offset-4 hover:text-primary'
             >
               Terms of Service
             </a>{' '}
             and{' '}
             <a
-              href='/privacy'
+              href={ROUTES.privacy.href}
               className='underline underline-offset-4 hover:text-primary'
             >
               Privacy Policy

@@ -1,6 +1,6 @@
 'use client'
 
-import { HTMLAttributes, useState } from 'react'
+import { HTMLAttributes, useState, Suspense } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -17,23 +17,52 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { OtpInput, ResendButton } from '@/components/ui/otp-input'
+import { Card, CardContent } from '@/components/ui/card'
+import { Loader2, Mail } from 'lucide-react'
+
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { toast } from '@/hooks/use-toast'
+import { useEffect } from 'react'
+import { ROUTES } from '@/lib/routes/client-routes'
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>
 
-const formSchema = z
+// Step 1: Email input
+const emailSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'Please enter your email' })
+    .email({ message: 'Invalid email address' }),
+})
+
+// Step 2: OTP input
+const otpSchema = z.object({
+  otp: z
+    .string()
+    .min(6, { message: 'OTP must be 6 digits' })
+    .max(6, { message: 'OTP must be 6 digits' })
+    .regex(/^\d+$/, { message: 'OTP must contain only numbers' }),
+})
+
+// Step 3: Account details
+const detailsSchema = z
   .object({
-    email: z
+    name: z
       .string()
-      .min(1, { message: 'Please enter your email' })
-      .email({ message: 'Invalid email address' }),
+      .min(1, { message: 'Please enter your name' })
+      .max(100, { message: 'Name must be less than 100 characters' }),
     password: z
       .string()
-      .min(1, {
-        message: 'Please enter your password',
-      })
-      .min(7, {
-        message: 'Password must be at least 7 characters long',
-      }),
+      .min(8, { message: 'Password must be at least 8 characters' })
+      .regex(/[A-Z]/, { message: 'Password must contain an uppercase letter' })
+      .regex(/[a-z]/, { message: 'Password must contain a lowercase letter' })
+      .regex(/[0-9]/, { message: 'Password must contain a number' })
+      .regex(
+        /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
+        { message: 'Password must contain a special character' }
+      ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -41,48 +70,467 @@ const formSchema = z
     path: ['confirmPassword'],
   })
 
-export function SignUpForm({ className, ...props }: SignUpFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
+const Header = () => (
+  <div className='mb-2 flex flex-col space-y-2 text-left'>
+    <h1 className='text-lg font-semibold tracking-tight'>
+      Create an account
+    </h1>
+    <p className='text-sm text-muted-foreground'>
+      Enter your email and password to create an account. <br />
+      Already have an account?{' '}
+      <Link
+        href={ROUTES.signIn.href}
+        className='underline underline-offset-4 hover:text-primary'
+      >
+        Sign In
+      </Link>
+    </p>
+  </div>
+)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export function SignUpForm({ className, ...props }: SignUpFormProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false)
+  const [step, setStep] = useState<'email' | 'otp' | 'details'>('email')
+  const [email, setEmail] = useState('')
+  const [otpExpiresAt, setOtpExpiresAt] = useState<string>('')
+  const [showResend, setShowResend] = useState(false)
+  const [resendSuccessful, setResendSuccessful] = useState(false)
+  const [isSendingOtp, setIsSendingOtp] = useState(false)
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false)
+  const [otpError, setOtpError] = useState('')
+  const [otpCode, setOtpCode] = useState('')
+
+  // Get prefilled data from query parameters
+  const prefilledEmail = searchParams?.get('email') || ''
+  const inviteToken = searchParams?.get('token') || ''
+
+  const emailForm = useForm<z.infer<typeof emailSchema>>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: { email: prefilledEmail },
+  })
+
+  const otpForm = useForm<z.infer<typeof otpSchema>>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { otp: '' },
+  })
+
+  const detailsForm = useForm<z.infer<typeof detailsSchema>>({
+    resolver: zodResolver(detailsSchema),
     defaultValues: {
-      email: '',
+      name: '',
       password: '',
       confirmPassword: '',
     },
+    mode: 'onChange',
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  // Step 1: Send OTP
+  async function onEmailSubmit(data: z.infer<typeof emailSchema>) {
     setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/auth/register/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, inviteToken }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        if (result.error === 'INVITE_USED') {
+          setShowResend(true)
+          toast({
+            variant: 'destructive',
+            title: 'Invitation Expired',
+            description: 'This invitation link has already been used or expired.',
+          })
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: result.error || 'Failed to send OTP',
+          })
+        }
+        return
+      }
+
+      setEmail(data.email)
+      setOtpExpiresAt(result.expiresAt)
+
+      if (result.sessionCreated) {
+        detailsForm.reset({
+          name: '',
+          password: '',
+          confirmPassword: '',
+        })
+        setStep('details')
+        toast({
+          title: 'Verified',
+          description: 'Invitation accepted. Please complete your account details.',
+        })
+      } else {
+        setStep('otp')
+        toast({
+          title: 'OTP Sent',
+          description: 'Check your email for the verification code',
+        })
+      }
+    } catch (error) {
+      console.error('Send OTP error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'An error occurred. Please try again.',
+      })
+    } finally {
       setIsLoading(false)
-    }, 3000)
+    }
   }
 
+  // Auto-submit if email is prefilled
+  useEffect(() => {
+    if (prefilledEmail && !isLoading) {
+      setEmail(prefilledEmail)
+      // Auto-submit to send OTP
+      onEmailSubmit({ email: prefilledEmail })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefilledEmail])
+
+  // Step 2: Verify OTP
+  async function onOtpSubmit(otpCode: string) {
+    setIsVerifyingOtp(true)
+    setOtpError('')
+
+    try {
+      const response = await fetch('/api/auth/register/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp: otpCode }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setOtpError(result.error || 'Invalid OTP')
+        toast({
+          variant: 'destructive',
+          title: 'Invalid OTP',
+          description: result.error || 'Please check your code and try again',
+        })
+        return
+      }
+
+      detailsForm.reset({
+        name: '',
+        password: '',
+        confirmPassword: '',
+      })
+      setStep('details')
+
+      toast({
+        title: 'Verified',
+        description: 'Please complete your account details',
+      })
+    } catch (error) {
+      console.error('Verify OTP error:', error)
+      setOtpError('An error occurred. Please try again.')
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'An error occurred. Please try again.',
+      })
+    } finally {
+      setIsVerifyingOtp(false)
+    }
+  }
+
+  // Resend OTP
+  async function handleResendOtp() {
+    setIsSendingOtp(true)
+    setOtpError('')
+
+    try {
+      const response = await fetch('/api/auth/register/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, inviteToken }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: result.error || 'Failed to send OTP',
+        })
+        return
+      }
+
+      setOtpExpiresAt(result.expiresAt)
+      toast({
+        title: 'OTP Sent',
+        description: 'Check your email for the verification code',
+      })
+    } catch (error) {
+      console.error('Send OTP error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'An error occurred. Please try again.',
+      })
+    } finally {
+      setIsSendingOtp(false)
+    }
+  }
+
+  // Step 3: Create Account
+  async function onDetailsSubmit(data: z.infer<typeof detailsSchema>) {
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/auth/register/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name: data.name,
+          password: data.password,
+          inviteToken,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        toast({
+          variant: 'destructive',
+          title: 'Registration failed',
+          description: result.error || 'Failed to create account',
+        })
+        return
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Account created successfully',
+      })
+
+      router.push(ROUTES.dashboard.href)
+      router.refresh()
+    } catch (error) {
+      console.error('Create account error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'An error occurred. Please try again.',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Render Resend State
+  if (showResend) {
+    // Show success state after resend
+    if (resendSuccessful) {
+      return (
+        <div className={cn('grid gap-4', className)} {...props}>
+          <div className='mb-2 flex flex-col space-y-2 text-left'>
+            <h1 className='text-lg font-semibold tracking-tight'>
+              Invitation Sent
+            </h1>
+            <p className='text-sm text-green-600'>
+              ✅ A new invitation link has been sent to your email address.
+            </p>
+            <p className='text-sm text-muted-foreground'>
+              Please check your email inbox (and spam folder) for further instructions to complete your registration.
+              The invitation link will be valid for 24 hours.
+            </p>
+          </div>
+          <div className=''>
+            <p className='text-xs text-muted-foreground mb-4'>
+              Didn&apos;t receive the email? Check your spam folder or try again later.
+            </p>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setShowResend(false)
+                setResendSuccessful(false)
+              }}
+            >
+              Back to Sign Up
+            </Button>
+          </div>
+        </div>
+      )
+    }
+
+    // Show resend option
+    return (
+      <div className={cn('grid gap-4', className)} {...props}>
+        <div className='mb-2 flex flex-col space-y-2 text-left'>
+          <h1 className='text-lg font-semibold tracking-tight'>
+            Create an account
+          </h1>
+          <p className='text-sm text-destructive'>This invitation link has already been used or is expired.</p>
+          <p className='text-sm text-muted-foreground'>
+            Would you like to request a new invitation link?
+          </p>
+        </div>
+        <Button
+          className="w-full"
+          onClick={async () => {
+            setIsLoading(true)
+            try {
+              const res = await fetch('/api/auth/invite/resend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: inviteToken }),
+              })
+              const data = await res.json()
+              if (res.ok) {
+                setResendSuccessful(true)
+                toast({
+                  title: 'Invitation Sent Successfully',
+                  description: 'Please check your email inbox (and spam folder) for further instructions to complete your registration.',
+                })
+              } else {
+                toast({
+                  variant: 'destructive',
+                  title: 'Error',
+                  description: data.error,
+                })
+              }
+            } catch (e) {
+              toast({ variant: 'destructive', title: 'Error', description: 'Failed to resend' })
+            } finally {
+              setIsLoading(false)
+            }
+          }}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Sending...' : 'Resend Invitation'}
+        </Button>
+      </div>
+    )
+  }
+
+  // Render Step 1: Email Input
+  if (step === 'email') {
+    return (
+      <div className={cn('grid gap-4', className)} {...props}>
+        <Header />
+        <Form {...emailForm}>
+          <form onSubmit={emailForm.handleSubmit(onEmailSubmit)}>
+            <div className='grid gap-2'>
+              <FormField
+                control={emailForm.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem className='space-y-1'>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder='name@example.com' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button className='mt-2' disabled={isLoading}>
+                {isLoading ? 'Sending...' : 'Continue'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    )
+  }
+
+  // Render Step 2: OTP Verification
+  if (step === 'otp') {
+    return (
+      <div className={cn('grid gap-4', className)} {...props}>
+        <Header />
+        <div className='mb-4'>
+          <p className='text-sm text-muted-foreground'>
+            We sent a 6-digit code to <strong>{email}</strong>
+          </p>
+        </div>
+
+        <Card className={cn('border-2', otpError ? 'border-red-500' : '')}>
+          <CardContent className='pt-6 space-y-4'>
+            <div className='flex justify-center'>
+              <OtpInput
+                length={6}
+                onComplete={onOtpSubmit}
+                error={!!otpError}
+                disabled={isVerifyingOtp}
+              />
+            </div>
+
+            {otpError && (
+              <p className='text-sm text-red-600 text-center'>{otpError}</p>
+            )}
+
+            <ResendButton
+              onResend={handleResendOtp}
+              isResending={isSendingOtp}
+              cooldown={60}
+            />
+
+            {isVerifyingOtp && (
+              <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
+                <Loader2 className='h-4 w-4 animate-spin' />
+                Verifying code...
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Button
+          type='button'
+          variant='ghost'
+          onClick={() => setStep('email')}
+          className='w-full'
+        >
+          Back to Email
+        </Button>
+      </div>
+    )
+  }
+
+  // Render Step 3: Account Details
   return (
-    <div className={cn('grid gap-6', className)} {...props}>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+    <div className={cn('grid gap-4', className)} {...props}>
+      <Header />
+      <Form {...detailsForm}>
+        <form onSubmit={detailsForm.handleSubmit(onDetailsSubmit)} key="details-form">
           <div className='grid gap-2'>
             <FormField
-              control={form.control}
-              name='email'
+              control={detailsForm.control}
+              name='name'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='name@example.com' {...field} />
+                    <Input
+                      placeholder='John Doe'
+                      autoComplete='name'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
-              control={form.control}
+              control={detailsForm.control}
               name='password'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
@@ -95,7 +543,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               )}
             />
             <FormField
-              control={form.control}
+              control={detailsForm.control}
               name='confirmPassword'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
@@ -108,41 +556,22 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               )}
             />
             <Button className='mt-2' disabled={isLoading}>
-              Create Account
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
-
-            <div className='relative my-2'>
-              <div className='absolute inset-0 flex items-center'>
-                <span className='w-full border-t' />
-              </div>
-              <div className='relative flex justify-center text-xs uppercase'>
-                <span className='bg-background px-2 text-muted-foreground'>
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                className='w-full'
-                type='button'
-                disabled={isLoading}
-              >
-                <IconBrandGithub className='h-4 w-4' /> GitHub
-              </Button>
-              <Button
-                variant='outline'
-                className='w-full'
-                type='button'
-                disabled={isLoading}
-              >
-                <IconBrandFacebook className='h-4 w-4' /> Facebook
-              </Button>
-            </div>
           </div>
         </form>
       </Form>
     </div>
   )
 }
+
+// Wrapper component with Suspense boundary for useSearchParams
+function SignUpFormWithSearchParams(props: SignUpFormProps) {
+  return (
+    <Suspense fallback={<div className="grid gap-4">Loading...</div>}>
+      <SignUpForm {...props} />
+    </Suspense>
+  )
+}
+
+export default SignUpFormWithSearchParams
