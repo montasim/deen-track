@@ -3,7 +3,7 @@
  *
  * Following Repository Pattern and Single Responsibility Principle:
  * This module handles all database operations for the User model
- * Works with the unified user table structure
+ * Now works with unified user table (based on former admin table structure)
  *
  * Benefits:
  * - Separation of concerns (business logic from data access)
@@ -26,20 +26,6 @@ import { prisma } from '../../prisma'
 export async function findUserByEmail(email: string) {
     return prisma.user.findUnique({
         where: { email },
-        include: {
-            _count: {
-                select: {
-                    notices: true,
-                    notifications: true,
-                    activities: true,
-                    tickets: true,
-                    ticketResponses: true,
-                    campaigns: true,
-                    blogPosts: true,
-                    blogComments: true,
-                }
-            }
-        }
     })
 }
 
@@ -52,20 +38,6 @@ export async function findUserByEmail(email: string) {
 export async function findUserById(id: string) {
     return prisma.user.findUnique({
         where: { id },
-        include: {
-            _count: {
-                select: {
-                    notices: true,
-                    notifications: true,
-                    activities: true,
-                    tickets: true,
-                    ticketResponses: true,
-                    campaigns: true,
-                    blogPosts: true,
-                    blogComments: true,
-                }
-            }
-        }
     })
 }
 
@@ -77,7 +49,7 @@ export async function findUserById(id: string) {
  */
 export async function findUserBySessionToken(token: string) {
     const session = await prisma.userSession.findUnique({
-        where: { id: token },
+        where: { id: token }, // Changed from token to id to match schema
         include: { user: true }
     })
 
@@ -128,6 +100,21 @@ export async function isUserPremium(id: string): Promise<boolean> {
     })
 
     return user?.isPremium ?? false
+}
+
+/**
+ * Get user reading statistics
+ *
+ * @param {string} id - User ID
+ * @returns {Promise<Object>} Reading statistics
+ */
+export async function getUserReadingStats(id: string) {
+    // Reading progress features removed - returning empty stats
+    return {
+        completed: 0,
+        inProgress: 0,
+        total: 0
+    }
 }
 
 // ============================================================================
@@ -249,7 +236,7 @@ export async function createUserSession(data: {
  */
 export async function deleteUserSession(token: string) {
     return prisma.userSession.delete({
-        where: { id: token },
+        where: { id: token }, // Changed from token to id to match schema
     })
 }
 
@@ -281,7 +268,7 @@ export async function cleanupExpiredSessions() {
 }
 
 // ============================================================================
-// USER MANAGEMENT FUNCTIONS
+// USER MANAGEMENT FUNCTIONS (Including former admin functionality)
 // ============================================================================
 
 /**
@@ -292,20 +279,6 @@ export async function cleanupExpiredSessions() {
 export async function getAllUsers() {
     return prisma.user.findMany({
         orderBy: { createdAt: 'desc' },
-        include: {
-            _count: {
-                select: {
-                    notices: true,
-                    notifications: true,
-                    activities: true,
-                    tickets: true,
-                    ticketResponses: true,
-                    campaigns: true,
-                    blogPosts: true,
-                    blogComments: true,
-                }
-            }
-        }
     })
 }
 
@@ -348,6 +321,7 @@ export async function createFullUser(data: {
     font?: string
     urls?: any
     displayItems?: any
+    showMoodRecommendations?: boolean
     notificationType?: string
     mobileNotifications?: boolean
     communicationEmails?: boolean
@@ -384,6 +358,7 @@ export async function updateUserProfile(
         font?: string | null
         urls?: any
         displayItems?: any
+        showMoodRecommendations?: boolean
         notificationType?: string | null
         mobileNotifications?: boolean | null
         communicationEmails?: boolean | null

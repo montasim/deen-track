@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -19,13 +19,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Home, User, Settings, LogOut, CreditCard, ChevronDown, FileText } from 'lucide-react'
-import {useAuth} from "@/context/auth-context";
+import { Home, User, Settings, LogOut, CreditCard, ChevronDown, ShoppingBag, MessageSquare, FileText } from 'lucide-react'
+import { useAuth } from "@/context/auth-context"
 import { getUserInitials } from '@/lib/utils/user'
 import { NotificationBell } from '@/components/notifications/notification-bell'
 import { ROUTES } from '@/lib/routes/client-routes'
+import { getProxiedImageUrl } from '@/lib/image-proxy'
 
 interface UserTopbarProps {
   className?: string
@@ -51,7 +52,13 @@ export function UserTopbar({
   const { user, logout, isLoading } = useAuth()
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false)
-  const [siteName, setSiteName] = useState('My App')
+  const [siteName, setSiteName] = useState('Admin Template')
+
+  // Get proxied avatar URL for Google Drive images
+  const avatarUrl = useMemo(() => {
+    const rawUrl = user?.avatar ?? user?.directAvatarUrl ?? undefined
+    return rawUrl ? (getProxiedImageUrl(rawUrl) || rawUrl) : undefined
+  }, [user?.avatar, user?.directAvatarUrl])
 
   useEffect(() => {
     // Fetch site name from public API
@@ -83,7 +90,13 @@ export function UserTopbar({
       {/* Search Bar - Desktop */}
       {showSearch && (
         <div className="hidden md:block flex-1 max-w-md">
-          <Search />
+          {showSidebarToggle ? (
+            /* Admin dashboard - use Search component */
+            <Search />
+          ) : (
+            /* Public pages - use Search component */
+            <Search />
+          )}
         </div>
       )}
 
@@ -106,6 +119,7 @@ export function UserTopbar({
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
+                  <AvatarImage src={avatarUrl} alt={user.name} />
                   <AvatarFallback>
                     {getUserInitials(user)}
                   </AvatarFallback>
@@ -122,43 +136,63 @@ export function UserTopbar({
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link href={ROUTES.blog.href} className="w-full cursor-pointer lg:hidden">
-                        <FileText className="mr-2 h-4 w-4" />
-                        Blog
-                    </Link>
+                  <Link href={ROUTES.marketplace.href} className="w-full cursor-pointer lg:hidden">
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Marketplace
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={ROUTES.blog.href} className="w-full cursor-pointer lg:hidden">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Blog
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {user.name}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.email}
-                  </p>
-                  <div className="flex items-center gap-1 mt-1">
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        user.role === 'SUPER_ADMIN'
-                          ? 'bg-purple-100 text-purple-800'
-                          : user.role === 'ADMIN'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-primary/10 text-primary'
-                      }`}
-                      title={`Raw role: ${user.role}`}
-                    >
-                      {user.role === 'SUPER_ADMIN' ? 'Super Admin' : user.role === 'ADMIN' ? 'Admin' : user.role}
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={avatarUrl} alt={user.name} />
+                    <AvatarFallback className="rounded-lg">
+                      {getUserInitials(user)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">
+                      {user.name}
                     </span>
-                    {user.isPremium && (
-                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                        Premium
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          user.role === 'SUPER_ADMIN'
+                            ? 'bg-purple-100 text-purple-800'
+                            : user.role === 'ADMIN'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-primary/10 text-primary'
+                        }`}
+                        title={`Raw role: ${user.role}`}
+                      >
+                        {user.role === 'SUPER_ADMIN' ? 'Super Admin' : user.role === 'ADMIN' ? 'Admin' : user.role}
                       </span>
-                    )}
+                      {user.isPremium && (
+                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                          Premium
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={ROUTES.messages.href} className="w-full cursor-pointer">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Messages
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={() => handleNavigation('/settings/profile')}>
                   <User className="mr-2 h-4 w-4" />
@@ -224,18 +258,30 @@ export function UserTopbar({
         {/* Desktop Navigation Links */}
         {!showSidebarToggle && user && (
           <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-              <Link
-                  href={ROUTES.blog.href}
-                  className={cn(
-                      "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all",
-                      pathname?.startsWith('/blog')
-                          ? "text-primary bg-accent"
-                          : "text-muted-foreground hover:text-primary hover:bg-accent"
-                  )}
-              >
-                  <FileText className="h-4 w-4" />
-                  <span>Blog</span>
-              </Link>
+            <Link
+              href={ROUTES.marketplace.href}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all",
+                pathname?.startsWith('/marketplace')
+                  ? "text-primary bg-accent"
+                  : "text-muted-foreground hover:text-primary hover:bg-accent"
+              )}
+            >
+              <ShoppingBag className="h-4 w-4" />
+              <span>Marketplace</span>
+            </Link>
+            <Link
+              href={ROUTES.blog.href}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all",
+                pathname?.startsWith('/blog')
+                  ? "text-primary bg-accent"
+                  : "text-muted-foreground hover:text-primary hover:bg-accent"
+              )}
+            >
+              <FileText className="h-4 w-4" />
+              <span>Blog</span>
+            </Link>
           </nav>
         )}
 

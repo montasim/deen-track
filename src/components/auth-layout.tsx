@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function AuthLayout({ children }: Props) {
-  const [siteName, setSiteName] = useState('My App Admin')
+  const [siteName, setSiteName] = useState('Book Heaven Admin')
 
   useEffect(() => {
     // Fetch site name from public API

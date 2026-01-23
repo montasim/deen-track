@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Card } from '@/components/ui/card'
 import { UserAuthForm } from '../components/user-auth-form'
 import { ROUTES } from '@/lib/routes/client-routes'
 
-export default function SignIn() {
+function SignInContent() {
     const [authStep, setAuthStep] = useState<'email' | 'password'>('email')
     const [userEmail, setUserEmail] = useState('')
 
@@ -18,13 +18,13 @@ export default function SignIn() {
         <Card className='m-4 p-4'>
             <div className='flex flex-col space-y-2 text-left mb-4'>
                 <h1 className='text-xl font-semibold tracking-tight'>
-                    {authStep === 'email' ? 'Login' : 'Welcome back'}
+                    {authStep === 'email' ? 'Sign in or create an account' : 'Welcome back'}
                 </h1>
                 <p className='text-sm text-muted-foreground'>
                     {authStep === 'email' ? (
                         <>
                             Enter your email to continue <br />
-                            We&apos;ll guide you through the sign-in process
+                            We&apos;ll check if you have an account or help you create one
                         </>
                     ) : (
                         <>
@@ -53,5 +53,13 @@ export default function SignIn() {
                 .
             </p>
         </Card>
+    )
+}
+
+export default function SignIn() {
+    return (
+        <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+            <SignInContent />
+        </Suspense>
     )
 }

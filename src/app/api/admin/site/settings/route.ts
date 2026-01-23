@@ -70,7 +70,7 @@ const updateSettingsSchema = z.object({
 
   // Ensure siteName has a default value if empty
   if (!transformed.siteName || transformed.siteName.trim() === '') {
-    transformed.siteName = 'My App'
+    transformed.siteName = 'Book Heaven'
   }
 
   return transformed
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
     if (!settings) {
       settings = await prisma.systemSettings.create({
         data: {
-          siteName: 'My App',
+          siteName: 'Book Heaven',
         },
       })
     }
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
       settings = await prisma.systemSettings.update({
         where: { id: settings.id },
         data: {
-          siteName: 'My App',
+          siteName: 'Book Heaven',
         },
       })
     }

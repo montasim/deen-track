@@ -1,94 +1,83 @@
-/**
- * Application Configuration
- * Central location for all app-wide settings and constants
- */
+// Server-only configuration
+const serverConfig = {
+  // Database
+  databaseUrl: process.env.DATABASE_URL,
 
-export const config = {
-  app: {
-    name: process.env.NEXT_PUBLIC_APP_NAME || 'My App',
-    description: process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'A modern Next.js application',
-    url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  // Environment
+  nodeEnv: process.env.NODE_ENV || 'development',
+  get isDevelopment() {
+    return this.nodeEnv !== 'production'
   },
-  resendApiKey: process.env.RESEND_API_KEY || '',
-  fromEmail: process.env.EMAIL_FROM || 'noreply@myapp.com',
-  baseUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-  appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-  isProduction: process.env.NODE_ENV === 'production',
-  isDevelopment: process.env.NODE_ENV === 'development',
-  databaseUrl: process.env.DATABASE_URL || '',
-  stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
-  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
-  tinifyApiKey: process.env.TINIFY_API_KEY || '',
-  apdfApiKey: process.env.APDF_API_KEY || '',
-  embeddingDatabaseUrl: process.env.EMBEDDING_DATABASE_URL || '',
+  get isProduction() {
+    return this.nodeEnv === 'production'
+  },
+
+  // Email (Resend)
+  resendApiKey: process.env.RESEND_API_KEY,
+  fromEmail: process.env.FROM_EMAIL,
+
+  // AI
+  zhipuAiApiKey: process.env.ZHIPU_AI_API_KEY, // z.ai api key
+  zhipuAiModel: process.env.ZHIPU_AI_MODEL || 'glm-4.7',
+
+  // Gemini AI (for embeddings and chat)
+  geminiApiKey: process.env.GEMINI_API_KEY,
+  geminiEmbeddingModel: process.env.GEMINI_EMBEDDING_MODEL || 'text-embedding-004',
+  geminiChatModel: process.env.GEMINI_CHAT_MODEL || 'gemini-2.0-flash',
+
+  // Embeddings database (separate pgvector database)
+  embeddingDatabaseUrl: process.env.EMBEDDING_DATABASE_URL,
+
+  // Image Compression (Tinify)
+  tinifyApiKey: process.env.TINIFY_API_KEY,
+
+  // PDF Compression (aPDF.io)
+  apdfApiKey: process.env.APDF_API_KEY,
+
+  // Stripe
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+  stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+
+  // URLs
+  baseUrl: process.env.BASE_URL,
+  appUrl: process.env.NEXT_PUBLIC_APP_URL,
+
+  // Google Drive
   google: {
-    clientEmail: process.env.GOOGLE_CLIENT_EMAIL || '',
-    privateKey: process.env.GOOGLE_PRIVATE_KEY || '',
-    spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID || '',
+    clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
+    privateKey: process.env.GOOGLE_PRIVATE_KEY,
+    driveFolderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
   },
-  }
 
-// Site configuration
-export const siteConfig = {
-  name: config.app.name,
-  description: config.app.description,
-  url: config.app.url,
-}
+  // Quiz API (Open Trivia Database)
+  quiz: {
+    apiBaseUrl: process.env.QUIZ_API_BASE_URL || 'https://opentdb.com',
+    timeout: parseInt(process.env.QUIZ_API_TIMEOUT || '10000', 10), // 10 seconds
+    maxRetries: parseInt(process.env.QUIZ_API_MAX_RETRIES || '3', 10),
+  },
 
-// Public configuration (client-side safe)
+  // Socket Server (for PDF processing)
+  socketServer: {
+    url: process.env.SOCKET_SERVER_URL || 'http://localhost:3001',
+    webhookApiKey: process.env.WEBHOOK_API_KEY || '',
+  },
+
+  // PDF Processor Service
+  pdfProcessor: {
+    url: process.env.PDF_PROCESSOR_URL || 'http://localhost:3002',
+    apiKey: process.env.PDF_PROCESSOR_API_KEY || '',
+  },
+} as const
+
+// Public configuration (can be used in client components)
 export const publicConfig = {
-  appName: config.app.name,
-  appUrl: config.app.url,
+  appUrl: process.env.NEXT_PUBLIC_APP_URL || '',
   stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
-}
+} as const
 
-// Stripe configuration
-export const stripeConfig = {
-  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
-  secretKey: process.env.STRIPE_SECRET_KEY || '',
-  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
-  priceIds: {
-    // Monthly plans
-    freeMonthly: process.env.STRIPE_PRICE_FREE_MONTHLY || '',
-    premiumMonthly: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || '',
-    premiumPlusMonthly: process.env.STRIPE_PRICE_PREMIUM_PLUS_MONTHLY || '',
-    // Yearly plans
-    freeYearly: process.env.STRIPE_PRICE_FREE_YEARLY || '',
-    premiumYearly: process.env.STRIPE_PRICE_PREMIUM_YEARLY || '',
-    premiumPlusYearly: process.env.STRIPE_PRICE_PREMIUM_PLUS_YEARLY || '',
-  },
-}
+// Full server config
+export const config = serverConfig
 
-// Database configuration
-export const dbConfig = {
-  url: process.env.DATABASE_URL || '',
-  maxConnections: parseInt(process.env.DATABASE_POOL_SIZE || '10', 10),
-}
-
-// Email configuration
-export const emailConfig = {
-  from: process.env.EMAIL_FROM || 'noreply@myapp.com',
-  replyTo: process.env.EMAIL_REPLY_TO || 'noreply@myapp.com',
-  resendApiKey: process.env.RESEND_API_KEY || '',
-}
-
-// Subscription tiers
-export const SUBSCRIPTION_TIERS = {
-  free: {
-    name: 'Free',
-    priceId: stripeConfig.priceIds.freeMonthly,
-    yearlyPriceId: stripeConfig.priceIds.freeYearly,
-  },
-  premium: {
-    name: 'Premium',
-    priceId: stripeConfig.priceIds.premiumMonthly,
-    yearlyPriceId: stripeConfig.priceIds.premiumYearly,
-  },
-  premiumPlus: {
-    name: 'Premium Plus',
-    priceId: stripeConfig.priceIds.premiumPlusMonthly,
-    yearlyPriceId: stripeConfig.priceIds.premiumPlusYearly,
-  },
-}
-
-export default config
+// Type exports
+export type Config = typeof serverConfig

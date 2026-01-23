@@ -32,7 +32,7 @@ export function ContactTab({ settings, setSettings, isSaving, onSave }: ContactT
               type="email"
               value={settings.supportEmail || ''}
               onChange={(e) => setSettings({ ...settings, supportEmail: e.target.value })}
-              placeholder="support@myapp.com"
+              placeholder="support@bookheaven.com"
             />
             <p className="text-sm text-muted-foreground">
               Email address for user support inquiries
@@ -50,7 +50,7 @@ export function ContactTab({ settings, setSettings, isSaving, onSave }: ContactT
               type="email"
               value={settings.contactEmail || ''}
               onChange={(e) => setSettings({ ...settings, contactEmail: e.target.value })}
-              placeholder="contact@myapp.com"
+              placeholder="contact@bookheaven.com"
             />
             <p className="text-sm text-muted-foreground">
               General contact email for business inquiries

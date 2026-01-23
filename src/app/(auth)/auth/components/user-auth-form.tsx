@@ -1,11 +1,14 @@
 'use client'
 
-import { HTMLAttributes, useState } from 'react'
+import { HTMLAttributes, useState, useRef, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { toast } from '@/hooks/use-toast'
+import { useAuth } from '@/context/auth-context'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react'
+import { IconBrandGithub, IconBrandGoogle } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,10 +21,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
-
-import { useRouter } from 'next/navigation'
-import { toast } from '@/hooks/use-toast'
-import { useAuth } from '@/context/auth-context'
+import { Turnstile } from '@/components/ui/turnstile'
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement> & {
   onStepChange?: (step: 'email' | 'password', email?: string) => void
@@ -46,10 +46,13 @@ const passwordSchema = z.object({
 
 export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { refreshUser } = useAuth()
+  const turnstileRef = useRef<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [step, setStep] = useState<'email' | 'password'>('email')
   const [email, setEmail] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
@@ -91,14 +94,14 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
         setStep('password')
         onStepChange?.('password', data.email)
         toast({
-          title: 'Email found',
-          description: 'Please enter your password',
+          title: 'Account found',
+          description: 'Please enter your password to sign in',
         })
       } else {
         // Email doesn't exist - redirect to sign-up with pre-filled email
         toast({
-          title: 'Email not found',
-          description: 'Redirecting to sign-up...',
+          title: 'New account',
+          description: 'No account found. Redirecting to create your account...',
         })
         // Redirect to sign-up with email as query parameter
         router.push(`/sign-up?email=${encodeURIComponent(data.email)}`)
@@ -128,6 +131,7 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
         body: JSON.stringify({
           email,
           password: data.password,
+          turnstileToken,
         }),
       })
 
@@ -178,6 +182,57 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
     passwordForm.reset()
   }
 
+  // Social login handler
+  async function handleSocialLogin(provider: 'google' | 'github') {
+    setIsLoading(true)
+    try {
+      // Get redirect and connect parameters from current URL
+      const urlParams = new URLSearchParams(window.location.search)
+      const redirect = urlParams.get('redirect')
+      const connect = urlParams.get('connect')
+
+      // Redirect to OAuth endpoint
+      const response = await fetch(`/api/auth/oauth/${provider}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ redirect, connect }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        toast({
+          variant: 'destructive',
+          title: 'OAuth Error',
+          description: result.error || 'Failed to initiate OAuth flow',
+        })
+        return
+      }
+
+      // Redirect to OAuth provider
+      window.location.href = result.url
+    } catch (error) {
+      console.error('OAuth error:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'An error occurred. Please try again.',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Auto-trigger OAuth flow if 'connect' parameter is present
+  useEffect(() => {
+    const connect = searchParams.get('connect')
+    if (connect && (connect === 'google' || connect === 'github') && !isLoading) {
+      // Auto-trigger the OAuth flow
+      handleSocialLogin(connect as 'google' | 'github')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
   // Render Step 1: Email Input
   if (step === 'email') {
     return (
@@ -213,22 +268,24 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 </div>
               </div>
 
-              <div className='flex items-center gap-2'>
+              <div className='grid grid-cols-2 gap-2'>
                 <Button
                   variant='outline'
                   className='w-full'
                   type='button'
                   disabled={isLoading}
+                  onClick={() => handleSocialLogin('google')}
                 >
-                  <IconBrandGithub className='h-4 w-4' /> GitHub
+                  <IconBrandGoogle className='h-4 w-4 mr-2' /> Google
                 </Button>
                 <Button
                   variant='outline'
                   className='w-full'
                   type='button'
                   disabled={isLoading}
+                  onClick={() => handleSocialLogin('github')}
                 >
-                  <IconBrandFacebook className='h-4 w-4' /> Facebook
+                  <IconBrandGithub className='h-4 w-4 mr-2' /> GitHub
                 </Button>
               </div>
             </div>
@@ -270,7 +327,29 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' disabled={isLoading}>
+            <div className='flex justify-start'>
+              <Turnstile
+                ref={turnstileRef}
+                onSuccess={(token) => setTurnstileToken(token)}
+                onError={() => {
+                  setTurnstileToken(null)
+                  toast({
+                    variant: 'destructive',
+                    title: 'CAPTCHA failed',
+                    description: 'Please complete the CAPTCHA verification',
+                  })
+                }}
+                onExpire={() => {
+                  setTurnstileToken(null)
+                  toast({
+                    variant: 'destructive',
+                    title: 'CAPTCHA expired',
+                    description: 'Please complete the CAPTCHA verification again',
+                  })
+                }}
+              />
+            </div>
+            <Button className='mt-2' disabled={isLoading || !turnstileToken}>
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
             <Button

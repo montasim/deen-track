@@ -34,13 +34,13 @@ export function SEOTab({ settings, setSettings, isSaving, onSave }: SEOTabProps)
             <Label htmlFor="seoTitle">SEO Title</Label>
             <Input
               id="seoTitle"
-              value={settings.seoTitle || 'My App - A Modern Next.js Application'}
+              value={settings.seoTitle || 'Book Heaven - AI-Powered Digital Library'}
               onChange={(e) => setSettings({ ...settings, seoTitle: e.target.value })}
-              placeholder="My App - A Modern Next.js Application"
+              placeholder="Book Heaven - AI-Powered Digital Library"
               maxLength={60}
             />
             <p className="text-sm text-muted-foreground">
-              The default title for search engines (max 60 characters). Current: {(settings.seoTitle || 'My App - A Modern Next.js Application').length}/60
+              The default title for search engines (max 60 characters). Current: {(settings.seoTitle || 'Book Heaven - AI-Powered Digital Library').length}/60
             </p>
           </div>
 
@@ -51,7 +51,7 @@ export function SEOTab({ settings, setSettings, isSaving, onSave }: SEOTabProps)
               id="seoDescription"
               value={settings.seoDescription || ''}
               onChange={(e) => setSettings({ ...settings, seoDescription: e.target.value })}
-              placeholder="A modern application built with Next.js and React..."
+              placeholder="Discover, read, and interact with books using AI-powered features..."
               rows={3}
               maxLength={160}
               className="resize-none"
@@ -68,7 +68,7 @@ export function SEOTab({ settings, setSettings, isSaving, onSave }: SEOTabProps)
               id="seoKeywords"
               value={settings.seoKeywords || ''}
               onChange={(e) => setSettings({ ...settings, seoKeywords: e.target.value })}
-              placeholder="nextjs, react, typescript, web application, modern web"
+              placeholder="digital library, AI chat, ebooks, audiobooks, reading, book recommendations"
               rows={2}
               maxLength={255}
               className="resize-none"

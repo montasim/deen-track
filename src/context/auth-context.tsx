@@ -9,6 +9,7 @@ interface User {
   email: string
   role: string
   isPremium: boolean
+  showMoodRecommendations?: boolean
   firstName?: string
   lastName?: string | null
   avatar?: string | null

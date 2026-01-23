@@ -361,7 +361,7 @@ export default function AdminSupportTicketsPage() {
                           <span>•</span>
                           <span className='flex items-center gap-1'>
                             <MessageSquare className='h-3 w-3' />
-                            {ticket.responses?.length || 0}
+                            {ticket._count.responses}
                           </span>
                         </div>
                       </div>

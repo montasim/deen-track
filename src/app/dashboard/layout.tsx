@@ -28,6 +28,12 @@ const adminTopNav = [
         disabled: true,
     },
     {
+        title: 'Books',
+        href: 'dashboard/books',
+        isActive: false,
+        disabled: true,
+    },
+    {
         title: 'Settings',
         href: 'dashboard/settings',
         isActive: false,

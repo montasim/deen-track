@@ -15,7 +15,7 @@ interface SocialLinks {
 
 export function PublicFooter() {
   const currentYear = new Date().getFullYear()
-  const [siteName, setSiteName] = useState('My App')
+  const [siteName, setSiteName] = useState('Book Heaven')
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({})
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export function PublicFooter() {
               <span className="text-lg font-bold">{siteName}</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              A modern application platform built with Next.js and React.
+              Discover, read, and share amazing books with our comprehensive book management platform.
             </p>
             <div className="flex items-center space-x-4">
               {socialLinks.github && (
@@ -121,18 +121,8 @@ export function PublicFooter() {
                 </Link>
               </li>
               <li>
-                <Link href={ROUTES.helpCenter.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link href={ROUTES.pricing.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link href={ROUTES.about.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  About Us
+                <Link href={ROUTES.marketplace.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Marketplace
                 </Link>
               </li>
             </ul>
@@ -184,7 +174,7 @@ export function PublicFooter() {
               © {currentYear} {siteName}. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
-              Made with <Heart className="h-4 w-4 fill-red-500 text-red-500" /> for the community
+              Made with <Heart className="h-4 w-4 fill-red-500 text-red-500" /> for book lovers
             </p>
           </div>
         </div>

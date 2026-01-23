@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
                 search: '**', // ✅ allow any query string
             },
         ],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'drive.google.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'lh3.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'photos.app.goo.gl',
+            },
+        ],
     },
     // Reduce memory usage during builds
     experimental: {
@@ -28,41 +42,6 @@ const nextConfig: NextConfig = {
         },
     },
 
-    // Optimize webpack configuration
-    webpack: (config, { isServer }) => {
-        // Reduce memory usage by splitting chunks more aggressively
-        config.optimization = {
-            ...config.optimization,
-            splitChunks: {
-                chunks: 'all',
-                cacheGroups: {
-                    default: false,
-                    vendors: false,
-                    // Separate vendor chunks to reduce memory pressure
-                    vendor: {
-                        name: 'vendor',
-                        chunks: 'all',
-                        test: /node_modules/,
-                        priority: 20,
-                    },
-                    // Separate React and related libraries
-                    react: {
-                        name: 'react',
-                        chunks: 'all',
-                        test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
-                        priority: 30,
-                    },
-                },
-            },
-            // Reduce memory usage during build
-            minimize: !isServer,
-        };
-
-        // Limit parallel processing to reduce memory usage
-        config.parallelism = 1;
-
-        return config;
-    },
     // Disable source maps in production to reduce memory usage
     productionBrowserSourceMaps: false,
 };

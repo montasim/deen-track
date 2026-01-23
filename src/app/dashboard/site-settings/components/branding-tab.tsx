@@ -39,9 +39,9 @@ export function BrandingTab({ settings, setSettings, isSaving, onSave }: Brandin
             <Label htmlFor="siteName">Site Name</Label>
             <Input
               id="siteName"
-              value={settings.siteName || 'My App'}
+              value={settings.siteName || 'Book Heaven'}
               onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-              placeholder="My App"
+              placeholder="Book Heaven"
               maxLength={100}
             />
             <p className="text-sm text-muted-foreground">
@@ -56,7 +56,7 @@ export function BrandingTab({ settings, setSettings, isSaving, onSave }: Brandin
               id="siteSlogan"
               value={settings.siteSlogan || ''}
               onChange={(e) => setSettings({ ...settings, siteSlogan: e.target.value })}
-              placeholder="A Modern Next.js Application"
+              placeholder="AI-Powered Digital Library"
               maxLength={200}
             />
             <p className="text-sm text-muted-foreground">

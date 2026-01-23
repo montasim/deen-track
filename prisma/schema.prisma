@@ -35,69 +35,78 @@ model Invite {
 }
 
 model User {
-  id                  String    @id @default(uuid())
-  email               String    @unique
+  id                  String            @id @default(uuid())
+  email               String            @unique
   passwordHash        String
-  role                UserRole  @default(USER)
-  name                String    @default("")
-  firstName           String    @default("")
+  role                UserRole          @default(USER)
+  name                String            @default("")
+  firstName           String            @default("")
   lastName            String?
-  username            String?   @unique
-  phoneNumber         String?   @unique
+  username            String?           @unique
+  phoneNumber         String?           @unique
   avatar              String?
   directAvatarUrl     String?
   bio                 String?
   dob                 DateTime?
-  theme               String?   @default("light")
-  font                String?   @default("inter")
+  theme               String?           @default("light")
+  font                String?           @default("inter")
   language            String?
-  notificationType    String?   @default("all")
-  displayItems        Json?     @default("[\"recents\", \"home\", \"applications\", \"desktop\", \"downloads\", \"documents\"]")
-  urls                Json?     @default("[]")
-  communicationEmails Boolean?  @default(false)
-  marketingEmails     Boolean?  @default(false)
-  securityEmails      Boolean?  @default(true)
-  socialEmails        Boolean?  @default(false)
-  mobileNotifications Boolean?  @default(false)
-  isPremium           Boolean   @default(false)
-  stripeCustomerId    String?   @unique
-  isActive            Boolean   @default(true)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  notificationType    String?           @default("all")
+  displayItems        Json?             @default("[\"recents\", \"home\", \"applications\", \"desktop\", \"downloads\", \"documents\"]")
+  urls                Json?             @default("[]")
+  communicationEmails Boolean?          @default(false)
+  marketingEmails     Boolean?          @default(false)
+  securityEmails      Boolean?          @default(true)
+  socialEmails        Boolean?          @default(false)
+  mobileNotifications Boolean?          @default(false)
+  isPremium           Boolean           @default(false)
+  stripeCustomerId    String?           @unique
+  isActive            Boolean           @default(true)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  achievements        UserAchievement[]  @relation("UserAchievements")
+  sessions            UserSession[]
+  socialAccounts      SocialAccount[]   @relation("UserSocialAccounts")
 
-  // Notice management
-  notices Notice[] @relation("UserNotices")
+  // Notices management
+  notices             Notice[]           @relation("UserNotices")
+
+  // Marketplace relations
+  sellPosts              ItemSellPost[]              @relation("UserSellPosts")
+  buyerOffers            ItemOffer[]                 @relation("UserBuyerOffers")
+  sellerConversations    Conversation[]              @relation("UserSellerConversations")
+  buyerConversations     Conversation[]              @relation("UserBuyerConversations")
+  sentMessages           Message[]                   @relation("UserSentMessages")
+  givenReviews           SellerReview[]              @relation("UserGivenReviews")
+  sellPostViews          ItemSellPostView[]          @relation("UserSellPostViews")
 
   // Notifications
-  notifications Notification[] @relation("UserNotifications")
+  notifications          Notification[]
 
   // WebSocket features
-  onlineStatus     OnlineStatus?     @relation("UserOnlineStatus")
-  typingIndicators TypingIndicator[] @relation("UserTypingIndicators")
+  onlineStatus           OnlineStatus?              @relation("UserOnlineStatus")
+  typingIndicators       TypingIndicator[]          @relation("UserTypingIndicators")
 
   // Activity tracking
-  activities ActivityLog[] @relation("UserActivities")
+  activities             ActivityLog[]              @relation("UserActivities")
 
   // Support tickets
-  tickets         SupportTicket[]  @relation("UserTickets")
-  assignedTickets SupportTicket[]  @relation("AssignedTickets")
-  ticketResponses TicketResponse[] @relation("TicketResponses")
+  tickets                SupportTicket[]            @relation("UserTickets")
+  assignedTickets        SupportTicket[]            @relation("AssignedTickets")
+  ticketResponses        TicketResponse[]           @relation("TicketResponses")
 
   // Legal content management
-  updatedLegalContent LegalContent[] @relation("UserLegalContent")
+  updatedLegalContent    LegalContent[]            @relation("UserLegalContent")
 
   // Campaign management
-  campaigns Campaign[] @relation("UserCampaigns")
+  campaigns              Campaign[]                @relation("UserCampaigns")
 
   // Blog & Community
-  blogPosts    BlogPost[]    @relation("UserBlogPosts")
-  blogComments BlogComment[] @relation("UserBlogComments")
+  blogPosts              BlogPost[]                @relation("UserBlogPosts")
+  blogComments           BlogComment[]             @relation("UserBlogComments")
 
   // Subscription management
-  subscription Subscription? @relation("UserSubscription")
-
-  // Sessions
-  sessions UserSession[] @relation("UserSessions")
+  subscription           Subscription?
 
   @@map("users")
 }
@@ -107,29 +116,30 @@ model User {
 // ============================================================================
 
 model OnlineStatus {
-  id         String     @id @default(uuid())
-  userId     String     @unique
-  socketId   String?
-  status     UserStatus @default(OFFLINE)
-  lastSeenAt DateTime   @default(now())
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id          String     @id @default(uuid())
+  userId      String     @unique
+  socketId    String?
+  status      UserStatus @default(OFFLINE)
+  lastSeenAt  DateTime   @default(now())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
-  user User @relation("UserOnlineStatus", fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation("UserOnlineStatus", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([status, lastSeenAt])
   @@map("online_status")
 }
 
 model TypingIndicator {
-  id             String   @id @default(uuid())
-  conversationId String
-  userId         String
-  isTyping       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id               String       @id @default(uuid())
+  conversationId   String
+  userId           String
+  isTyping         Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
-  user User @relation("UserTypingIndicators", fields: [userId], references: [id], onDelete: Cascade)
+  conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user             User         @relation("UserTypingIndicators", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
   @@index([conversationId])
@@ -150,16 +160,16 @@ model UserOtp {
 }
 
 model UserSession {
-  id        String    @id @default(uuid())
-  userId    String
-  token     String    @unique
-  tokenType TokenType @default(ACCESS)
-  expiresAt DateTime
-  createdAt DateTime  @default(now())
-  revokedAt DateTime?
-  userAgent String?
-  ipAddress String?
-  user      User      @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(uuid())
+  userId       String
+  token        String   @unique
+  tokenType    TokenType @default(ACCESS) // ACCESS or REFRESH
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  revokedAt    DateTime?
+  userAgent    String?
+  ipAddress    String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId, tokenType])
@@ -168,8 +178,40 @@ model UserSession {
 }
 
 enum TokenType {
-  ACCESS
-  REFRESH
+  ACCESS   // Short-lived token (15 minutes)
+  REFRESH  // Long-lived token (7 days)
+}
+
+// ============================================================================
+// SOCIAL LOGIN / OAUTH
+// ============================================================================
+
+enum SocialProvider {
+  GOOGLE
+  GITHUB
+}
+
+model SocialAccount {
+  id              String          @id @default(uuid())
+  userId          String
+  provider        SocialProvider
+  providerAccountId String       @unique // Provider's unique ID for the user
+  providerEmail   String?        // Email from provider
+  accessToken     String?        @db.Text // OAuth access token
+  refreshToken    String?        @db.Text // OAuth refresh token (if available)
+  tokenExpiresAt  DateTime?      // Access token expiration
+  avatar          String?        // Profile picture from provider
+  profileUrl      String?        // Profile URL from provider
+  isActive        Boolean        @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  lastUsedAt      DateTime        @default(now())
+
+  user            User            @relation("UserSocialAccounts", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([provider, providerAccountId])
+  @@map("social_accounts")
 }
 
 // ============================================================================
@@ -183,19 +225,19 @@ enum SubscriptionPlan {
 }
 
 model Subscription {
-  id                   String           @id @default(uuid())
-  userId               String           @unique
-  plan                 SubscriptionPlan @default(FREE)
-  startDate            DateTime         @default(now())
-  endDate              DateTime?
-  isActive             Boolean          @default(true)
-  paymentId            String?
-  stripeSubscriptionId String?          @unique
-  stripePriceId        String?
-  cancelAtPeriodEnd    Boolean          @default(false)
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  user                 User             @relation("UserSubscription", fields: [userId], references: [id], onDelete: Cascade)
+  id                  String           @id @default(uuid())
+  userId              String           @unique
+  plan                SubscriptionPlan @default(FREE)
+  startDate           DateTime         @default(now())
+  endDate             DateTime?
+  isActive            Boolean          @default(true)
+  paymentId           String?
+  stripeSubscriptionId String?         @unique
+  stripePriceId       String?
+  cancelAtPeriodEnd   Boolean          @default(false)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("subscriptions")
 }
@@ -205,47 +247,35 @@ model Subscription {
 // ============================================================================
 
 model PricingTier {
-  id                   String           @id @default(uuid())
-  plan                 SubscriptionPlan @unique
-  name                 String
-  description          String
-  monthlyPrice         Int              @default(0)
-  yearlyPrice          Int              @default(0)
-  popular              Boolean          @default(false)
+  id               String           @id @default(uuid())
+  plan             SubscriptionPlan @unique
+  name             String
+  description      String
+  monthlyPrice     Int              @default(0) // in cents
+  yearlyPrice      Int              @default(0) // in cents
+  popular          Boolean          @default(false)
   stripeMonthlyPriceId String?
   stripeYearlyPriceId  String?
-  isActive             Boolean          @default(true)
-  order                Int              @default(0)
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  features             PricingFeature[]
+  isActive         Boolean          @default(true)
+  order            Int              @default(0)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  features         PricingFeature[]
 
   @@map("pricing_tiers")
 }
 
 model PricingFeature {
-  id        String      @id @default(uuid())
-  tierId    String
-  text      String
-  included  Boolean     @default(true)
-  order     Int         @default(0)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  tier      PricingTier @relation(fields: [tierId], references: [id], onDelete: Cascade)
+  id           String     @id @default(uuid())
+  tierId       String
+  text         String
+  included     Boolean    @default(true)
+  order        Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  tier         PricingTier @relation(fields: [tierId], references: [id], onDelete: Cascade)
 
   @@map("pricing_features")
-}
-
-enum UserRole {
-  USER
-  ADMIN
-  SUPER_ADMIN
-}
-
-enum UserStatus {
-  ONLINE
-  AWAY
-  OFFLINE
 }
 
 // ============================================================================
@@ -262,8 +292,8 @@ enum CampaignStatus {
 }
 
 enum CampaignType {
-  ONE_TIME
-  RECURRING
+  ONE_TIME       // Send once immediately or scheduled
+  RECURRING      // Recurring campaign (cron-based)
 }
 
 enum RecurrenceFrequency {
@@ -274,43 +304,50 @@ enum RecurrenceFrequency {
 }
 
 model Campaign {
-  id              String  @id @default(uuid())
-  name            String
-  subject         String
-  previewText     String?
-  htmlContent     String  @db.Text
-  markdownContent String  @db.Text
+  id                String                @id @default(uuid())
+  name              String
+  subject           String
+  previewText       String?
+  htmlContent       String                @db.Text
+  markdownContent   String                @db.Text  // Store original markdown
 
-  type CampaignType @default(ONE_TIME)
+  // Campaign type
+  type              CampaignType          @default(ONE_TIME)
 
-  targetAllUsers Boolean   @default(true)
-  targetRole     UserRole?
-  recipientCount Int       @default(0)
+  // Recipients
+  targetAllUsers    Boolean               @default(true)
+  targetRole        UserRole?
+  recipientCount    Int                   @default(0)
 
-  status      CampaignStatus @default(DRAFT)
-  scheduledAt DateTime?
-  sentAt      DateTime?
+  // Status tracking
+  status            CampaignStatus        @default(DRAFT)
+  scheduledAt       DateTime?
+  sentAt            DateTime?
 
-  isRecurring         Boolean              @default(false)
+  // Recurring settings (for RECURRING type)
+  isRecurring       Boolean               @default(false)
   recurrenceFrequency RecurrenceFrequency?
-  recurrenceCron      String?
-  recurrenceEndDate   DateTime?
-  nextRunAt           DateTime?
+  recurrenceCron    String?               // Custom cron expression
+  recurrenceEndDate  DateTime?            // When to stop recurring
+  nextRunAt         DateTime?             // Next scheduled run for recurring
 
-  sentCount      Int @default(0)
-  deliveredCount Int @default(0)
-  failedCount    Int @default(0)
-  openedCount    Int @default(0)
-  clickedCount   Int @default(0)
+  // Delivery stats
+  sentCount         Int                   @default(0)
+  deliveredCount    Int                   @default(0)
+  failedCount       Int                   @default(0)
+  openedCount       Int                   @default(0)
+  clickedCount      Int                   @default(0)
 
-  unsubscribeCount Int @default(0)
+  // Unsubscribe tracking
+  unsubscribeCount  Int                   @default(0)
 
-  entryById String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Metadata
+  entryById         String
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
 
-  entryBy    User                @relation("UserCampaigns", fields: [entryById], references: [id])
-  recipients CampaignRecipient[]
+  entryBy           User                  @relation("UserCampaigns", fields: [entryById], references: [id])
+  recipients        CampaignRecipient[]
 
   @@index([status, createdAt(sort: Desc)])
   @@index([entryById])
@@ -319,33 +356,246 @@ model Campaign {
 }
 
 model CampaignRecipient {
-  id         String @id @default(uuid())
-  campaignId String
-  userId     String
-  userEmail  String
+  id                String         @id @default(uuid())
+  campaignId        String
+  userId            String
+  userEmail         String         // Denormalized for filtering
 
-  status         CampaignStatus @default(DRAFT)
-  sentAt         DateTime?
-  deliveredAt    DateTime?
-  openedAt       DateTime?
-  clickedAt      DateTime?
-  unsubscribedAt DateTime?
-  failedReason   String?
+  // Delivery status
+  status            CampaignStatus @default(DRAFT)
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  openedAt          DateTime?
+  clickedAt         DateTime?
+  unsubscribedAt    DateTime?      // When user unsubscribed from this campaign
+  failedReason      String?
 
-  clickedLinks Json?
+  // Engagement tracking (for links clicked)
+  clickedLinks      Json?          // Track which links were clicked
 
-  retryCount  Int       @default(0)
-  lastRetryAt DateTime?
+  // Retry tracking
+  retryCount        Int            @default(0)
+  lastRetryAt       DateTime?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
-  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign          Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@unique([campaignId, userId])
   @@index([campaignId, status])
   @@index([userId, createdAt(sort: Desc)])
   @@map("campaign_recipients")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ============================================================================
+// MARKETPLACE ENUMS
+// ============================================================================
+
+enum ItemCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  POOR
+}
+
+enum SellPostStatus {
+  AVAILABLE
+  PENDING
+  SOLD
+  EXPIRED
+  HIDDEN
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COUNTERED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum ConversationStatus {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+  BLOCKED
+}
+
+// ============================================================================
+// MARKETPLACE MODELS
+// ============================================================================
+
+model ItemSellPost {
+  id                String             @id @default(uuid())
+  title             String
+  description       String?            @db.Text
+  price             Float
+  negotiable        Boolean            @default(true)
+  condition         ItemCondition
+  images            String[]           // Array of image URLs
+  directImageUrls   Json?              // Store direct URLs for each image
+
+  // Seller info
+  sellerId          String
+  seller            User               @relation("UserSellPosts", fields: [sellerId], references: [id], onDelete: Cascade)
+
+  // Location for meetup
+  location          String?
+  city              String?
+
+  // Status
+  status            SellPostStatus     @default(AVAILABLE)
+  soldAt            DateTime?
+
+  // Timestamps
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  expiresAt         DateTime?          // Optional expiration for listings
+
+  // Relations
+  offers            ItemOffer[]
+  conversations     Conversation[]
+  reviews           SellerReview[]
+
+  // Analytics
+  views             ItemSellPostView[]
+
+  @@index([sellerId, status])
+  @@index([status, createdAt])
+  @@map("item_sell_posts")
+}
+
+model ItemOffer {
+  id                String             @id @default(uuid())
+  sellPostId        String
+  sellPost          ItemSellPost       @relation(fields: [sellPostId], references: [id], onDelete: Cascade)
+
+  buyerId           String
+  buyer             User               @relation("UserBuyerOffers", fields: [buyerId], references: [id], onDelete: Cascade)
+
+  offeredPrice      Float
+  message           String?            @db.Text
+
+  status            OfferStatus        @default(PENDING)
+  respondedAt       DateTime?
+  responseMessage   String?            @db.Text
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([sellPostId, status])
+  @@index([buyerId, status])
+  @@map("item_offers")
+}
+
+model Conversation {
+  id                String             @id @default(uuid())
+  sellPostId        String
+  sellPost          ItemSellPost       @relation(fields: [sellPostId], references: [id], onDelete: Cascade)
+
+  // Participants
+  sellerId          String
+  buyerId           String
+  seller            User               @relation("UserSellerConversations", fields: [sellerId], references: [id], onDelete: Cascade)
+  buyer             User               @relation("UserBuyerConversations", fields: [buyerId], references: [id], onDelete: Cascade)
+
+  // Status
+  status            ConversationStatus @default(ACTIVE)
+  completedAt       DateTime?
+
+  // Transaction completion (for reviews)
+  transactionCompleted Boolean        @default(false)
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  messages          Message[]
+  review            SellerReview?
+  typingIndicators  TypingIndicator[]
+
+  @@unique([sellPostId, buyerId])
+  @@index([sellerId, status])
+  @@index([buyerId, status])
+  @@map("conversations")
+}
+
+model Message {
+  id                String             @id @default(uuid())
+  conversationId    String
+  conversation      Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  senderId          String
+  sender            User               @relation("UserSentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  content           String             @db.Text
+
+  // Read status
+  readAt            DateTime?
+
+  createdAt         DateTime           @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+  @@map("messages")
+}
+
+model SellerReview {
+  id                String             @id @default(uuid())
+  conversationId    String             @unique
+  conversation      Conversation       @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  sellPostId        String
+  sellPost          ItemSellPost       @relation(fields: [sellPostId], references: [id], onDelete: Cascade)
+
+  reviewerId        String             // The buyer who left the review
+  reviewer          User               @relation("UserGivenReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  sellerId          String             // The seller being reviewed (denormalized for queries)
+
+  rating            Int                // 1-5 stars
+
+  // Review categories
+  communicationRating     Int          @default(0)
+  descriptionAccuracyRating Int       @default(0)
+  meetupRating            Int          @default(0)
+
+  comment           String?            @db.Text
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([sellerId])
+  @@index([reviewerId])
+  @@map("seller_reviews")
+}
+
+model ItemSellPostView {
+  id                String             @id @default(uuid())
+  sellPostId        String
+  sellPost          ItemSellPost       @relation(fields: [sellPostId], references: [id], onDelete: Cascade)
+
+  userId            String?            // Nullable for anonymous visits
+  sessionId         String?            // For anonymous tracking
+
+  visitedAt         DateTime           @default(now())
+  ip                String?
+  userAgent         String?
+  referrer          String?
+
+  user              User?              @relation("UserSellPostViews", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([sellPostId, visitedAt])
+  @@index([userId, visitedAt])
+  @@map("item_sell_post_views")
 }
 
 // ============================================================================
@@ -354,27 +604,41 @@ model CampaignRecipient {
 
 enum NotificationType {
   NEW_MESSAGE
-  SYSTEM_UPDATE
-  CAMPAIGN_SENT
-  TICKET_RESPONSE
-  TICKET_RESOLVED
+  NEW_OFFER
+  OFFER_ACCEPTED
+  OFFER_REJECTED
+  OFFER_COUNTERED
+  TRANSACTION_COMPLETE
+  NEW_REVIEW
+  POST_APPROVED
+  POST_REJECTED
+  MARKETPLACE_UPDATE
+}
+
+// WebSocket features
+enum UserStatus {
+  ONLINE
+  AWAY
+  OFFLINE
 }
 
 model Notification {
-  id     String @id @default(uuid())
-  userId String
-  user   User   @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  id          String             @id @default(uuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type    NotificationType
-  title   String
-  message String           @db.Text
+  type        NotificationType
+  title       String
+  message     String             @db.Text
 
-  linkUrl String?
+  // Optional links to related entities
+  linkUrl     String?
 
-  isRead Boolean   @default(false)
-  readAt DateTime?
+  // Read status
+  isRead      Boolean            @default(false)
+  readAt      DateTime?
 
-  createdAt DateTime @default(now())
+  createdAt   DateTime           @default(now())
 
   @@index([userId, isRead, createdAt])
   @@index([userId, createdAt])
@@ -385,53 +649,59 @@ model Notification {
 // SYSTEM SETTINGS
 // ============================================================================
 
+// System-wide settings
 model SystemSettings {
-  id String @id @default(uuid())
+  id                        String   @id @default(uuid())
 
-  underConstruction        Boolean @default(false)
-  underConstructionMessage String? @default("Site is under construction. Some features may not work as expected.")
-  maintenanceMode          Boolean @default(false)
-  maintenanceMessage       String?
+  // Maintenance & Construction Mode
+  underConstruction         Boolean  @default(false)
+  underConstructionMessage  String?  @default("Site is under construction. Some features may not work as expected.")
+  maintenanceMode           Boolean  @default(false)
+  maintenanceMessage        String?
 
-  siteName         String  @default("My App")
-  siteSlogan       String?
-  logoUrl          String?
-  directLogoUrl    String?
-  faviconUrl       String?
-  directFaviconUrl String?
+  // Branding
+  siteName                  String   @default("Admin Template")
+  siteSlogan                String?
+  logoUrl                   String?
+  directLogoUrl             String?
+  faviconUrl                String?
+  directFaviconUrl          String?
 
-  seoTitle         String?
-  seoDescription   String?
-  seoKeywords      String?
-  ogImage          String?
-  directOgImageUrl String?
+  // SEO Metadata
+  seoTitle                  String?
+  seoDescription            String?
+  seoKeywords               String?
+  ogImage                   String?
+  directOgImageUrl          String?
 
-  supportEmail    String?
-  contactEmail    String?
-  socialTwitter   String?
-  socialGithub    String?
-  socialFacebook  String?
-  socialInstagram String?
-  socialLinkedIn  String?
+  // Contact Information
+  supportEmail              String?
+  contactEmail              String?
+  socialTwitter             String?
+  socialGithub              String?
+  socialFacebook            String?
+  socialInstagram           String?
+  socialLinkedIn            String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 
   @@map("system_settings")
 }
 
+// Notices/Announcements for users
 model Notice {
-  id        String    @id @default(uuid())
-  title     String
-  content   String    @db.Text
-  isActive  Boolean   @default(true)
-  validFrom DateTime?
-  validTo   DateTime?
-  order     Int       @default(0)
-  entryById String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  entryBy   User      @relation("UserNotices", fields: [entryById], references: [id])
+  id           String    @id @default(uuid())
+  title        String
+  content      String    @db.Text
+  isActive     Boolean   @default(true)
+  validFrom    DateTime? // Optional start date
+  validTo      DateTime? // Optional end date
+  order        Int       @default(0) // Display order
+  entryById    String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  entryBy      User      @relation("UserNotices", fields: [entryById], references: [id])
 
   @@index([isActive, validFrom, validTo])
   @@map("notices")
@@ -442,94 +712,186 @@ model Notice {
 // ============================================================================
 
 enum ActivityAction {
+  // CRUD
   CREATE
   UPDATE
   DELETE
   VIEW
+
+  // Auth
   LOGIN
   LOGOUT
   LOGIN_FAILED
   PASSWORD_CHANGED
   ROLE_CHANGED
+
+  // Marketplace
+  SELL_POST_CREATED
+  SELL_POST_UPDATED
+  SELL_POST_DELETED
+  OFFER_CREATED
+  OFFER_ACCEPTED
+  OFFER_REJECTED
+  MESSAGE_SENT
+  REVIEW_POSTED
+
+  // User
   PROFILE_UPDATED
+
+  // System
   SYSTEM_SETTINGS_UPDATED
   NOTICE_CREATED
   NOTICE_UPDATED
   NOTICE_DELETED
   USER_BANNED
   USER_PROMOTED
+
+  // Campaigns
   CAMPAIGN_CREATED
   CAMPAIGN_UPDATED
   CAMPAIGN_DELETED
   CAMPAIGN_SENT
   CAMPAIGN_CANCELLED
+
+  // Blog
   BLOG_POST_CREATED
   BLOG_POST_UPDATED
   BLOG_POST_DELETED
   BLOG_COMMENT_CREATED
-  BOOK_CREATED
-  BOOK_UPDATED
-  MESSAGE_SENT
-  SELL_POST_CREATED
-  OFFER_CREATED
-  OFFER_ACCEPTED
-  OFFER_REJECTED
-  SELL_POST_UPDATED
-  SELL_POST_DELETED
-  QUIZ_ATTEMPTED
-  READING_PROGRESS_UPDATED
-  AUTHOR_CREATED
-  AUTHOR_UPDATED
-  AUTHOR_DELETED
-  CATEGORY_CREATED
-  CATEGORY_UPDATED
-  CATEGORY_DELETED
-  PUBLICATION_CREATED
-  PUBLICATION_UPDATED
-  PUBLICATION_DELETED
-  SERIES_CREATED
-  SERIES_UPDATED
-  SERIES_DELETED
-  BOOKSHELF_CREATED
-  REVIEW_POSTED
+
+  // Support
+  TICKET_CREATED
+  TICKET_RESPONDED
+  TICKET_RESOLVED
+  TICKET_CLOSED
+
+  // Legal
+  LEGAL_CONTENT_UPDATED
+
+  // Achievements
+  ACHIEVEMENT_UNLOCKED
 }
 
 enum ActivityResourceType {
   USER
+  SELL_POST
+  OFFER
+  MESSAGE
+  CONVERSATION
+  REVIEW
   NOTICE
   SYSTEM_SETTINGS
+  ACHIEVEMENT
   CAMPAIGN
   BLOG_POST
   BLOG_COMMENT
-  TICKET
+  SUPPORT_TICKET
+  LEGAL_CONTENT
+  PRICING_TIER
   FAQ
 }
 
+// ============================================================================
+// ACHIEVEMENTS SYSTEM
+// ============================================================================
+
+model Achievement {
+  id                String              @id @default(uuid())
+  code              String              @unique  // e.g., 'FIRST_LOGIN', 'CONTRIBUTOR_10'
+  name              String              // Display name
+  description       String              @db.Text
+  icon              String?             // Emoji or icon name
+  category          AchievementCategory
+  tier              AchievementTier     @default(BRONZE)
+  xp                Int                 @default(0)  // Experience points rewarded
+
+  // Requirements (stored as JSON for flexibility)
+  requirements      Json                // { type: 'ITEMS_SOLD', count: 10, etc. }
+
+  // Stats
+  unlockCount       Int                 @default(0)  // How many users unlocked this
+  isVisible         Boolean             @default(true)
+
+  // Metadata
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  entryById         String
+
+  userAchievements  UserAchievement[]
+
+  @@index([category, tier])
+  @@index([code])
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id              String              @id @default(uuid())
+  userId          String
+  achievementId   String
+  unlockedAt      DateTime            @default(now())
+
+  // Progress tracking (for incremental achievements)
+  progress        Int                 @default(0)
+  maxProgress     Int                 @default(1)
+
+  user            User                @relation("UserAchievements", fields: [userId], references: [id], onDelete: Cascade)
+  achievement     Achievement         @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId, unlockedAt(sort: Desc)])
+  @@index([achievementId])
+  @@map("user_achievements")
+}
+
+enum AchievementCategory {
+  CONTRIBUTION        // Items added, created
+  MARKETPLACE       // Sell posts, offers, reviews
+  SOCIAL            // Reviews, ratings, conversations
+  ENGAGEMENT        // Logins, consistency, streaks
+  SPECIAL           // Limited time, unique achievements
+}
+
+enum AchievementTier {
+  BRONZE            // Entry level
+  SILVER            // Intermediate
+  GOLD              // Advanced
+  PLATINUM          // Expert
+  DIAMOND           // Master
+  LEGENDARY         // Ultra rare
+}
+
 model ActivityLog {
-  id String @id @default(uuid())
+  id                String              @id @default(uuid())
 
-  userId   String?
-  user     User?     @relation("UserActivities", fields: [userId], references: [id], onDelete: SetNull)
-  userRole UserRole?
+  // Who
+  userId            String?
+  user              User?               @relation("UserActivities", fields: [userId], references: [id], onDelete: SetNull)
+  userRole          UserRole?
 
-  action       ActivityAction
-  resourceType ActivityResourceType
-  resourceId   String?
-  resourceName String?              @db.Text
+  // What
+  action            ActivityAction
+  resourceType      ActivityResourceType
+  resourceId        String?
+  resourceName      String?             @db.Text
 
-  description String? @db.Text
-  metadata    Json?
-  ipAddress   String?
-  userAgent   String? @db.Text
+  // Details
+  description       String?             @db.Text
+  metadata          Json?
+  ipAddress         String?
+  userAgent         String?             @db.Text
 
-  endpoint String?
+  // Context
+  endpoint          String?
 
-  success      Boolean @default(true)
-  errorMessage String? @db.Text
+  // Result
+  success           Boolean             @default(true)
+  errorMessage      String?             @db.Text
 
-  duration Int?
+  // Performance
+  duration          Int?                // ms
 
-  createdAt DateTime @default(now())
+  // Timestamp
+  createdAt         DateTime            @default(now())
 
   @@index([userId, createdAt(sort: Desc)])
   @@index([resourceType, resourceId, createdAt])
@@ -558,30 +920,36 @@ enum TicketStatus {
 }
 
 model SupportTicket {
-  id String @id @default(uuid())
+  id                String           @id @default(uuid())
 
-  userId    String
-  user      User   @relation("UserTickets", fields: [userId], references: [id], onDelete: Cascade)
-  userEmail String
-  userName  String
+  // User info
+  userId            String
+  user              User             @relation("UserTickets", fields: [userId], references: [id], onDelete: Cascade)
+  userEmail          String
+  userName           String
 
-  subject     String
-  description String         @db.Text
-  category    String
-  priority    TicketPriority @default(MEDIUM)
-  status      TicketStatus   @default(OPEN)
+  // Ticket details
+  subject           String
+  description       String           @db.Text
+  category          String           // e.g., 'technical', 'billing', 'feature', 'bug'
+  priority          TicketPriority   @default(MEDIUM)
+  status            TicketStatus     @default(OPEN)
 
-  assignedToId String?
-  assignedTo   User?   @relation("AssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull)
+  // Admin assignment
+  assignedToId      String?
+  assignedTo        User?            @relation("AssignedTickets", fields: [assignedToId], references: [id], onDelete: SetNull)
 
-  resolution String?   @db.Text
-  resolvedAt DateTime?
+  // Resolution
+  resolution        String?          @db.Text
+  resolvedAt        DateTime?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  closedAt  DateTime?
+  // Timestamps
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  closedAt          DateTime?
 
-  responses TicketResponse[]
+  // Relations
+  responses         TicketResponse[]
 
   @@index([userId, status, createdAt(sort: Desc)])
   @@index([status, priority, createdAt(sort: Desc)])
@@ -590,58 +958,63 @@ model SupportTicket {
 }
 
 model TicketResponse {
-  id String @id @default(uuid())
+  id                String           @id @default(uuid())
 
-  ticketId String
-  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId          String
+  ticket            SupportTicket    @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 
-  senderId    String
-  sender      User     @relation("TicketResponses", fields: [senderId], references: [id], onDelete: Cascade)
-  senderRole  UserRole @default(USER)
-  isFromAdmin Boolean  @default(false)
+  // Response info
+  senderId          String
+  sender            User             @relation("TicketResponses", fields: [senderId], references: [id], onDelete: Cascade)
+  senderRole        UserRole         @default(USER)
+  isFromAdmin       Boolean          @default(false)
 
-  message String @db.Text
+  message           String           @db.Text
 
-  attachments Json?
+  // Attachments (optional)
+  attachments       Json?            // Array of file URLs
 
-  createdAt DateTime @default(now())
+  createdAt         DateTime         @default(now())
 
   @@index([ticketId, createdAt(sort: Asc)])
   @@map("ticket_responses")
 }
 
+// FAQ for help center
 model FAQ {
-  id String @id @default(uuid())
+  id                String           @id @default(uuid())
 
-  question String
-  answer   String @db.Text
-  category String
-  order    Int    @default(0)
+  question          String
+  answer            String           @db.Text
+  category          String           // e.g., 'account', 'billing', 'marketplace', 'technical'
+  order             Int              @default(0)
 
-  isActive Boolean @default(true)
+  isActive          Boolean          @default(true)
 
-  views           Int @default(0)
-  helpfulCount    Int @default(0)
-  notHelpfulCount Int @default(0)
+  // Metadata
+  views             Int              @default(0)
+  helpfulCount      Int              @default(0)
+  notHelpfulCount   Int              @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   @@index([category, order])
   @@index([isActive])
   @@map("faqs")
 }
 
+// Legal content pages (Terms, Privacy, etc.)
 model LegalContent {
-  id              String           @id @default(uuid())
-  type            LegalContentType @unique
-  title           String
-  content         String           @db.Text
-  lastUpdatedById String
-  lastUpdatedBy   User             @relation("UserLegalContent", fields: [lastUpdatedById], references: [id])
-  effectiveDate   DateTime         @default(now())
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id                String           @id @default(uuid())
+  type              LegalContentType @unique
+  title             String
+  content           String           @db.Text  // Markdown content
+  lastUpdatedById   String
+  lastUpdatedBy     User             @relation("UserLegalContent", fields: [lastUpdatedById], references: [id])
+  effectiveDate     DateTime         @default(now())
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   @@index([type])
   @@map("legal_content")
@@ -659,14 +1032,15 @@ enum LegalContentType {
 // BLOG & COMMUNITY
 // ============================================================================
 
+// Blog Categories for organizing posts
 model BlogCategory {
-  id          String     @id @default(uuid())
-  name        String     @unique
-  slug        String     @unique
-  description String?    @db.Text
-  order       Int        @default(0)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          String      @id @default(uuid())
+  name        String      @unique
+  slug        String      @unique
+  description String?     @db.Text
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   posts       BlogPost[]
 
   @@index([slug])
@@ -674,42 +1048,44 @@ model BlogCategory {
   @@map("blog_categories")
 }
 
+// Blog Tags for flexible categorization
 model BlogTag {
-  id        String        @id @default(uuid())
-  name      String        @unique
-  slug      String        @unique
-  createdAt DateTime      @default(now())
+  id        String      @id @default(uuid())
+  name      String      @unique
+  slug      String      @unique
+  createdAt DateTime    @default(now())
   posts     BlogPostTag[]
 
   @@index([slug])
   @@map("blog_tags")
 }
 
+// Blog Posts - main content model
 model BlogPost {
-  id             String        @id @default(uuid())
-  title          String
-  slug           String        @unique
-  excerpt        String?       @db.Text
-  content        String        @db.Text
-  coverImage     String?
-  authorId       String
-  author         User          @relation("UserBlogPosts", fields: [authorId], references: [id], onDelete: Cascade)
-  categoryId     String?
-  category       BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  tags           BlogPostTag[]
-  comments       BlogComment[]
-  status         PostStatus    @default(DRAFT)
-  publishedAt    DateTime?
-  scheduledFor   DateTime?
-  seoTitle       String?
-  seoDescription String?
-  seoKeywords    String[]
-  featured       Boolean       @default(false)
-  allowComments  Boolean       @default(true)
-  viewCount      Int           @default(0)
-  readTime       Int?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id              String      @id @default(uuid())
+  title           String
+  slug            String      @unique
+  excerpt         String?     @db.Text
+  content         String      @db.Text
+  coverImage      String?
+  authorId        String
+  author          User        @relation("UserBlogPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId      String?
+  category        BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags            BlogPostTag[]
+  comments        BlogComment[]
+  status          PostStatus  @default(DRAFT)
+  publishedAt     DateTime?
+  scheduledFor    DateTime?
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String[]
+  featured        Boolean     @default(false)
+  allowComments   Boolean     @default(true)
+  viewCount       Int         @default(0)
+  readTime        Int?        // in minutes
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([slug])
   @@index([authorId])
@@ -720,11 +1096,12 @@ model BlogPost {
   @@map("blog_posts")
 }
 
+// Junction table for posts-tags many-to-many
 model BlogPostTag {
-  postId String
-  tagId  String
-  post   BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  tag    BlogTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  postId    String
+  tagId     String
+  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag       BlogTag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([postId, tagId])
   @@index([postId])
@@ -732,19 +1109,20 @@ model BlogPostTag {
   @@map("blog_post_tags")
 }
 
+// Blog Comments
 model BlogComment {
-  id        String        @id @default(uuid())
-  content   String        @db.Text
-  authorId  String
-  author    User          @relation("UserBlogComments", fields: [authorId], references: [id], onDelete: Cascade)
-  postId    String
-  post      BlogPost      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  parentId  String?
-  parent    BlogComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   BlogComment[] @relation("CommentReplies")
-  status    CommentStatus @default(APPROVED)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id          String        @id @default(uuid())
+  content     String        @db.Text
+  authorId    String
+  author      User          @relation("UserBlogComments", fields: [authorId], references: [id], onDelete: Cascade)
+  postId      String
+  post        BlogPost      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      BlogComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     BlogComment[] @relation("CommentReplies")
+  status      CommentStatus @default(APPROVED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([postId])
   @@index([authorId])

@@ -1,190 +1,177 @@
-# Next.js Admin Template
+<div align="center">
 
-A production-ready, feature-rich admin dashboard template built with Next.js 15, React 19, TypeScript, and shadcn/ui. Perfect for building modern web applications quickly.
+# Book Heaven
 
-![Dashboard Preview](public/dashboard.png)
+### AI-Powered Digital Library & Community Platform
+
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+</div>
+
+---
+
+## Overview
+
+**Book Heaven** is a modern, full-featured digital library platform that combines AI-powered book chat, mood-based recommendations, marketplace functionality, and community features in one cohesive application.
+
+Built with Next.js 16, TypeScript, and PostgreSQL, it provides a comprehensive solution for book management, AI-assisted reading, and community engagement.
+
+## Features
+
+- **AI-Powered Book Chat** - Context-aware conversations with RAG (Retrieval-Augmented Generation)
+- **Digital Library Management** - Support for eBooks, audiobooks, and hard copies
+- **Mood-Based Recommendations** - Personalized book suggestions based on your mood
+- **Quiz & Gamification** - Auto-generated questions, streaks, leaderboards, and achievements
+- **Marketplace** - Buy/sell books with real-time messaging and negotiation
+- **Subscription System** - Stripe-powered premium tiers
+- **Admin Dashboard** - Comprehensive analytics and management tools
 
 ## Quick Start
 
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL 15+
+- Redis 7+ (optional)
+
+### Installation
+
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/next-shadcn-admin.git
-cd next-shadcn-admin
+git clone https://github.com/yourusername/book-heaven.git
+cd book-heaven
 
 # Install dependencies
 npm install
 
 # Set up environment variables
-cp .env.example .env
+cp .env.example .env.local
+# Edit .env.local with your configuration
+
+# Generate Prisma Client
+npx prisma generate
 
 # Run database migrations
-npx prisma generate
-npx prisma db push
+npx prisma migrate deploy
 
 # Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
-
-## Features
-
-### Core Functionality
-- **Authentication** - Email-based registration with OTP verification
-- **User Management** - Admin-only user management with role assignments
-- **Blog System** - Full-featured blog with categories and tags
-- **Support Tickets** - Ticket-based support with WebSocket updates
-- **Notices** - Site-wide announcement system
-- **Email Campaigns** - Resend integration for emails
-- **Site Settings** - Dynamic configuration with caching
-- **Analytics** - Activity logging and dashboard statistics
-- **Stripe Integration** - Subscription management
-
-### UI/UX
-- Built with **shadcn/ui** and **Tailwind CSS**
-- Mobile-optimized with bottom navigation
-- Data tables with sorting and filtering
-- Form validation with Zod
-- Toast notifications
-- Skeleton loading states
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Documentation
 
-Complete documentation is available in the `/doc` folder:
+For detailed documentation, see the [docs/](docs/) folder:
 
-### Essential Reading
-- [Getting Started Guide](doc/getting-started.md) - Installation and setup
-- [Deployment Guide](doc/deployment.md) - Deploy to production
-- [Customization Guide](doc/customization.md) - Tailor to your needs
-- [Troubleshooting](doc/troubleshooting.md) - Common issues and solutions
+| Category | Documents |
+|----------|-----------|
+| **Getting Started** | [INDEX.md](docs/INDEX.md) • [SETUP.md](docs/SETUP.md) |
+| **Core Features** | [AI_CHAT.md](docs/AI_CHAT.md) • [MARKETPLACE.md](docs/MARKETPLACE.md) • [QUIZ_GAMIFICATION.md](docs/QUIZ_GAMIFICATION.md) • [MOOD_RECOMMENDATIONS.md](docs/MOOD_RECOMMENDATIONS.md) |
+| **Infrastructure** | [BOOK_CONTENT_EXTRACTION.md](docs/BOOK_CONTENT_EXTRACTION.md) • [SUBSCRIPTION_SETUP.md](docs/SUBSCRIPTION_SETUP.md) • [AUTH_README.md](docs/AUTH_README.md) |
+| **Admin** | [ADMIN_DASHBOARD.md](docs/ADMIN_DASHBOARD.md) |
 
-### Feature Documentation
-- [Authentication & Authorization](doc/features/authentication.md) - JWT auth and RBAC
-- [Blog Management](doc/features/blog-management.md) - Blog system
-- [Support Tickets](doc/features/support-tickets.md) - Ticket system
-- [Notices](doc/features/notices.md) - Announcement system
-- [Email Campaigns](doc/features/email-campaigns.md) - Email system
-- [Site Settings](doc/features/site-settings.md) - Configuration
-- [Stripe Integration](doc/features/stripe.md) - Payment processing
-
-## Tech Stack
-
-- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
-- **UI**: [React 19](https://react.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Components**: [shadcn/ui](https://ui.shadcn.com/)
-- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma](https://www.prisma.io/)
-- **Authentication**: Custom JWT-based system
-- **Email**: [Resend](https://resend.com/)
-- **Payments**: [Stripe](https://stripe.com/)
+**[View Full Documentation Index →](docs/INDEX.md)**
 
 ## Project Structure
 
 ```
-next-shadcn-admin/
-├── doc/                     # Documentation
+book-heaven/
 ├── prisma/
-│   └── schema.prisma       # Database schema
-├── public/                  # Static assets
+│   └── schema.prisma          # Database schema (40+ models)
+├── public/                    # Static assets
 ├── src/
-│   ├── app/                # Next.js app directory
-│   │   ├── (auth)/        # Auth routes
-│   │   ├── (dashboard)/   # Dashboard routes
-│   │   └── api/           # API routes
-│   ├── components/        # React components
-│   │   ├── ui/           # shadcn/ui components
-│   │   └── dashboard/    # Dashboard components
-│   ├── lib/              # Utility libraries
-│   └── config/           # Configuration files
-├── .env.example          # Environment variables template
-└── package.json         # Dependencies
+│   ├── app/                   # Next.js App Router
+│   │   ├── (auth)/           # Authentication routes
+│   │   ├── (dashboard)/      # Admin dashboard
+│   │   ├── (public)/         # Public pages
+│   │   └── api/              # API endpoints
+│   ├── components/           # React components
+│   ├── lib/                  # Business logic
+│   └── types/                # TypeScript types
+├── docs/                     # Documentation
+└── server.ts                 # WebSocket server
 ```
 
-## Environment Variables
+## Tech Stack
 
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/myapp"
+**Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS, Shadcn UI
 
-# Authentication
-JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
+**Backend:** Node.js, Next.js API Routes, Prisma ORM, PostgreSQL
 
-# Email (Resend)
-RESEND_API_KEY="your-resend-api-key"
-EMAIL_FROM="noreply@myapp.com"
+**Services:** Zhipu AI, Gemini AI, Stripe, Google Drive, Resend
 
-# Stripe (optional)
-STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
-STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_your_publishable_key"
+**Real-time:** Socket.io, Redis, BullMQ
 
-# Application
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
+## API Endpoints
 
-See `.env.example` for all available variables.
+### Authentication
+- `POST /api/auth/register/send-otp` - Send registration OTP
+- `POST /api/auth/register/verify-otp` - Verify OTP
+- `POST /api/auth/login` - Login
 
-## Default Credentials
+### Books
+- `GET /api/books` - List books with pagination
+- `GET /api/books/[id]` - Get book details
+- `POST /api/books/[id]/chat` - AI chat with book
 
-After setting up the application:
+### Marketplace
+- `GET /api/marketplace/posts` - Browse listings
+- `POST /api/marketplace/offers` - Make an offer
 
-```
-Email: admin@example.com
-Password: admin123
-```
-
-**Important**: Change these credentials in production!
-
-## Scripts
+## Development
 
 ```bash
-# Development
-npm run dev              # Start dev server
+# Development with Infisical (recommended)
+npm run dev
 
-# Building
-npm run build            # Build for production
-npm run start            # Start production server
+# Plain development (using .env.local)
+npm run dev:plain
 
-# Database
-npx prisma generate      # Generate Prisma Client
-npx prisma db push       # Push schema to database
-npx prisma studio        # Open Prisma Studio
-npx prisma migrate dev   # Create migration
+# WebSocket server (in separate terminal)
+npm run dev:ws
 
-# Linting
-npm run lint            # Run ESLint
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-## Role-Based Access Control
+## Database
 
-| Feature | USER | ADMIN | SUPER_ADMIN |
-|---------|------|-------|-------------|
-| View content | ✅ | ✅ | ✅ |
-| Create support tickets | ✅ | ✅ | ✅ |
-| Access dashboard | ❌ | ✅ | ✅ |
-| Manage blog posts | ❌ | ✅ | ✅ |
-| Manage users | ❌ | ❌ | ✅ |
-| Manage site settings | ❌ | ❌ | ✅ |
+The application uses PostgreSQL with Prisma ORM. The schema includes 40+ models covering:
 
-## Support
+- User management and authentication
+- Books, authors, categories, series
+- Marketplace and transactions
+- AI chat and embeddings
+- Analytics and activity logs
 
-- 📖 Read the [documentation](doc/)
-- 🐛 Report issues on [GitHub Issues](https://github.com/yourusername/next-shadcn-admin/issues)
-- 💬 Ask questions in [Discussions](https://github.com/yourusername/next-shadcn-admin/discussions)
+View the database with:
+```bash
+npx prisma studio
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+---
 
-Built with:
-- [Next.js](https://nextjs.org/)
-- [React](https://react.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Prisma](https://www.prisma.io/)
-- [Resend](https://resend.com/)
-- [Stripe](https://stripe.com/)
+<div align="center">
+
+**Built with ❤️ by the Book Heaven Team**
+
+</div>

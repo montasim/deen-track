@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { ROUTES } from '@/lib/routes/client-routes'
 
 // Define which routes to show in mobile nav using route keys
-const MOBILE_NAV_KEYS = ['home', 'blog', 'dashboard', 'settings'] as const
+const MOBILE_NAV_KEYS = ['settings'] as const
 
 export function MobileBottomNav() {
   const pathname = usePathname()

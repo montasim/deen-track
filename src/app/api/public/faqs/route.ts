@@ -11,9 +11,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category') || undefined
-    const limit = Number(searchParams.get('limit')) || undefined
 
-    const faqs = await getFaqs({ category, limit })
+    const faqs = await getFaqs(category)
 
     return NextResponse.json({
       success: true,

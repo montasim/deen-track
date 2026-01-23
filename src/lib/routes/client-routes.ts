@@ -1,21 +1,25 @@
 import {
-  Brain,
+  Bookmark,
   Settings,
   LayoutDashboard,
   User,
   MessageSquare,
+  ShoppingBag,
+  Plus,
   PenTool,
   Bell,
   Palette,
   Monitor,
   CreditCard,
-  FolderTree,
   Home,
   ShieldCheck,
   BarChart3,
   Inbox,
   FileText,
+  Hash,
+  List,
   Trophy,
+  Crown,
   HelpCircle,
   Info,
   Mail,
@@ -25,9 +29,9 @@ import {
   LogIn,
   UserPlus,
   Megaphone,
-  Sparkles,
-  ChevronRight,
+  Link2,
   Ticket,
+  Sparkles,
 } from 'lucide-react'
 import { AccessConfig, AccessLevel, RoleAccess } from '@/lib/auth/roles'
 
@@ -55,7 +59,7 @@ export const ROUTES = {
   premium: {
     label: 'Premium',
     href: '/premium',
-    icon: Trophy,
+    icon: Crown,
     access: RoleAccess.ALL,
   },
 
@@ -82,6 +86,12 @@ export const ROUTES = {
     icon: User,
     access: RoleAccess.AUTHENTICATED,
   },
+  settingsConnectedAccounts: {
+    label: 'Connected Accounts',
+    href: '/dashboard/settings/connected-accounts',
+    icon: Link2,
+    access: RoleAccess.AUTHENTICATED,
+  },
   settingsAppearance: {
     label: 'Appearance',
     href: '/dashboard/settings/appearance',
@@ -103,7 +113,7 @@ export const ROUTES = {
   settingsSubscription: {
     label: 'Subscription',
     href: '/dashboard/settings/subscription',
-    icon: Trophy,
+    icon: Crown,
     access: RoleAccess.AUTHENTICATED,
   },
   settingsDisplay: {
@@ -113,10 +123,26 @@ export const ROUTES = {
     access: RoleAccess.AUTHENTICATED,
   },
 
+  // Marketplace
+  marketplace: {
+    label: 'Items Marketplace',
+    href: '/dashboard/marketplace',
+    icon: ShoppingBag,
+    access: RoleAccess.AUTHENTICATED,
+  },
+
+  // Messages
+  messages: {
+    label: 'Messages',
+    href: '/dashboard/marketplace/messages',
+    icon: MessageSquare,
+    access: RoleAccess.AUTHENTICATED,
+  },
+
   // Activity
   dashboardActivity: {
     label: 'Activity',
-    href: '/dashboard/activity',
+    href: '/dashboard/settings/activity',
     icon: BarChart3,
     access: RoleAccess.AUTHENTICATED,
   },
@@ -201,6 +227,40 @@ export const ROUTES = {
     access: RoleAccess.ALL,
   },
 
+  // Marketplace Routes
+  marketplacePosts: {
+    label: 'My Posts',
+    href: '/dashboard/marketplace/posts',
+    icon: ShoppingBag,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  marketplaceConversations: {
+    label: 'Conversations',
+    href: '/dashboard/marketplace/conversations',
+    icon: MessageSquare,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  marketplaceAnalytics: {
+    label: 'Analytics',
+    href: '/dashboard/marketplace/analytics',
+    icon: BarChart3,
+    access: RoleAccess.AUTHENTICATED,
+  },
+
+  // Marketplace (public URLs)
+  offersSent: {
+    label: 'My Offers',
+    href: '/offers/sent',
+    icon: List,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  offersReceived: {
+    label: 'Received Offers',
+    href: '/offers/received',
+    icon: Inbox,
+    access: RoleAccess.AUTHENTICATED,
+  },
+
   // Site Settings
   siteSettings: {
     label: 'Site Settings',
@@ -219,7 +279,7 @@ export const ROUTES = {
   pricing: {
     label: 'Pricing',
     href: '/pricing',
-    icon: Trophy,
+    icon: Crown,
     access: RoleAccess.ALL,
   },
 
@@ -277,6 +337,34 @@ export const ROUTES = {
     href: '/dashboard/admin/content',
     icon: Sparkles,
     access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Marketplace Management
+  marketplaceMyPosts: {
+    label: 'My Listings',
+    href: '/marketplace/my-posts',
+    icon: ShoppingBag,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  dashboardMarketplace: {
+    label: 'Marketplace Overview',
+    href: '/dashboard/marketplace',
+    icon: LayoutDashboard,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  dashboardMarketplaceReviews: {
+    label: 'Reviews',
+    href: '/dashboard/marketplace/reviews',
+    icon: Trophy,
+    access: RoleAccess.AUTHENTICATED,
+  },
+
+  // Achievements
+  achievements: {
+    label: 'Achievements',
+    href: '/achievements',
+    icon: Trophy,
+    access: RoleAccess.AUTHENTICATED,
   },
 
   // Blog Routes

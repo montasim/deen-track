@@ -10,7 +10,7 @@ import { getSiteSettings } from '@/lib/cache/site-settings'
  */
 export async function getSiteName(): Promise<string> {
   const settings = await getSiteSettings()
-  return settings.siteName || 'My App'
+  return settings.siteName || 'Book Heaven'
 }
 
 /**
@@ -47,9 +47,9 @@ export async function getSEOMetadata(): Promise<{
 }> {
   const settings = await getSiteSettings()
   return {
-    title: settings.seoTitle || 'My App - A Modern Next.js Application',
-    description: settings.seoDescription || 'A modern, production-ready application built with Next.js, React, and TypeScript.',
-    keywords: settings.seoKeywords || 'nextjs, react, typescript, web application, modern web',
+    title: settings.seoTitle || 'Book Heaven - AI-Powered Digital Library',
+    description: settings.seoDescription || 'Discover, read, and interact with books using AI-powered features. Chat with books, generate summaries, and explore a vast digital library.',
+    keywords: settings.seoKeywords || 'digital library, AI chat, ebooks, audiobooks, reading, book recommendations, online library',
   }
 }
 
@@ -66,7 +66,7 @@ export async function getOGImage(): Promise<string | null> {
  */
 export async function getSupportEmail(): Promise<string> {
   const settings = await getSiteSettings()
-  return settings.supportEmail || 'support@myapp.com'
+  return settings.supportEmail || 'support@bookheaven.com'
 }
 
 /**
@@ -74,7 +74,7 @@ export async function getSupportEmail(): Promise<string> {
  */
 export async function getContactEmail(): Promise<string> {
   const settings = await getSiteSettings()
-  return settings.contactEmail || settings.supportEmail || 'contact@myapp.com'
+  return settings.contactEmail || settings.supportEmail || 'contact@bookheaven.com'
 }
 
 /**
@@ -108,7 +108,7 @@ export async function getBrandingInfo(): Promise<{
 }> {
   const settings = await getSiteSettings()
   return {
-    siteName: settings.siteName || 'My App',
+    siteName: settings.siteName || 'Book Heaven',
     siteSlogan: settings.siteSlogan || '',
     logoUrl: settings.directLogoUrl || settings.logoUrl || '/logo.svg',
     faviconUrl: settings.directFaviconUrl || settings.faviconUrl || '/favicon.ico',

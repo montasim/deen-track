@@ -11,7 +11,7 @@ interface Props {
 export default function AuthLayout({ children }: Props) {
   const pathname = usePathname()
   const isSignIn2 = pathname === '/auth/sign-in-2'
-  const [siteName, setSiteName] = useState('My App Admin')
+  const [siteName, setSiteName] = useState('Book Heaven Admin')
 
   useEffect(() => {
     // Fetch site name from public API

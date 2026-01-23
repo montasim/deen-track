@@ -1,6 +1,6 @@
 /**
  * Site settings cache manager
- * Provides in-memory caching for site-wide settings
+ * Provides in-memory caching with Redis fallback for site-wide settings
  */
 
 import { prisma } from '@/lib/prisma'
@@ -33,7 +33,7 @@ export async function getSiteSettings() {
     console.log('[Site Settings Cache] No settings found, creating defaults')
     const newSettings = await prisma.systemSettings.create({
       data: {
-        siteName: 'My App',
+        siteName: 'Book Heaven',
       },
     })
     settingsCache = newSettings
@@ -43,7 +43,7 @@ export async function getSiteSettings() {
       console.log('[Site Settings Cache] siteName missing, updating...')
       const updated = await prisma.systemSettings.update({
         where: { id: settings.id },
-        data: { siteName: 'My App' },
+        data: { siteName: 'Book Heaven' },
       })
       settingsCache = updated
     } else {
@@ -53,12 +53,23 @@ export async function getSiteSettings() {
 
   cacheTimestamp = now
 
+  // Also cache in Redis if available
+  if (process.env.REDIS_HOST) {
+    try {
+      const { setCache } = await import('./redis')
+      await setCache('site:settings:default', settingsCache, 300) // 5 minutes
+      console.log('[Site Settings Cache] Cached in Redis')
+    } catch (error) {
+      console.error('[Site Settings Cache] Failed to cache in Redis:', error)
+    }
+  }
+
   return settingsCache
 }
 
 /**
  * Invalidate settings cache
- * Clears in-memory cache
+ * Clears both in-memory cache and Redis cache
  */
 export async function invalidateSiteSettingsCache(): Promise<void> {
   console.log('[Site Settings Cache] Invalidating cache')
@@ -66,6 +77,17 @@ export async function invalidateSiteSettingsCache(): Promise<void> {
   // Clear in-memory cache
   settingsCache = null
   cacheTimestamp = 0
+
+  // Clear Redis cache if available
+  if (process.env.REDIS_HOST) {
+    try {
+      const { deleteCache } = await import('./redis')
+      await deleteCache('site:settings:*')
+      console.log('[Site Settings Cache] Redis cache cleared')
+    } catch (error) {
+      console.error('[Site Settings Cache] Failed to clear Redis cache:', error)
+    }
+  }
 }
 
 /**
@@ -73,7 +95,7 @@ export async function invalidateSiteSettingsCache(): Promise<void> {
  */
 export async function getSiteName(): Promise<string> {
   const settings = await getSiteSettings()
-  return settings.siteName || 'My App'
+  return settings.siteName || 'Book Heaven'
 }
 
 /**

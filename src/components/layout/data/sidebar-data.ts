@@ -1,16 +1,32 @@
 import {
+  IconBuildingStore,
+  IconTag,
+} from '@tabler/icons-react'
+import {
     AudioWaveform,
+    BookOpen,
     Brain,
     GalleryVerticalEnd,
     LayoutDashboard,
     Activity,
+    Layers,
+    PenTool,
+    ShoppingBag,
+    HandCoins,
+    TrendingUp,
     Construction,
     FileText,
     Megaphone,
     Bell,
+    BarChart3,
     MessageSquare,
+    Star,
+    FileQuestion,
+    Smile,
     Users,
     Trophy,
+    Library,
+    ShieldBan,
     HelpCircle,
     Mail,
     Clock,
@@ -19,8 +35,9 @@ import {
     Receipt,
     Palette,
     Monitor,
+    Link2,
 } from 'lucide-react'
-import { type SidebarData } from '../types'
+import { type SidebarData, UserRole } from '../types'
 import { ROUTES } from '@/lib/routes/client-routes'
 
 export const sidebarData: SidebarData = {
@@ -31,9 +48,9 @@ export const sidebarData: SidebarData = {
   },
   teams: [
     {
-      name: 'My App',
-      logo: GalleryVerticalEnd,
-      plan: 'Admin',
+      name: 'My Library',
+      logo: BookOpen,
+      plan: 'Digital Library',
     },
     {
       name: 'Acme Inc',
@@ -78,11 +95,6 @@ export const sidebarData: SidebarData = {
           title: 'Site Settings',
           url: ROUTES.siteSettings.href,
           icon: Construction,
-        },
-        {
-          title: 'Blog Posts',
-          url: ROUTES.dashboardBlog.href,
-          icon: FileText,
         },
         {
           title: 'Pricing Content',
@@ -160,6 +172,45 @@ export const sidebarData: SidebarData = {
     },
 
     // ============================================================================
+    // MARKETPLACE - Admin & Super Admin only
+    // ============================================================================
+    {
+      title: 'Marketplace',
+      roles: ['ADMIN', 'SUPER_ADMIN'],
+      items: [
+        {
+          title: 'Overview',
+          url: ROUTES.dashboardMarketplace.href,
+          icon: LayoutDashboard,
+        },
+        {
+          title: 'Conversations',
+          url: ROUTES.marketplaceConversations.href,
+          icon: MessageSquare,
+        },
+        {
+          title: 'Reviews',
+          url: ROUTES.dashboardMarketplaceReviews.href,
+          icon: Star,
+        },
+      ],
+    },
+
+    // ============================================================================
+    // PERSONAL - All roles (except Moods which is admin only)
+    // ============================================================================
+    {
+      title: 'Personal',
+      items: [
+        {
+          title: 'Achievements',
+          url: ROUTES.achievements.href,
+          icon: Trophy,
+        },
+      ],
+    },
+
+    // ============================================================================
     // SETTINGS - All roles
     // ============================================================================
     {
@@ -178,6 +229,11 @@ export const sidebarData: SidebarData = {
               title: 'Account',
               url: ROUTES.settingsAccount.href,
               icon: Wrench,
+            },
+            {
+              title: 'Connected Accounts',
+              url: ROUTES.settingsConnectedAccounts.href,
+              icon: Link2,
             },
             {
               title: 'Subscription',
@@ -204,12 +260,12 @@ export const sidebarData: SidebarData = {
               url: ROUTES.settingsDisplay.href,
               icon: Monitor,
             },
+            {
+              title: 'Activity',
+              url: ROUTES.dashboardActivity.href,
+              icon: Clock,
+            },
           ],
-        },
-        {
-          title: 'My Activity',
-          url: ROUTES.dashboardActivity.href,
-          icon: Clock,
         },
       ],
     },

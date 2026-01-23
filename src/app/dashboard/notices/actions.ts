@@ -74,7 +74,7 @@ export async function getNotices(): Promise<Notice[]> {
         order: notice.order,
         entryDate: notice.createdAt.toISOString(),
         entryBy: entryByName,
-        entryById: notice.entryBy?.id,
+        entryById: notice.entryById,
         createdAt: notice.createdAt.toISOString(),
         updatedAt: notice.updatedAt.toISOString(),
       }
@@ -113,7 +113,7 @@ export async function getNoticeById(id: string): Promise<Notice> {
       order: notice.order,
       entryDate: notice.createdAt.toISOString(),
       entryBy: entryByName,
-      entryById: notice.entryBy?.id,
+      entryById: notice.entryById,
       createdAt: notice.createdAt.toISOString(),
       updatedAt: notice.updatedAt.toISOString(),
     }
@@ -143,11 +143,7 @@ export async function createNotice(data: CreateNoticeData) {
       ...validatedData,
       validFrom,
       validTo,
-      entryBy: {
-        connect: {
-          id: session.userId,
-        },
-      },
+      entryById: session.userId,
     })
 
     // Log notice creation activity (non-blocking)

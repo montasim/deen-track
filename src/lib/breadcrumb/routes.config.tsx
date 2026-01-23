@@ -3,23 +3,35 @@
 import type { LucideIcon, Icon } from 'lucide-react'
 import {
   Home,
+  BookOpen,
   Users,
   Settings,
+  Library,
   PenTool,
   MessageSquare,
+  Brain,
   Bell,
   Palette,
   Monitor,
   User,
   CreditCard,
   LayoutDashboard,
+  FolderTree,
+  ShoppingBag,
+  Sparkles,
   FileText,
+  Hash,
+  List,
   Trophy,
-  BarChart3,
-  FolderOpen,
+  Target,
   ShieldCheck,
-  HelpCircle,
-  Mail,
+  Globe,
+  BarChart3,
+  RefreshCw,
+  FolderOpen,
+  Inbox,
+  Upload,
+  BookMarked,
 } from 'lucide-react'
 
 export interface BreadcrumbRoute {
@@ -38,11 +50,95 @@ export const breadcrumbRoutes: BreadcrumbRoute[] = [
     icon: Home,
   },
 
+  // Books
+  {
+    path: '/books',
+    name: 'Browse Books',
+    icon: BookOpen,
+    parent: '/',
+  },
+  {
+    path: '/books/[id]',
+    name: 'Book Details',
+    icon: BookOpen,
+    parent: '/books',
+  },
+
+  // Authors
+  {
+    path: '/authors/[id]',
+    name: 'Author',
+    icon: Users,
+    parent: '/',
+  },
+
+  // Categories
+  {
+    path: '/categories/[id]',
+    name: 'Category',
+    icon: FolderTree,
+    parent: '/',
+  },
+
+  // Publications
+  {
+    path: '/publications/[id]',
+    name: 'Publication',
+    icon: FileText,
+    parent: '/',
+  },
+
+  // Quiz
+  {
+    path: '/quiz/leaderboard',
+    name: 'Leaderboard',
+    icon: Trophy,
+    parent: '/',
+  },
+
   // Premium
   {
     path: '/premium',
     name: 'Premium',
-    icon: Trophy,
+    icon: Sparkles,
+    parent: '/',
+  },
+
+  // User Routes
+  {
+    path: '/library',
+    name: 'My Library',
+    icon: Library,
+    parent: '/',
+  },
+  {
+    path: '/library/my-uploads',
+    name: 'My Uploads',
+    icon: Upload,
+    parent: '/library',
+  },
+  {
+    path: '/library/my-requests',
+    name: 'My Requests',
+    icon: Inbox,
+    parent: '/library',
+  },
+  {
+    path: '/library/bookshelves',
+    name: 'My Bookshelves',
+    icon: BookMarked,
+    parent: '/library',
+  },
+  {
+    path: '/user-reader/[id]',
+    name: 'Read Book',
+    icon: BookOpen,
+    parent: '/library',
+  },
+  {
+    path: '/quiz',
+    name: 'Quiz',
+    icon: Brain,
     parent: '/',
   },
 
@@ -51,7 +147,61 @@ export const breadcrumbRoutes: BreadcrumbRoute[] = [
     path: '/dashboard',
     name: 'Dashboard',
     icon: LayoutDashboard,
-    hidden: true,
+    hidden: true, // Hidden as it's the dashboard home
+  },
+  {
+    path: '/dashboard/books',
+    name: 'Books',
+    icon: BookOpen,
+    parent: '/dashboard',
+  },
+  {
+    path: '/dashboard/books/[id]',
+    name: 'Book Details',
+    icon: BookOpen,
+    parent: '/dashboard/books',
+  },
+  {
+    path: '/dashboard/authors',
+    name: 'Authors',
+    icon: Users,
+    parent: '/dashboard',
+  },
+  {
+    path: '/dashboard/authors/[id]',
+    name: 'Author Details',
+    icon: Users,
+    parent: '/dashboard/authors',
+  },
+  {
+    path: '/dashboard/categories',
+    name: 'Categories',
+    icon: FolderTree,
+    parent: '/dashboard',
+  },
+  {
+    path: '/dashboard/categories/[id]',
+    name: 'Category Details',
+    icon: FolderTree,
+    parent: '/dashboard/categories',
+  },
+  {
+    path: '/dashboard/publications',
+    name: 'Publications',
+    icon: FileText,
+    parent: '/dashboard',
+  },
+  {
+    path: '/dashboard/publications/[id]',
+    name: 'Publication Details',
+    icon: FileText,
+    parent: '/dashboard/publications',
+  },
+  {
+    path: '/dashboard/book-requests',
+    name: 'Book Requests',
+    icon: Inbox,
+    parent: '/dashboard',
   },
   {
     path: '/dashboard/users',
@@ -66,6 +216,12 @@ export const breadcrumbRoutes: BreadcrumbRoute[] = [
     parent: '/dashboard/users',
   },
   {
+    path: '/dashboard/moods',
+    name: 'Moods',
+    icon: Sparkles,
+    parent: '/dashboard',
+  },
+  {
     path: '/dashboard/notices',
     name: 'Notices',
     icon: Bell,
@@ -78,46 +234,22 @@ export const breadcrumbRoutes: BreadcrumbRoute[] = [
     parent: '/dashboard',
   },
   {
-    path: '/dashboard/support-tickets',
-    name: 'Support Tickets',
+    path: '/dashboard/chats',
+    name: 'Chat History',
     icon: MessageSquare,
     parent: '/dashboard',
   },
   {
-    path: '/dashboard/campaigns',
-    name: 'Campaigns',
-    icon: Mail,
+    path: '/dashboard/tasks',
+    name: 'Tasks',
+    icon: BarChart3,
     parent: '/dashboard',
   },
   {
-    path: '/dashboard/help-center/faqs',
-    name: 'Help Center FAQs',
-    icon: HelpCircle,
+    path: '/dashboard/seed-moods',
+    name: 'Seed Moods',
+    icon: RefreshCw,
     parent: '/dashboard',
-  },
-  {
-    path: '/dashboard/legal',
-    name: 'Legal Content',
-    icon: FileText,
-    parent: '/dashboard',
-  },
-  {
-    path: '/dashboard/admin/content',
-    name: 'Pricing Content',
-    icon: FileText,
-    parent: '/dashboard',
-  },
-  {
-    path: '/dashboard/blog',
-    name: 'Blog Posts',
-    icon: FileText,
-    parent: '/dashboard',
-  },
-  {
-    path: '/dashboard/blog/comments',
-    name: 'Blog Comments',
-    icon: MessageSquare,
-    parent: '/dashboard/blog',
   },
 
   // Settings Routes
@@ -158,46 +290,6 @@ export const breadcrumbRoutes: BreadcrumbRoute[] = [
     parent: '/settings',
   },
 
-  // Blog Routes
-  {
-    path: '/blog',
-    name: 'Blog',
-    icon: FileText,
-    parent: '/',
-  },
-  {
-    path: '/blog/[slug]',
-    name: 'Blog Post',
-    icon: FileText,
-    parent: '/blog',
-  },
-
-  // Support Routes
-  {
-    path: '/help-center',
-    name: 'Help Center',
-    icon: HelpCircle,
-    parent: '/',
-  },
-  {
-    path: '/about',
-    name: 'About Us',
-    icon: FileText,
-    parent: '/',
-  },
-  {
-    path: '/contact',
-    name: 'Contact',
-    icon: Mail,
-    parent: '/',
-  },
-  {
-    path: '/pricing',
-    name: 'Pricing',
-    icon: Trophy,
-    parent: '/',
-  },
-
   // Auth Routes (hidden from breadcrumbs)
   {
     path: '/auth/sign-in',
@@ -223,7 +315,7 @@ export const breadcrumbRoutes: BreadcrumbRoute[] = [
 
 /**
  * Convert a dynamic route path to match a specific URL
- * e.g., "/blog/[slug]" -> "/blog/my-post"
+ * e.g., "/books/[id]" -> "/books/123"
  */
 export function matchDynamicRoute(routePath: string, url: string): boolean {
   const routeSegments = routePath.split('/')
@@ -237,7 +329,7 @@ export function matchDynamicRoute(routePath: string, url: string): boolean {
     const routeSegment = routeSegments[i]
     const urlSegment = urlSegments[i]
 
-    // If route segment is a dynamic parameter (e.g., [id], [slug])
+    // If route segment is a dynamic parameter (e.g., [id])
     if (routeSegment.startsWith('[') && routeSegment.endsWith(']')) {
       continue // Skip, this is a match
     }
@@ -291,7 +383,7 @@ export function getBreadcrumbTrail(url: string): BreadcrumbRoute[] {
 
 /**
  * Get route name with dynamic parameter values
- * e.g., "Blog Post" with slug "my-post" -> "Blog Post: my-post"
+ * e.g., "Book Details" with ID "123" -> "Book Details #123"
  */
 export function getRouteDisplayName(route: BreadcrumbRoute, url: string): string {
   // Extract dynamic parameters from URL
@@ -306,9 +398,9 @@ export function getRouteDisplayName(route: BreadcrumbRoute, url: string): string
       const paramName = routeSegment.slice(1, -1)
       const paramValue = urlSegments[i]
 
-      // Add parameter value to display name
-      if (paramValue && (paramName === 'id' || paramName === 'slug')) {
-        displayName = `${displayName}: ${paramValue}`
+      // Add parameter value to display name if it's an ID
+      if (paramName === 'id' && paramValue) {
+        displayName = `${displayName} #${paramValue.slice(0, 8)}`
       }
     }
   }

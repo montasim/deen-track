@@ -1,109 +1,87 @@
 import { prisma } from '@/lib/prisma'
-import type { Notice, Prisma } from '@prisma/client'
 
-export type NoticeWithEntryBy = Prisma.NoticeGetPayload<{
-  include: {
-    entryBy: {
-      select: {
-        id: true
-        name: true
-        email: true
-        firstName: true
-        lastName: true
-      }
-    }
-  }
-}>
-
-/**
- * Get all notices
- */
-export async function getNotices(params?: {
-  skip?: number
-  take?: number
+export interface NoticeFilters {
   includeInactive?: boolean
-  where?: Prisma.NoticeWhereInput
-  orderBy?: Prisma.NoticeOrderByWithRelationInput
-}): Promise<{ notices: NoticeWithEntryBy[]; total: number }> {
-  const { skip = 0, take = 100, includeInactive = false, where, orderBy } = params || {}
+}
 
-  const whereClause: Prisma.NoticeWhereInput = {
-    ...where,
-    ...(includeInactive ? {} : { isActive: true }),
-  }
+export interface GetNoticesResult {
+  notices: Array<{
+    id: string
+    title: string
+    content: string
+    isActive: boolean
+    validFrom: Date | null
+    validTo: Date | null
+    order: number
+    entryById: string
+    entryBy: {
+      id: string
+      firstName: string | null
+      lastName: string | null
+      email: string
+    } | null
+    createdAt: Date
+    updatedAt: Date
+  }>
+  total: number
+}
+
+export async function getNotices(filters: NoticeFilters = {}): Promise<GetNoticesResult> {
+  const { includeInactive = false } = filters
 
   const [notices, total] = await Promise.all([
     prisma.notice.findMany({
-      skip,
-      take,
-      where: whereClause,
-      orderBy: orderBy || { order: 'asc' },
+      where: includeInactive ? undefined : { isActive: true },
       include: {
         entryBy: {
           select: {
             id: true,
-            name: true,
-            email: true,
             firstName: true,
             lastName: true,
+            email: true,
           },
         },
       },
+      orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     }),
-    prisma.notice.count({ where: whereClause }),
+    prisma.notice.count({
+      where: includeInactive ? undefined : { isActive: true },
+    }),
   ])
 
-  return { notices: notices as NoticeWithEntryBy[], total }
+  return { notices, total }
 }
 
-/**
- * Get notice by ID
- */
-export async function getNoticeById(id: string): Promise<NoticeWithEntryBy | null> {
+export async function getNoticeById(id: string) {
   return prisma.notice.findUnique({
     where: { id },
     include: {
       entryBy: {
         select: {
           id: true,
-          name: true,
-          email: true,
           firstName: true,
           lastName: true,
+          email: true,
         },
       },
     },
-  }) as Promise<NoticeWithEntryBy | null>
+  })
 }
 
-/**
- * Get active notices (for public display)
- */
-export async function getActiveNotices(): Promise<Array<{
-  id: string
-  title: string
-  content: string
-  order: number
-}>> {
+export async function getActiveNotices() {
   const now = new Date()
 
   return prisma.notice.findMany({
     where: {
       isActive: true,
       OR: [
-        { validFrom: null },
-        { validFrom: { lte: now } },
-      ],
-      AND: [
-        {
-          OR: [
-            { validTo: null },
-            { validTo: { gte: now } },
-          ],
-        },
+        { validFrom: null, validTo: null },
+        { validFrom: { lte: now }, validTo: null },
+        { validFrom: null, validTo: { gte: now } },
+        { validFrom: { lte: now }, validTo: { gte: now } },
       ],
     },
-    orderBy: { order: 'asc' },
+    orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     select: {
       id: true,
       title: true,
@@ -113,63 +91,49 @@ export async function getActiveNotices(): Promise<Array<{
   })
 }
 
-/**
- * Count notices
- */
-export async function countNotices(where?: Prisma.NoticeWhereInput): Promise<number> {
-  return prisma.notice.count({ where })
+export interface CreateNoticeData {
+  title: string
+  content: string
+  isActive: boolean
+  validFrom: Date | null
+  validTo: Date | null
+  order: number
+  entryById: string
 }
 
-/**
- * Create notice
- */
-export async function createNotice(
-  data: Prisma.NoticeCreateInput
-): Promise<NoticeWithEntryBy> {
+export async function createNotice(data: CreateNoticeData) {
   return prisma.notice.create({
     data,
     include: {
       entryBy: {
         select: {
           id: true,
-          name: true,
-          email: true,
           firstName: true,
           lastName: true,
+          email: true,
         },
       },
     },
-  }) as Promise<NoticeWithEntryBy>
+  })
 }
 
-/**
- * Update notice
- */
-export async function updateNotice(
-  id: string,
-  data: Prisma.NoticeUpdateInput
-): Promise<NoticeWithEntryBy> {
+export interface UpdateNoticeData {
+  title?: string
+  content?: string
+  isActive?: boolean
+  validFrom?: Date | null
+  validTo?: Date | null
+  order?: number
+}
+
+export async function updateNotice(id: string, data: UpdateNoticeData) {
   return prisma.notice.update({
     where: { id },
     data,
-    include: {
-      entryBy: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-        },
-      },
-    },
-  }) as Promise<NoticeWithEntryBy>
+  })
 }
 
-/**
- * Delete notice
- */
-export async function deleteNotice(id: string): Promise<Notice> {
+export async function deleteNotice(id: string) {
   return prisma.notice.delete({
     where: { id },
   })

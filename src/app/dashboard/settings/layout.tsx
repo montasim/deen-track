@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { IconBrowserCheck, IconNotification, IconPalette, IconTool, IconUser, IconCreditCard, IconReceipt } from '@tabler/icons-react'
+import { IconBrowserCheck, IconNotification, IconPalette, IconTool, IconUser, IconCreditCard, IconReceipt, IconActivity, IconLink } from '@tabler/icons-react'
 import { Separator } from '@/components/ui/separator'
 import SidebarNav from './components/sidebar-nav'
 
@@ -15,6 +15,11 @@ const sidebarNavItems = [
     title: 'Account',
     icon: <IconTool size={18} />,
     href: '/dashboard/settings/account',
+  },
+  {
+    title: 'Connected Accounts',
+    icon: <IconLink size={18} />,
+    href: '/dashboard/settings/connected-accounts',
   },
   {
     title: 'Subscription',
@@ -41,6 +46,11 @@ const sidebarNavItems = [
     icon: <IconBrowserCheck size={18} />,
     href: '/dashboard/settings/display',
   },
+  {
+    title: 'Activity',
+    icon: <IconActivity size={18} />,
+    href: '/dashboard/settings/activity',
+  },
 ]
 
 export default function SettingsLayout({
@@ -65,7 +75,7 @@ export default function SettingsLayout({
         <aside className='top-0 lg:sticky lg:w-1/5'>
           <SidebarNav items={sidebarNavItems} />
         </aside>
-        <div className='flex w-full p-1 pr-4 overflow-y-hidden'>
+        <div className='flex w-full p-1 pr-4 overflow-y-auto'>
           {children}
         </div>
       </div>

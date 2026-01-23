@@ -44,8 +44,8 @@ const BASE_URL = config.baseUrl || 'http://localhost:3000'
  * Modern, clean design with responsive layout
  */
 function emailTemplateWrapper(content: string, previewText?: string, appName?: string, supportEmail?: string): string {
-  const siteName = appName || 'My App'
-  const support = supportEmail || 'support@myapp.com'
+  const siteName = appName || 'Book Heaven'
+  const support = supportEmail || 'support@bookheaven.com'
 
   return `
 <!DOCTYPE html>

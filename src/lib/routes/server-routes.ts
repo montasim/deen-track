@@ -27,6 +27,42 @@ export const API_ROUTES: Record<string, ServerRoute> = {
   // ============================================================================
   // PUBLIC API ROUTES
   // ============================================================================
+  booksPublic: {
+    path: '/api/books',
+    methods: ['GET'],
+    description: 'Get public books list',
+    access: RoleAccess.ALL,
+  },
+  bookByIdPublic: {
+    path: '/api/books/*',
+    methods: ['GET'],
+    description: 'Get book by ID (public access)',
+    access: RoleAccess.ALL,
+  },
+  categoriesPublic: {
+    path: '/api/categories',
+    methods: ['GET'],
+    description: 'Get categories list',
+    access: RoleAccess.ALL,
+  },
+  authorsPublic: {
+    path: '/api/authors',
+    methods: ['GET'],
+    description: 'Get authors list',
+    access: RoleAccess.ALL,
+  },
+  seriesPublic: {
+    path: '/api/series',
+    methods: ['GET'],
+    description: 'Get series list',
+    access: RoleAccess.ALL,
+  },
+  publicationsPublic: {
+    path: '/api/publications',
+    methods: ['GET'],
+    description: 'Get publications list',
+    access: RoleAccess.ALL,
+  },
   blogPublic: {
     path: '/api/blog',
     methods: ['GET'],
@@ -102,6 +138,28 @@ export const API_ROUTES: Record<string, ServerRoute> = {
     access: RoleAccess.AUTHENTICATED,
   },
 
+  // ============================================================================
+  // USER LIBRARY ROUTES
+  // ============================================================================
+  userBookshelves: {
+    path: '/api/bookshelves',
+    methods: ['GET', 'POST'],
+    description: 'Get or create user bookshelves',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  userBookshelfById: {
+    path: '/api/bookshelves/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete user bookshelf',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  userProgress: {
+    path: '/api/user/progress',
+    methods: ['GET', 'POST', 'PATCH'],
+    description: 'Get or update reading progress',
+    access: RoleAccess.AUTHENTICATED,
+  },
+
   // User Blog Routes (AUTHENTICATED - users manage their own blogs)
   userBlogs: {
     path: '/api/user/blog',
@@ -116,10 +174,59 @@ export const API_ROUTES: Record<string, ServerRoute> = {
     access: RoleAccess.AUTHENTICATED,
   },
 
-  userSupportTickets: {
-    path: '/api/user/support-tickets',
+  // ============================================================================
+  // MARKETPLACE ROUTES (AUTHENTICATED)
+  // ============================================================================
+  marketplaceListings: {
+    path: '/api/marketplace/listings',
     methods: ['GET', 'POST'],
-    description: 'Get or create support tickets',
+    description: 'Get or create marketplace listings',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  marketplaceListingById: {
+    path: '/api/marketplace/listings/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete marketplace listing',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  marketplaceOffers: {
+    path: '/api/marketplace/offers',
+    methods: ['GET', 'POST'],
+    description: 'Get or create marketplace offers',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  marketplaceOfferById: {
+    path: '/api/marketplace/offers/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete marketplace offer',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  marketplaceMessages: {
+    path: '/api/marketplace/messages',
+    methods: ['GET', 'POST'],
+    description: 'Get or send marketplace messages',
+    access: RoleAccess.AUTHENTICATED,
+  },
+
+  // ============================================================================
+  // BORROW/LOAN ROUTES (AUTHENTICATED)
+  // ============================================================================
+  borrowRequest: {
+    path: '/api/borrow/request',
+    methods: ['POST'],
+    description: 'Request to borrow a book',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  borrowMyLoans: {
+    path: '/api/borrow/my-loans',
+    methods: ['GET'],
+    description: 'Get user borrowed books',
+    access: RoleAccess.AUTHENTICATED,
+  },
+  borrowReturn: {
+    path: '/api/borrow/return/*',
+    methods: ['POST'],
+    description: 'Return a borrowed book',
     access: RoleAccess.AUTHENTICATED,
   },
 
@@ -152,6 +259,76 @@ export const API_ROUTES: Record<string, ServerRoute> = {
     access: RoleAccess.ADMIN_ONLY,
   },
 
+  // Book Management
+  adminBooks: {
+    path: '/api/admin/books',
+    methods: ['GET', 'POST'],
+    description: 'Get or create books',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminBookById: {
+    path: '/api/admin/books/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete book by ID',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Category Management
+  adminCategories: {
+    path: '/api/admin/categories',
+    methods: ['GET', 'POST'],
+    description: 'Get or create categories',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminCategoryById: {
+    path: '/api/admin/categories/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete category by ID',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Author Management
+  adminAuthors: {
+    path: '/api/admin/authors',
+    methods: ['GET', 'POST'],
+    description: 'Get or create authors',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminAuthorById: {
+    path: '/api/admin/authors/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete author by ID',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Series Management
+  adminSeries: {
+    path: '/api/admin/series',
+    methods: ['GET', 'POST'],
+    description: 'Get or create series',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminSeriesById: {
+    path: '/api/admin/series/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete series by ID',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Publication Management
+  adminPublications: {
+    path: '/api/admin/publications',
+    methods: ['GET', 'POST'],
+    description: 'Get or create publications',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminPublicationById: {
+    path: '/api/admin/publications/*',
+    methods: ['GET', 'PATCH', 'DELETE'],
+    description: 'Get, update, or delete publication by ID',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
   // Blog Management
   adminBlog: {
     path: '/api/admin/blog',
@@ -169,6 +346,32 @@ export const API_ROUTES: Record<string, ServerRoute> = {
     path: '/api/admin/blog/comments',
     methods: ['GET', 'DELETE'],
     description: 'Get or delete blog comments',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Borrow Management
+  adminBorrowRequests: {
+    path: '/api/admin/borrow/requests',
+    methods: ['GET'],
+    description: 'Get all borrow requests',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminBorrowApprove: {
+    path: '/api/admin/borrow/approve/*',
+    methods: ['POST'],
+    description: 'Approve borrow request',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminBorrowReject: {
+    path: '/api/admin/borrow/reject/*',
+    methods: ['POST'],
+    description: 'Reject borrow request',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminLoans: {
+    path: '/api/admin/borrow/loans',
+    methods: ['GET'],
+    description: 'Get all loans',
     access: RoleAccess.ADMIN_ONLY,
   },
 
@@ -243,6 +446,12 @@ export const API_ROUTES: Record<string, ServerRoute> = {
     path: '/api/admin/analytics',
     methods: ['GET'],
     description: 'Get analytics data',
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminBooksCostAnalytics: {
+    path: '/api/admin/analytics/books-cost',
+    methods: ['GET'],
+    description: 'Get books cost analytics',
     access: RoleAccess.ADMIN_ONLY,
   },
 

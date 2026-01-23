@@ -372,6 +372,7 @@ export const fileUploadSchema = z.object({
 
 export const updateDisplaySettingsSchema = z.object({
   itemsPerPage: z.coerce.number().int().min(5).max(100).optional(),
+  showMoodRecommendations: z.boolean().optional(),
   defaultViewMode: z.enum(['grid', 'list']).optional()
 })
 

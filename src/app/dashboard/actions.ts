@@ -19,10 +19,10 @@ export async function getOverviewData() {
     const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
     const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59)
 
-    // Count activity logs in this month as a proxy for activity
-    const activities = await prisma.activityLog.count({
+    // Count itemSellPost views in this month
+    const views = await prisma.itemSellPostView.count({
       where: {
-        createdAt: {
+        visitedAt: {
           gte: startOfMonth,
           lte: endOfMonth,
         },
@@ -30,7 +30,7 @@ export async function getOverviewData() {
     })
 
     months.push(monthName)
-    data.push(activities)
+    data.push(views)
   }
 
   return months.map((name, i) => ({ name, total: data[i] }))
@@ -43,13 +43,11 @@ export async function getOverviewData() {
 export interface AnalyticsData {
   totalViews: number
   uniqueVisitors: number
-  topContent: Array<{ id: string; name: string; views: number }>
+  topContent: Array<{ id: string; title: string; views: number }>
+  activityByType: Array<{ type: string; count: number }>
+  totalBlogPosts: number
+  totalAchievementsUnlocked: number
   viewsOverTime: Array<{ date: string; views: number }>
-  userEngagement: {
-    totalUsers: number
-    activeUsers: number
-    totalBlogPosts: number
-  }
 }
 
 export async function getAnalyticsData(): Promise<AnalyticsData> {
@@ -59,167 +57,82 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
   const [
     totalViews,
     uniqueVisitors,
-    topBlogPosts,
+    topSellPosts,
+    activityByType,
+    totalBlogPosts,
+    totalAchievements,
     viewsOverTime,
-    userStats,
   ] = await Promise.all([
-    // Total activity logs in last 30 days as proxy for views
-    prisma.activityLog.count({
-      where: { createdAt: { gte: thirtyDaysAgo } },
+    // Total views in last 30 days (from itemSellPostView)
+    prisma.itemSellPostView.count({
+      where: { visitedAt: { gte: thirtyDaysAgo } },
     }),
 
-    // Unique users from activity logs
-    prisma.activityLog.groupBy({
+    // Unique visitors
+    prisma.itemSellPostView.groupBy({
       by: ['userId'],
-      where: { createdAt: { gte: thirtyDaysAgo }, userId: { not: null } },
+      where: { visitedAt: { gte: thirtyDaysAgo }, userId: { not: null } },
     }).then(groups => groups.length),
 
-    // Top blog posts (using published posts as proxy)
-    Promise.resolve([] as Array<{ id: string; name: string; views: number }>),
+    // Top viewed marketplace posts
+    prisma.itemSellPostView.groupBy({
+      by: ['sellPostId'],
+      where: { visitedAt: { gte: thirtyDaysAgo } },
+      _count: { sellPostId: true },
+      orderBy: { _count: { sellPostId: 'desc' } },
+      take: 5,
+    }).then(async (groups) => {
+      const posts = await prisma.itemSellPost.findMany({
+        where: { id: { in: groups.map(g => g.sellPostId) } },
+        select: { id: true, title: true },
+      })
+      return groups.map(g => ({
+        id: g.sellPostId,
+        title: posts.find(p => p.id === g.sellPostId)?.title || 'Unknown',
+        views: g._count.sellPostId,
+      }))
+    }),
 
-    // Activity over time (last 30 days)
-    prisma.activityLog.findMany({
+    // Activity by type (from activity logs)
+    prisma.activityLog.groupBy({
+      by: ['resourceType'],
       where: { createdAt: { gte: thirtyDaysAgo } },
-      select: { createdAt: true },
-    }).then(activities => {
+      _count: { resourceType: true },
+      orderBy: { _count: { resourceType: 'desc' } },
+      take: 5,
+    }).then(groups => groups.map(g => ({
+      type: g.resourceType,
+      count: g._count.resourceType,
+    }))),
+
+    // Total blog posts
+    prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
+
+    // Total achievements unlocked
+    prisma.userAchievement.count(),
+
+    // Views over time (last 30 days)
+    prisma.itemSellPostView.findMany({
+      where: { visitedAt: { gte: thirtyDaysAgo } },
+      select: { visitedAt: true },
+    }).then(views => {
       const dailyViews = new Map<string, number>()
-      activities.forEach(a => {
-        const date = a.createdAt.toISOString().split('T')[0]
+      views.forEach(v => {
+        const date = v.visitedAt.toISOString().split('T')[0]
         dailyViews.set(date, (dailyViews.get(date) || 0) + 1)
       })
       return Array.from(dailyViews.entries()).map(([date, views]) => ({ date, views }))
     }),
-
-    // User engagement stats
-    Promise.all([
-      prisma.user.count({ where: { isActive: true } }),
-      prisma.user.count({
-        where: {
-          isActive: true,
-          createdAt: { gte: thirtyDaysAgo },
-        },
-      }),
-      prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
-    ]).then(([totalUsers, activeUsers, totalBlogPosts]) => ({
-      totalUsers,
-      activeUsers,
-      totalBlogPosts,
-    })),
   ])
 
   return {
     totalViews,
     uniqueVisitors,
-    topContent: topBlogPosts,
+    topContent: topSellPosts,
+    activityByType,
+    totalBlogPosts,
+    totalAchievementsUnlocked: totalAchievements,
     viewsOverTime,
-    userEngagement: userStats,
-  }
-}
-
-// ============================================================================
-// REPORTS DATA
-// ============================================================================
-
-export interface ReportData {
-  activityByAction: Array<{ action: string; count: number }>
-  activityByResource: Array<{ resourceType: string; count: number }>
-  userActivity: Array<{ action: string; count: number }>
-  systemHealth: {
-    totalUsers: number
-    totalBlogPosts: number
-    totalSupportTickets: number
-    totalActivityLogs: number
-  }
-}
-
-export async function getReportData(): Promise<ReportData> {
-  const [
-    activityByAction,
-    activityByResource,
-    userActivity,
-    systemHealth,
-  ] = await Promise.all([
-    // Activity by action
-    prisma.activityLog.groupBy({
-      by: ['action'],
-      _count: { action: true },
-    }).then(groups => groups.map(g => ({ action: g.action, count: g._count.action }))),
-
-    // Activity by resource type
-    prisma.activityLog.groupBy({
-      by: ['resourceType'],
-      _count: { resourceType: true },
-    }).then(groups => groups.map(g => ({ resourceType: g.resourceType, count: g._count.resourceType }))),
-
-    // Recent user activity (last 7 days)
-    prisma.activityLog.groupBy({
-      by: ['action'],
-      where: { createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
-      _count: { action: true },
-      orderBy: { _count: { action: 'desc' } },
-      take: 10,
-    }).then(groups => groups.map(g => ({ action: g.action, count: g._count.action }))),
-
-    // System health
-    Promise.all([
-      prisma.user.count({ where: { isActive: true } }),
-      prisma.blogPost.count(),
-      prisma.supportTicket.count(),
-      prisma.activityLog.count(),
-    ]).then(([totalUsers, totalBlogPosts, totalSupportTickets, totalActivityLogs]) => ({
-      totalUsers,
-      totalBlogPosts,
-      totalSupportTickets,
-      totalActivityLogs,
-    })),
-  ])
-
-  return {
-    activityByAction,
-    activityByResource,
-    userActivity,
-    systemHealth,
-  }
-}
-
-// ============================================================================
-// NOTIFICATIONS DATA
-// ============================================================================
-
-export interface NotificationData {
-  unread: number
-  notifications: Array<{
-    id: string
-    type: 'info' | 'warning' | 'success' | 'error'
-    title: string
-    message: string
-    createdAt: Date
-  }>
-}
-
-export async function getNotificationData(): Promise<NotificationData> {
-  const notifications = await prisma.notification.findMany({
-    take: 20,
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      type: true,
-      title: true,
-      message: true,
-      isRead: true,
-      createdAt: true,
-    },
-  })
-
-  return {
-    unread: notifications.filter(n => !n.isRead).length,
-    notifications: notifications.map(n => ({
-      id: n.id,
-      type: n.type.toLowerCase() as any,
-      title: n.title,
-      message: n.message.substring(0, 200) + (n.message.length > 200 ? '...' : ''),
-      createdAt: n.createdAt,
-    })),
   }
 }
 
@@ -229,13 +142,13 @@ export async function getNotificationData(): Promise<NotificationData> {
 
 export interface AdminDashboardStats {
   totalUsers: number
-  totalBlogPosts: number
   totalViews: number
-  totalSupportTickets: number
-  blogPostsThisMonth: number
+  totalMarketplacePosts: number
+  activeSupportTickets: number
+  pendingSupportTickets: number
   usersThisMonth: number
   viewsThisMonth: number
-  openTickets: number
+  marketplacePostsThisMonth: number
 }
 
 export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
@@ -244,51 +157,50 @@ export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
 
   const [
     totalUsers,
-    totalBlogPosts,
-    totalSupportTickets,
-    openTickets,
-    blogPostsThisMonth,
-    usersThisMonth,
     totalViews,
+    totalMarketplacePosts,
+    activeSupportTickets,
+    pendingSupportTickets,
+    usersThisMonth,
+    viewsThisMonth,
+    marketplacePostsThisMonth,
   ] = await Promise.all([
-    // Total counts
+    // Total users
     prisma.user.count({ where: { isActive: true } }),
-    prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
-    prisma.supportTicket.count(),
+
+    // Total marketplace views
+    prisma.itemSellPostView.count(),
+
+    // Total marketplace posts
+    prisma.itemSellPost.count(),
+
+    // Active support tickets
+    prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
+
+    // Pending support tickets
     prisma.supportTicket.count({ where: { status: 'OPEN' } }),
 
     // This month stats
-    prisma.blogPost.count({
-      where: {
-        status: 'PUBLISHED',
-        createdAt: { gte: startOfMonth },
-      },
-    }),
-    prisma.user.count({
-      where: { createdAt: { gte: startOfMonth }, isActive: true },
-    }),
-
-    // Activity logs as proxy for views
-    prisma.activityLog.count({
-      where: { createdAt: { gte: startOfMonth } },
-    }),
+    prisma.user.count({ where: { createdAt: { gte: startOfMonth }, isActive: true } }),
+    prisma.itemSellPostView.count({ where: { visitedAt: { gte: startOfMonth } } }),
+    prisma.itemSellPost.count({ where: { createdAt: { gte: startOfMonth } } }),
   ])
 
   return {
     totalUsers,
-    totalBlogPosts,
     totalViews,
-    totalSupportTickets,
-    blogPostsThisMonth,
+    totalMarketplacePosts,
+    activeSupportTickets,
+    pendingSupportTickets,
     usersThisMonth,
-    viewsThisMonth: totalViews,
-    openTickets,
+    viewsThisMonth,
+    marketplacePostsThisMonth,
   }
 }
 
 export interface RecentActivity {
   id: string
-  type: 'user' | 'blog' | 'ticket' | 'system'
+  type: 'marketplace' | 'blog' | 'user' | 'support' | 'view'
   action: string
   description: string
   createdAt: Date
@@ -302,161 +214,153 @@ export async function getRecentActivity(limit: number = 10): Promise<RecentActiv
   const activities: RecentActivity[] = []
 
   try {
-    // Get recent activity logs
-    const recentLogs = await prisma.activityLog.findMany({
-      take: limit,
+    // Get recent marketplace posts
+    const recentPosts = await prisma.itemSellPost.findMany({
+      take: 4,
       orderBy: { createdAt: 'desc' },
-      include: {
-        user: {
-          select: {
-            name: true,
-            avatar: true,
-            directAvatarUrl: true,
-          },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        seller: {
+          select: { name: true, avatar: true, directAvatarUrl: true },
         },
       },
     })
 
-    for (const log of recentLogs) {
-      let type: RecentActivity['type'] = 'system'
-      if (log.resourceType === 'BLOG_POST' || log.resourceType === 'BLOG_COMMENT') {
-        type = 'blog'
-      } else if (log.resourceType === 'USER') {
-        type = 'user'
-      } else if (log.resourceType === 'TICKET') {
-        type = 'ticket'
-      }
-
+    for (const post of recentPosts) {
       activities.push({
-        id: `activity-${log.id}`,
-        type,
-        action: log.action,
-        description: log.description || log.resourceName || `${log.action} on ${log.resourceType}`,
-        createdAt: log.createdAt,
-        user: log.user ? {
-          name: log.user.name,
-          avatar: log.user.directAvatarUrl || log.user.avatar,
+        id: `post-${post.id}`,
+        type: 'marketplace',
+        action: 'Marketplace Post Created',
+        description: `New marketplace post "${post.title}" was added`,
+        createdAt: post.createdAt,
+        user: post.seller ? {
+          name: post.seller.name,
+          avatar: post.seller.directAvatarUrl || post.seller.avatar,
         } : null,
       })
     }
 
-    return activities.slice(0, limit)
+    // Get recent blog posts
+    const recentBlogs = await prisma.blogPost.findMany({
+      take: 4,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        author: {
+          select: { name: true, avatar: true, directAvatarUrl: true },
+        },
+      },
+    })
+
+    for (const blog of recentBlogs) {
+      activities.push({
+        id: `blog-${blog.id}`,
+        type: 'blog',
+        action: 'Blog Post Published',
+        description: `Blog post "${blog.title}" was published`,
+        createdAt: blog.createdAt,
+        user: blog.author ? {
+          name: blog.author.name,
+          avatar: blog.author.directAvatarUrl || blog.author.avatar,
+        } : null,
+      })
+    }
+
+    // Get recent users
+    const recentUsers = await prisma.user.findMany({
+      take: 4,
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+      },
+    })
+
+    for (const user of recentUsers) {
+      activities.push({
+        id: `user-${user.id}`,
+        type: 'user',
+        action: 'New User',
+        description: `User "${user.name}" joined`,
+        createdAt: user.createdAt,
+        user: null,
+      })
+    }
+
+    // Get recent support tickets
+    const recentTickets = await prisma.supportTicket.findMany({
+      take: 4,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        subject: true,
+        status: true,
+        createdAt: true,
+        user: {
+          select: { name: true, avatar: true, directAvatarUrl: true },
+        },
+      },
+    })
+
+    for (const ticket of recentTickets) {
+      activities.push({
+        id: `ticket-${ticket.id}`,
+        type: 'support',
+        action: `Support Ticket ${ticket.status}`,
+        description: `"${ticket.subject}" - ${ticket.status}`,
+        createdAt: ticket.createdAt,
+        user: ticket.user ? {
+          name: ticket.user.name,
+          avatar: ticket.user.directAvatarUrl || ticket.user.avatar,
+        } : null,
+      })
+    }
+
+    // Get recent marketplace views
+    const recentViews = await prisma.itemSellPostView.findMany({
+      take: 4,
+      orderBy: { visitedAt: 'desc' },
+      select: {
+        id: true,
+        visitedAt: true,
+        sellPostId: true,
+        userId: true,
+      },
+    })
+
+    // Get post names for the views
+    const postIds = [...new Set(recentViews.map(v => v.sellPostId))]
+    const posts = await prisma.itemSellPost.findMany({
+      where: { id: { in: postIds } },
+      select: { id: true, title: true },
+    })
+
+    for (const view of recentViews) {
+      const post = posts.find(p => p.id === view.sellPostId)
+      if (!post) continue
+
+      activities.push({
+        id: `view-${view.id}`,
+        type: 'view',
+        action: 'Marketplace Viewed',
+        description: `"${post.title}" was viewed`,
+        createdAt: view.visitedAt,
+        user: null,
+      })
+    }
+
+    // Sort by date and limit
+    return activities
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, limit)
   } catch (error) {
     console.error('Error fetching recent activity:', error)
     return []
   }
-}
-
-// ============================================================================
-// USER DASHBOARD STATS
-// ============================================================================
-
-export interface UserDashboardStats {
-  totalBlogPosts: number
-  totalUsers: number
-  totalSupportTickets: number
-  yourTickets: number
-  openTickets: number
-}
-
-export async function getUserDashboardStats(userId: string): Promise<UserDashboardStats> {
-  const [
-    totalBlogPosts,
-    totalUsers,
-    yourTickets,
-    openTickets,
-  ] = await Promise.all([
-    // Total public blog posts available
-    prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
-
-    // Total active users
-    prisma.user.count({ where: { isActive: true } }),
-
-    // User's support tickets
-    prisma.supportTicket.count({ where: { userId } }),
-
-    // Open tickets
-    prisma.supportTicket.count({ where: { status: 'OPEN' } }),
-  ])
-
-  const totalSupportTickets = await prisma.supportTicket.count()
-
-  return {
-    totalBlogPosts,
-    totalUsers,
-    totalSupportTickets,
-    yourTickets,
-    openTickets,
-  }
-}
-
-export interface RecentlyViewedContent {
-  id: string
-  title: string
-  type: 'blog' | 'faq'
-  lastViewedAt: Date
-}
-
-export async function getRecentlyViewedContent(userId: string, limit: number = 5) {
-  // Get recent activity logs for this user related to viewing content
-  const recentActivities = await prisma.activityLog.findMany({
-    where: {
-      userId,
-      action: 'VIEW',
-      resourceType: { in: ['BLOG_POST', 'FAQ'] },
-    },
-    orderBy: { createdAt: 'desc' },
-    take: limit,
-    select: {
-      id: true,
-      resourceId: true,
-      resourceType: true,
-      createdAt: true,
-      resourceName: true,
-    },
-  })
-
-  return recentActivities
-    .map(activity => ({
-      id: activity.resourceId || activity.id,
-      title: activity.resourceName || activity.resourceType,
-      type: activity.resourceType === 'BLOG_POST' ? ('blog' as const) : ('faq' as const),
-      lastViewedAt: activity.createdAt,
-    }))
-    .slice(0, limit)
-}
-
-export interface PopularContent {
-  id: string
-  title: string
-  type: 'blog' | 'faq'
-  viewCount: number
-}
-
-export async function getPopularContent(limit: number = 6) {
-  // Get most viewed content from activity logs
-  const popularContent = await prisma.activityLog.groupBy({
-    by: ['resourceId', 'resourceType'],
-    where: {
-      action: 'VIEW',
-      resourceId: { not: null },
-      resourceType: { in: ['BLOG_POST', 'FAQ'] },
-    },
-    _count: true,
-    orderBy: { _count: { resourceId: 'desc' } },
-    take: limit,
-  })
-
-  return popularContent.map(item => ({
-    id: item.resourceId || '',
-    title: `${item.resourceType}`,
-    type: item.resourceType === 'BLOG_POST' ? ('blog' as const) : ('faq' as const),
-    viewCount: item._count,
-  }))
-}
-
-// Legacy export for RecentSales component
-export async function getRecentSales() {
-  // Return empty array for now - this component is not used in the dashboard
-  return []
 }
