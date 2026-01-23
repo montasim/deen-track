@@ -1,8 +1,8 @@
 <div align="center">
 
-# Book Heaven
+# Next.js Admin Template
 
-### AI-Powered Digital Library & Community Platform
+### Modern, Full-Featured Admin Dashboard Template
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -15,19 +15,39 @@
 
 ## Overview
 
-**Book Heaven** is a modern, full-featured digital library platform that combines AI-powered book chat, mood-based recommendations, marketplace functionality, and community features in one cohesive application.
+**Next.js Admin Template** is a comprehensive, production-ready admin dashboard template built with modern technologies. It provides a complete foundation for building web applications with authentication, user management, content management, marketplace functionality, and more.
 
-Built with Next.js 16, TypeScript, and PostgreSQL, it provides a comprehensive solution for book management, AI-assisted reading, and community engagement.
+Built with Next.js 16, TypeScript, and PostgreSQL, this template offers a solid architecture with extensive features to accelerate your development.
 
 ## Features
 
-- **AI-Powered Book Chat** - Context-aware conversations with RAG (Retrieval-Augmented Generation)
-- **Digital Library Management** - Support for eBooks, audiobooks, and hard copies
-- **Mood-Based Recommendations** - Personalized book suggestions based on your mood
-- **Quiz & Gamification** - Auto-generated questions, streaks, leaderboards, and achievements
-- **Marketplace** - Buy/sell books with real-time messaging and negotiation
+### Core Functionality
+- **Authentication System** - OTP-based registration, secure sessions, password reset
+- **User Management** - Role-based access control, permissions, user profiles
+- **Dashboard Analytics** - Comprehensive analytics and reporting tools
+- **Activity Logging** - Track user actions and system events
+- **Settings Management** - User preferences, notifications, appearance settings
+
+### Content Management
+- **Blog System** - Create, edit, and manage blog posts with markdown support
+- **Help Center** - FAQ management and documentation pages
+- **Legal Pages** - Privacy policy, terms of service management
+- **Notices** - Announcements and system notifications
+- **Campaigns** - Marketing campaign management
+
+### Advanced Features
+- **Marketplace** - Product listings, offers, messaging, and reviews
+- **Support Tickets** - Customer support system with ticket management
 - **Subscription System** - Stripe-powered premium tiers
-- **Admin Dashboard** - Comprehensive analytics and management tools
+- **Multi-tenancy** - Site-wide settings and configuration
+- **OAuth Integration** - Support for external authentication providers
+
+### UI/UX
+- **Shadcn UI Components** - Beautiful, accessible component library
+- **Dark Mode** - Theme switching with user preference persistence
+- **Responsive Design** - Mobile-first approach with tailwind CSS
+- **Real-time Updates** - WebSocket support for live features
+- **Data Tables** - Sortable, filterable tables with pagination
 
 ## Quick Start
 
@@ -35,14 +55,14 @@ Built with Next.js 16, TypeScript, and PostgreSQL, it provides a comprehensive s
 
 - Node.js 18+
 - PostgreSQL 15+
-- Redis 7+ (optional)
+- Redis 7+ (optional, for caching and queues)
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/book-heaven.git
-cd book-heaven
+git clone https://github.com/yourusername/next-shadcn-admin.git
+cd next-shadcn-admin
 
 # Install dependencies
 npm install
@@ -70,27 +90,34 @@ For detailed documentation, see the [docs/](docs/) folder:
 | Category | Documents |
 |----------|-----------|
 | **Getting Started** | [INDEX.md](docs/INDEX.md) • [SETUP.md](docs/SETUP.md) |
-| **Core Features** | [AI_CHAT.md](docs/AI_CHAT.md) • [MARKETPLACE.md](docs/MARKETPLACE.md) • [QUIZ_GAMIFICATION.md](docs/QUIZ_GAMIFICATION.md) • [MOOD_RECOMMENDATIONS.md](docs/MOOD_RECOMMENDATIONS.md) |
-| **Infrastructure** | [BOOK_CONTENT_EXTRACTION.md](docs/BOOK_CONTENT_EXTRACTION.md) • [SUBSCRIPTION_SETUP.md](docs/SUBSCRIPTION_SETUP.md) • [AUTH_README.md](docs/AUTH_README.md) |
-| **Admin** | [ADMIN_DASHBOARD.md](docs/ADMIN_DASHBOARD.md) |
+| **Authentication** | [AUTH_README.md](docs/AUTH_README.md) • [REFRESH_TOKENS.md](docs/REFRESH_TOKENS.md) |
+| **Features** | [MARKETPLACE.md](docs/MARKETPLACE.md) • [ADMIN_DASHBOARD.md](docs/ADMIN_DASHBOARD.md) |
+| **Infrastructure** | [SUBSCRIPTION_SETUP.md](docs/SUBSCRIPTION_SETUP.md) |
 
 **[View Full Documentation Index →](docs/INDEX.md)**
 
 ## Project Structure
 
 ```
-book-heaven/
+next-shadcn-admin/
 ├── prisma/
 │   └── schema.prisma          # Database schema (40+ models)
 ├── public/                    # Static assets
 ├── src/
 │   ├── app/                   # Next.js App Router
 │   │   ├── (auth)/           # Authentication routes
-│   │   ├── (dashboard)/      # Admin dashboard
 │   │   ├── (public)/         # Public pages
+│   │   ├── (user)/           # User pages
+│   │   ├── dashboard/        # Dashboard routes
 │   │   └── api/              # API endpoints
 │   ├── components/           # React components
+│   │   ├── ui/              # Shadcn UI base components
+│   │   ├── dashboard/       # Dashboard-specific components
+│   │   └── auth/            # Authentication components
 │   ├── lib/                  # Business logic
+│   │   ├── auth/            # Authentication services
+│   │   ├── db/              # Database utilities
+│   │   └── utils/           # Helper functions
 │   └── types/                # TypeScript types
 ├── docs/                     # Documentation
 └── server.ts                 # WebSocket server
@@ -98,13 +125,44 @@ book-heaven/
 
 ## Tech Stack
 
-**Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS, Shadcn UI
+**Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS, Shadcn UI, TanStack Query
 
 **Backend:** Node.js, Next.js API Routes, Prisma ORM, PostgreSQL
 
-**Services:** Zhipu AI, Gemini AI, Stripe, Google Drive, Resend
+**Services:** Stripe, Resend, Firebase (optional OAuth providers)
 
 **Real-time:** Socket.io, Redis, BullMQ
+
+**UI Components:** Radix UI primitives, Lucide Icons, Recharts, React Hook Form
+
+## Pages & Routes
+
+### Public Pages
+- `/` - Landing page
+- `/about` - About page
+- `/blog` - Blog listing
+- `/blog/[slug]` - Blog post details
+- `/contact` - Contact form
+- `/help-center` - Help center
+- `/pricing` - Pricing plans
+- `/notices` - System notices
+- `/privacy` - Privacy policy
+- `/terms` - Terms of service
+
+### Authentication
+- `/auth/sign-in` - Sign in
+- `/sign-up` - Sign up
+- `/otp` - OTP verification
+- `/forgot-password` - Password reset
+
+### Dashboard
+- `/dashboard` - Main dashboard
+- `/dashboard/users` - User management
+- `/dashboard/activities` - Activity logs
+- `/dashboard/blog` - Blog management
+- `/dashboard/marketplace` - Marketplace
+- `/dashboard/settings` - User settings
+- `/dashboard/support-tickets` - Support system
 
 ## API Endpoints
 
@@ -112,15 +170,25 @@ book-heaven/
 - `POST /api/auth/register/send-otp` - Send registration OTP
 - `POST /api/auth/register/verify-otp` - Verify OTP
 - `POST /api/auth/login` - Login
+- `POST /api/auth/logout` - Logout
+- `POST /api/auth/refresh` - Refresh access token
 
-### Books
-- `GET /api/books` - List books with pagination
-- `GET /api/books/[id]` - Get book details
-- `POST /api/books/[id]/chat` - AI chat with book
+### Users
+- `GET /api/users` - List users
+- `GET /api/users/[id]` - Get user details
+- `PUT /api/users/[id]` - Update user
+- `DELETE /api/users/[id]` - Delete user
+
+### Content
+- `GET /api/blog` - List blog posts
+- `POST /api/blog` - Create blog post
+- `PUT /api/blog/[id]` - Update blog post
+- `DELETE /api/blog/[id]` - Delete blog post
 
 ### Marketplace
 - `GET /api/marketplace/posts` - Browse listings
 - `POST /api/marketplace/offers` - Make an offer
+- `GET /api/marketplace/conversations` - Get conversations
 
 ## Development
 
@@ -146,15 +214,26 @@ npm start
 The application uses PostgreSQL with Prisma ORM. The schema includes 40+ models covering:
 
 - User management and authentication
-- Books, authors, categories, series
+- Content management (blog, help center, legal pages)
 - Marketplace and transactions
-- AI chat and embeddings
-- Analytics and activity logs
+- Activity logging and analytics
+- Support tickets and campaigns
+- Settings and configuration
 
 View the database with:
 ```bash
 npx prisma studio
 ```
+
+## Customization
+
+This template is designed to be easily customizable:
+
+1. **Branding** - Update logos, colors, and site name in settings
+2. **Features** - Enable/disable features in `.env` configuration
+3. **Components** - Use the included Shadcn UI components as building blocks
+4. **Database** - Extend the Prisma schema for your specific needs
+5. **API Routes** - Add or modify API endpoints in `/src/app/api`
 
 ## Contributing
 
@@ -172,6 +251,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Built with ❤️ by the Book Heaven Team**
+**Built with ❤️ using Next.js and Shadcn UI**
 
 </div>
