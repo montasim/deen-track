@@ -1,544 +1,481 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { BookOpen, ArrowRight, Star, Menu, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  MessageSquare,
+  BarChart3,
+  Zap,
+  Shield,
+  ArrowRight,
+  Check,
+  Code,
+  Database,
+  Palette,
+  Globe,
+  CreditCard,
+  Mail,
+  Megaphone,
+  Trophy,
+  Ticket,
+  Bell,
+  Lock,
+  Sparkles,
+  TrendingUp,
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
 
-interface LandingData {
-  statistics: {
-    totalBooks: number
-    totalUsers: number
-    totalCategories: number
-    totalAuthors: number
-    totalPublications: number
-    activeReaders: number
-    premiumBooks: number
-    recentBooksCount: number
-  }
-  featuredBooks: Array<{
-    id: string
-    name: string
-    image: string | null
-    directImageUrl: string | null
-    readersCount: number
-    authors: Array<{ name: string }>
-  }>
-  popularCategories: Array<{
-    id: string
-    name: string
-    bookCount: number
-  }>
-  recentBooks: Array<{
-    id: string
-    name: string
-    image: string | null
-    directImageUrl: string | null
-    authors: Array<{ name: string }>
-  }>
-}
+// Feature categories based on schema analysis
+const featureCategories = [
+  {
+    title: 'Authentication',
+    icon: Lock,
+    description: 'Enterprise-grade auth system',
+    items: ['JWT sessions (access + refresh tokens)', 'OTP-based verification', 'Role-based access (User/Admin/Super Admin)', 'Social OAuth (Google, GitHub)', 'Session management with IP tracking'],
+    gradient: 'from-violet-500 to-purple-600',
+    bgColor: 'bg-violet-500/10',
+  },
+  {
+    title: 'Marketplace',
+    icon: TrendingUp,
+    description: 'Complete marketplace engine',
+    items: ['Item listings with images & pricing', 'Offer negotiation system', 'Real-time messaging (WebSocket)', 'Seller reviews & ratings', 'View analytics & tracking'],
+    gradient: 'from-cyan-500 to-blue-600',
+    bgColor: 'bg-cyan-500/10',
+  },
+  {
+    title: 'User Management',
+    icon: Users,
+    description: 'Comprehensive user system',
+    items: ['Rich profiles with avatars & bios', 'Custom themes, fonts & languages', 'Notification preferences', 'Premium subscription status', 'Activity tracking'],
+    gradient: 'from-blue-500 to-indigo-600',
+    bgColor: 'bg-blue-500/10',
+  },
+  {
+    title: 'Content & Blog',
+    icon: FileText,
+    description: 'Full CMS capabilities',
+    items: ['Blog posts with categories & tags', 'Rich text editor (Markdown)', 'SEO optimization', 'Nested comments system', 'Scheduled publishing'],
+    gradient: 'from-emerald-500 to-teal-600',
+    bgColor: 'bg-emerald-500/10',
+  },
+  {
+    title: 'Campaign System',
+    icon: Megaphone,
+    description: 'Email campaign automation',
+    items: ['One-time & recurring campaigns', 'Role-based targeting', 'Delivery analytics (open/click rates)', 'Unsubscribe tracking', 'Cron-based scheduling'],
+    gradient: 'from-orange-500 to-amber-600',
+    bgColor: 'bg-orange-500/10',
+  },
+  {
+    title: 'Support System',
+    icon: Ticket,
+    description: 'Complete ticket management',
+    items: ['Priority levels (Low to Urgent)', 'Admin assignment workflow', 'Ticket responses with attachments', 'FAQ system with analytics', 'Status tracking'],
+    gradient: 'from-pink-500 to-rose-600',
+    bgColor: 'bg-pink-500/10',
+  },
+  {
+    title: 'Achievements',
+    icon: Trophy,
+    description: 'Gamification engine',
+    items: ['6 achievement tiers (Bronze to Legendary)', 'Category-based system', 'XP rewards', 'Progress tracking', 'Unlock analytics'],
+    gradient: 'from-yellow-500 to-orange-600',
+    bgColor: 'bg-yellow-500/10',
+  },
+  {
+    title: 'Billing',
+    icon: CreditCard,
+    description: 'Stripe integration',
+    items: ['Multiple subscription tiers', 'Monthly/yearly pricing', 'Pricing features management', 'Cancel at period end', 'Subscription management'],
+    gradient: 'from-green-500 to-emerald-600',
+    bgColor: 'bg-green-500/10',
+  },
+  {
+    title: 'Notifications',
+    icon: Bell,
+    description: 'Real-time alerts',
+    items: ['WebSocket-powered delivery', 'Multiple notification types', 'Read/unread tracking', 'Email preferences', 'Mobile push support'],
+    gradient: 'from-red-500 to-pink-600',
+    bgColor: 'bg-red-500/10',
+  },
+  {
+    title: 'Audit & Logging',
+    icon: Shield,
+    description: 'Complete activity tracking',
+    items: ['40+ action types', 'Resource-level logging', 'IP & user agent tracking', 'Performance metrics', 'Error tracking'],
+    gradient: 'from-slate-500 to-gray-600',
+    bgColor: 'bg-slate-500/10',
+  },
+]
+
+const techStack = [
+  { name: 'Next.js 16', icon: Code, color: 'text-cyan-400' },
+  { name: 'TypeScript', icon: Code, color: 'text-blue-400' },
+  { name: 'Prisma', icon: Database, color: 'text-violet-400' },
+  { name: 'PostgreSQL', icon: Database, color: 'text-indigo-400' },
+  { name: 'Stripe', icon: CreditCard, color: 'text-emerald-400' },
+  { name: 'Socket.io', icon: Zap, color: 'text-amber-400' },
+]
+
+const stats = [
+  { value: '40+', label: 'Models' },
+  { value: '10+', label: 'Feature Modules' },
+  { value: '1,176', label: 'Lines of Schema' },
+  { value: '100%', label: 'TypeScript' },
+]
 
 export default function LandingPage() {
-  const [data, setData] = useState<LandingData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [siteName, setSiteName] = useState('Admin Template')
+  const [mounted, setMounted] = useState(false)
+  const [scrollY, setScrollY] = useState(0)
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch('/api/public/landing')
-        const json = await res.json()
-        if (json.success) {
-          setData(json.data)
+    setMounted(true)
+    const handleScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', handleScroll)
+    fetch('/api/public/site/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data.siteName) {
+          setSiteName(data.data.siteName)
         }
-      } catch (error) {
-        console.error('Failed to fetch landing data:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
+      })
+      .catch(console.error)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const getImageUrl = (image: string | null, directUrl: string | null) => {
-    return directUrl || image || '/placeholder-book.jpg'
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-orange-50/30 to-amber-50/20">
+    <div className="min-h-screen bg-neutral-950 text-white overflow-hidden">
+      {/* Animated Grid Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f08_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f08_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      </div>
+
+      {/* Floating Orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div
+          className="absolute w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
+          style={{
+            left: '20%',
+            top: '20%',
+            transform: `translate(${scrollY * 0.05}px, ${scrollY * 0.05}px)`,
+          }}
+        />
+        <div
+          className="absolute w-[500px] h-[500px] bg-violet-500/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
+          style={{
+            right: '20%',
+            bottom: '20%',
+            transform: `translate(${-scrollY * 0.03}px, ${-scrollY * 0.03}px)`,
+          }}
+        />
+      </div>
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-orange-100/50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-amber-700 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-orange-500/40 group-hover:scale-105 transition-all duration-300">
-                <BookOpen className="h-6 w-6 text-white" strokeWidth={2.5} />
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-neutral-950/80 backdrop-blur-xl">
+        <div className="container mx-auto max-w-7xl px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <LayoutDashboard className="w-5 h-5 text-neutral-900 relative z-10 group-hover:text-white transition-colors" />
               </div>
-              <span className="text-xl font-black tracking-tight bg-gradient-to-r from-orange-700 to-amber-800 bg-clip-text text-transparent">Book Heaven</span>
-            </Link>
-
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#featured" className="text-sm font-semibold text-stone-700 hover:text-orange-700 transition-colors">Featured</a>
-              <a href="#categories" className="text-sm font-semibold text-stone-700 hover:text-orange-700 transition-colors">Categories</a>
-              <a href="#new" className="text-sm font-semibold text-stone-700 hover:text-orange-700 transition-colors">New Arrivals</a>
+              <span className="text-lg font-bold tracking-tight">{siteName}</span>
             </div>
-
-            <div className="hidden md:flex items-center gap-4">
-              <Link href="/auth/sign-in" className="text-sm font-semibold text-stone-700 hover:text-orange-700 transition-colors">
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="bg-gradient-to-r from-orange-600 to-amber-700 text-white px-5 py-2.5 rounded-2xl hover:from-orange-700 hover:to-amber-800 transition-all shadow-md hover:shadow-lg hover:shadow-orange-500/40 hover:scale-105 text-sm font-semibold"
+            <div className="flex items-center gap-4">
+              <Button
+                asChild
+                variant="ghost"
+                className="text-neutral-400 hover:text-white hover:bg-white/5"
               >
-                Join
-              </Link>
+                <Link href="/auth/sign-in">Sign In</Link>
+              </Button>
+              <Button
+                asChild
+                className="bg-white text-neutral-900 hover:bg-neutral-100 font-semibold"
+              >
+                <Link href="/sign-up">Get Started</Link>
+              </Button>
             </div>
-
-            <button
-              className="md:hidden p-2 text-stone-700"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
           </div>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-orange-100/50 bg-white/95 backdrop-blur-xl">
-            <div className="px-4 py-4 space-y-3">
-              <a href="#featured" className="block text-sm font-semibold text-stone-900">Featured</a>
-              <a href="#categories" className="block text-sm font-semibold text-stone-900">Categories</a>
-              <a href="#new" className="block text-sm font-semibold text-stone-900">New Arrivals</a>
-              <div className="pt-3 border-t border-orange-100/50 space-y-3">
-                <Link href="/auth/sign-in" className="block text-sm font-semibold text-stone-900">Sign In</Link>
-                <Link href="/sign-up" className="block bg-gradient-to-r from-orange-600 to-amber-700 text-white px-5 py-2.5 rounded-2xl text-center text-sm font-semibold">Join</Link>
-              </div>
-            </div>
-          </div>
-        )}
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-400/25 to-amber-400/25 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-amber-400/25 to-yellow-400/25 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="relative min-h-screen flex items-center pt-20">
+        <div className="container mx-auto max-w-7xl px-6 py-24">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Column - Content */}
             <div className="space-y-8">
-              <div className="inline-block">
-                <span className="text-xs font-black tracking-[0.2em] text-orange-700 uppercase bg-gradient-to-r from-orange-50 to-amber-50 px-4 py-2 rounded-full border-2 border-orange-200">
-                  Your Digital Library
+              <div
+                className={`inline-flex items-center gap-3 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 transition-all duration-1000 ${
+                  mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <span className="text-sm font-medium text-cyan-300 tracking-wide">
+                  PRODUCTION-READY ADMIN TEMPLATE
                 </span>
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight text-stone-900">
-                Great stories
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600">belong to</span>
-                <br />
-                everyone
+              <h1
+                className={`text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight transition-all duration-1000 delay-200 ${
+                  mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+              >
+                <span className="block text-white">10+ Modules.</span>
+                <span className="block text-white">1,176 Lines</span>
+                <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent mt-2">
+                  of Schema.
+                </span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-stone-600 max-w-lg leading-relaxed font-medium">
-                Discover thousands of books. Connect with fellow readers. Experience AI-powered reading assistance.
+              <p
+                className={`text-xl text-neutral-400 max-w-lg leading-relaxed transition-all duration-1000 delay-300 ${
+                  mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+              >
+                A complete production-ready admin template with marketplace, authentication, billing, campaigns, support, achievements, and more.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link
-                  href="/books"
-                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-amber-700 text-white px-8 py-4 rounded-2xl hover:from-orange-700 hover:to-amber-800 transition-all shadow-xl hover:shadow-2xl hover:shadow-orange-500/40 hover:scale-105 font-bold text-lg"
+              <div
+                className={`flex flex-col sm:flex-row gap-4 transition-all duration-1000 delay-500 ${
+                  mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+              >
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-white text-neutral-900 hover:bg-neutral-100 text-base px-8 py-6 h-auto font-semibold"
                 >
-                  Explore Collection
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="inline-flex items-center justify-center border-2 border-stone-300 text-stone-800 px-8 py-4 rounded-2xl hover:border-orange-400 hover:text-orange-700 hover:bg-orange-50 transition-all font-semibold"
+                  <Link href="/sign-up" className="gap-2">
+                    Start Building
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/5 hover:border-white/30 text-base px-8 py-6 h-auto"
                 >
-                  Start Reading
-                </Link>
+                  <Link href="/dashboard">Live Demo</Link>
+                </Button>
               </div>
 
-              {!loading && data && (
-                <div className="grid grid-cols-3 gap-8 pt-8 border-t border-stone-200/60">
-                  <div>
-                    <div className="text-3xl font-black text-stone-900 tracking-tight">
-                      {data.statistics.totalBooks.toLocaleString()}
-                    </div>
-                    <div className="text-sm font-semibold text-stone-600 mt-1">Books</div>
+              {/* Stats */}
+              <div
+                className={`grid grid-cols-4 gap-6 pt-8 border-t border-white/10 transition-all duration-1000 delay-700 ${
+                  mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+              >
+                {stats.map((stat, i) => (
+                  <div key={i}>
+                    <div className="text-3xl font-black text-white">{stat.value}</div>
+                    <div className="text-xs font-medium text-neutral-500 mt-1">{stat.label}</div>
                   </div>
-                  <div>
-                    <div className="text-3xl font-black text-stone-900 tracking-tight">
-                      {data.statistics.activeReaders.toLocaleString()}
-                    </div>
-                    <div className="text-sm font-semibold text-stone-600 mt-1">Readers</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-black text-stone-900 tracking-tight">
-                      {data.statistics.totalCategories}
-                    </div>
-                    <div className="text-sm font-semibold text-stone-600 mt-1">Categories</div>
-                  </div>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
 
-            <div className="relative">
-              {/* Book Stack Display */}
-              <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden">
-                {/* Background gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-100 via-amber-50 to-yellow-50" />
-
-                {/* Featured Books Stack */}
-                {!loading && data && data.featuredBooks.length > 0 ? (
-                  <div className="absolute inset-0 p-8 flex items-center justify-center">
-                    {data.featuredBooks.slice(0, 4).map((book, index) => {
-                      const imageUrl = getImageUrl(book.image, book.directImageUrl)
-                      const hasImage = book.image || book.directImageUrl
-
-                      return (
-                        <div
-                          key={book.id}
-                          className="absolute transition-all duration-500 ease-out hover:z-20 group cursor-pointer"
-                          style={{
-                            transform: `
-                              translateX(${(index - 1.5) * 40}px)
-                              translateY(${Math.abs(index - 1.5) * 20}px)
-                              rotate(${(index - 1.5) * 8}deg)
-                            `,
-                            zIndex: 10 - index,
-                            filter: `
-                              brightness(${1 - index * 0.1})
-                              drop-shadow(${index * 4}px ${index * 8}px ${20 + index * 10}px rgba(0,0,0,0.15))
-                            `
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = `
-                              translateX(${(index - 1.5) * 20}px)
-                              translateY(${Math.abs(index - 1.5) * 10}px)
-                              rotate(${(index - 1.5) * 4}deg)
-                              scale(1.05)
-                            `
-                            e.currentTarget.style.filter = 'brightness(1) drop-shadow(0 20px 40px rgba(0,0,0,0.3))'
-                            e.currentTarget.style.zIndex = '30'
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = `
-                              translateX(${(index - 1.5) * 40}px)
-                              translateY(${Math.abs(index - 1.5) * 20}px)
-                              rotate(${(index - 1.5) * 8}deg)
-                            `
-                            e.currentTarget.style.filter = `
-                              brightness(${1 - index * 0.1})
-                              drop-shadow(${index * 4}px ${index * 8}px ${20 + index * 10}px rgba(0,0,0,0.15))
-                            `
-                            e.currentTarget.style.zIndex = `${10 - index}`
-                          }}
-                        >
-                          <Link href={`/books/${book.id}`}>
-                            <div
-                                                              className={`
-                              w-56 h-80 rounded-2xl overflow-hidden border-4 border-white
-                              ${hasImage ? 'bg-white' : 'bg-gradient-to-br from-orange-200 to-amber-200'}
-                              shadow-xl transition-shadow duration-300
-                              group-hover:shadow-2xl
-                            `}
-                            >
-                              {hasImage ? (
-                                <Image
-                                  src={imageUrl}
-                                  alt={book.name}
-                                  width={224}
-                                  height={320}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                  <BookOpen className="h-20 w-20 text-orange-400/40" strokeWidth={1} />
-                                </div>
-                              )}
-                            </div>
-                          </Link>
-                        </div>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  /* Loading/Empty State */
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="relative w-32 h-32 mx-auto mb-4">
-                        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-                        <div className="relative w-32 h-32 bg-gradient-to-br from-orange-100 to-amber-100 rounded-full flex items-center justify-center">
-                          {loading ? (
-                            <BookOpen className="h-16 w-16 text-orange-400/50 animate-pulse" strokeWidth={1} />
-                          ) : (
-                            <BookOpen className="h-16 w-16 text-orange-400/50" strokeWidth={1} />
-                          )}
-                        </div>
+            {/* Right Column - Feature Preview */}
+            <div
+              className={`relative transition-all duration-1000 delay-500 ${
+                mounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+              }`}
+            >
+              {/* Feature Cards Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {featureCategories.slice(0, 6).map((category, index) => {
+                  const Icon = category.icon
+                  return (
+                    <div
+                      key={index}
+                      className={`group relative p-6 rounded-2xl ${category.bgColor} border border-white/10 hover:border-white/20 transition-all duration-300`}
+                      style={{
+                        animationDelay: `${index * 100}ms`,
+                      }}
+                    >
+                      <div className={`inline-flex p-2.5 rounded-lg bg-gradient-to-br ${category.gradient} mb-4`}>
+                        <Icon className="w-5 h-5 text-white" />
                       </div>
-                      <p className="text-stone-500 text-sm font-medium">
-                        {loading ? 'Loading books...' : 'Your Reading Awaits'}
-                      </p>
+                      <h3 className="text-lg font-bold text-white mb-1">{category.title}</h3>
+                      <p className="text-sm text-neutral-400 leading-snug">{category.description}</p>
                     </div>
-                  </div>
-                )}
-
-                {/* Decorative border */}
-                <div className="absolute inset-0 rounded-[2rem] border-8 border-white/40" />
-              </div>
-
-              {/* Authors Badge */}
-              <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-gradient-to-br from-orange-600 to-amber-700 rounded-[2rem] flex items-center justify-center p-6 shadow-2xl shadow-orange-500/40">
-                <div className="text-center">
-                  <div className="text-4xl font-black text-white leading-none tracking-tight">
-                    {!loading && data ? data.statistics.totalAuthors.toLocaleString() : '—'}
-                  </div>
-                  <div className="text-sm font-semibold text-orange-100 mt-2">Authors</div>
-                </div>
+                  )
+                })}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Books */}
-      {!loading && data && data.featuredBooks.length > 0 && (
-        <section id="featured" className="py-20 px-4 sm:px-6 lg:px-8 bg-white relative">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <span className="text-xs font-black tracking-[0.2em] text-orange-700 uppercase">Curated</span>
-                <h2 className="text-4xl font-black text-stone-900 mt-2 tracking-tight">Featured Books</h2>
-              </div>
-              <Link href="/books" className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-stone-700 hover:text-orange-700 transition-colors group">
-                View All
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+      {/* Features Breakdown */}
+      <section className="relative py-32 border-t border-white/10">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="mb-20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-500/50" />
+              <span className="text-sm font-semibold text-cyan-400 tracking-widest uppercase">
+                Complete Feature Set
+              </span>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/50" />
             </div>
+            <h2 className="text-5xl sm:text-6xl font-black text-white tracking-tight text-center mb-6">
+              Everything you need.
+            </h2>
+            <p className="text-xl text-neutral-400 text-center max-w-2xl mx-auto">
+              Built from a 1,176-line Prisma schema with 40+ models. Ready to deploy.
+            </p>
+          </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {data.featuredBooks.slice(0, 6).map((book) => (
-                <Link
-                  key={book.id}
-                  href={`/books/${book.id}`}
-                  className="group"
+          <div className="grid lg:grid-cols-2 gap-6">
+            {featureCategories.map((category, index) => {
+              const Icon = category.icon
+              return (
+                <div
+                  key={index}
+                  className="group relative p-8 bg-neutral-900/50 border border-white/10 hover:border-white/20 rounded-2xl transition-all duration-300 hover:bg-neutral-900 overflow-hidden"
                 >
-                  <div className="aspect-[2/3] bg-gradient-to-br from-stone-100 to-stone-200 mb-4 overflow-hidden border border-stone-200 rounded-2xl shadow-lg group-hover:shadow-2xl group-hover:shadow-orange-500/15 transition-all duration-300">
-                    {book.image || book.directImageUrl ? (
-                      <Image
-                        src={getImageUrl(book.image, book.directImageUrl)}
-                        alt={book.name}
-                        width={400}
-                        height={600}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-amber-100">
-                        <BookOpen className="h-16 w-16 text-orange-300" strokeWidth={1} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-xs font-black text-orange-700 uppercase tracking-wider">
-                      {book.authors.map(a => a.name).join(', ')}
-                    </div>
-                    <h3 className="text-xl font-bold text-stone-900 group-hover:text-orange-700 transition-colors line-clamp-2 leading-tight">
-                      {book.name}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                        <span className="text-sm font-semibold text-stone-700">{book.readersCount}</span>
-                      </div>
-                      <span className="text-sm font-medium text-stone-500">readers</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-5 transition-opacity`} />
 
-            <div className="mt-12 text-center sm:hidden">
-              <Link
-                href="/books"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-900 hover:text-orange-700"
-              >
-                View All Books
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+                  <div className="relative">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${category.gradient} flex-shrink-0`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-white mb-2">{category.title}</h3>
+                        <p className="text-neutral-400 text-sm">{category.description}</p>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2">
+                      {category.items.map((item, i) => (
+                        <li key={i} className="flex items-center gap-3 text-sm text-neutral-300">
+                          <Check className={`w-4 h-4 flex-shrink-0 ${category.gradient.replace('from-', 'text-').split(' ')[0]}`} />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )
+            })}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {/* Categories */}
-      {!loading && data && data.popularCategories.length > 0 && (
-        <section id="categories" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-700 via-amber-700 to-yellow-600 relative overflow-hidden">
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      {/* Tech Stack Banner */}
+      <section className="relative py-24 bg-gradient-to-b from-neutral-900 to-neutral-950 border-t border-white/10">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-black text-white mb-4">Built with Modern Technology</h2>
+            <p className="text-neutral-400">Enterprise-grade stack for production deployments</p>
           </div>
 
-          <div className="max-w-7xl mx-auto relative">
-            <div className="text-center mb-12">
-              <span className="text-xs font-black tracking-[0.2em] text-orange-100 uppercase">Browse</span>
-              <h2 className="text-4xl font-black text-white mt-2 tracking-tight">Categories</h2>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {data.popularCategories.slice(0, 8).map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/books?category=${category.id}`}
-                  className="group bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all p-6 border border-white/20 hover:border-white/30 rounded-2xl"
+          <div className="flex flex-wrap items-center justify-center gap-8 max-w-4xl mx-auto">
+            {techStack.map((tech, index) => {
+              const Icon = tech.icon
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-100 transition-colors">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm font-medium text-orange-100">
-                        {category.bookCount} books
-                      </p>
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-amber-200 group-hover:text-white group-hover:translate-x-1 transition-all" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  <Icon className={`w-6 h-6 ${tech.color}`} />
+                  <span className="font-semibold text-white">{tech.name}</span>
+                </div>
+              )
+            })}
           </div>
-        </section>
-      )}
-
-      {/* New Arrivals */}
-      {!loading && data && data.recentBooks.length > 0 && (
-        <section id="new" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-stone-50 to-orange-50/40 relative">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <span className="text-xs font-black tracking-[0.2em] text-orange-700 uppercase">Fresh</span>
-                <h2 className="text-4xl font-black text-stone-900 mt-2 tracking-tight">New Arrivals</h2>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {data.recentBooks.map((book) => (
-                <Link
-                  key={book.id}
-                  href={`/books/${book.id}`}
-                  className="group"
-                >
-                  <div className="aspect-[2/3] bg-gradient-to-br from-stone-200 to-stone-300 mb-4 overflow-hidden border border-stone-300 rounded-xl shadow-md group-hover:shadow-xl group-hover:shadow-orange-500/15 transition-all duration-300">
-                    {book.image || book.directImageUrl ? (
-                      <Image
-                        src={getImageUrl(book.image, book.directImageUrl)}
-                        alt={book.name}
-                        width={300}
-                        height={450}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-200 to-amber-200">
-                        <BookOpen className="h-12 w-12 text-orange-400" strokeWidth={1} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-base font-bold text-stone-900 group-hover:text-orange-700 transition-colors line-clamp-2 leading-tight">
-                      {book.name}
-                    </h3>
-                    <p className="text-sm font-medium text-stone-600">
-                      {book.authors.map(a => a.name).join(', ')}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-700 via-amber-700 to-yellow-600 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/10 rounded-full blur-3xl" />
+      <section className="relative py-32 border-t border-white/10">
+        <div className="container mx-auto max-w-4xl px-6">
+          <div className="relative p-12 lg:p-16 rounded-3xl bg-gradient-to-br from-cyan-500 via-blue-600 to-violet-600 overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-        <div className="max-w-4xl mx-auto text-center relative">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[0.95] tracking-tight mb-6">
-            Start your reading
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-200">journey today</span>
-          </h2>
-          <p className="text-lg text-orange-50/90 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-            Join thousands of readers discovering their next favorite book on Book Heaven
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 bg-white text-orange-700 px-10 py-4 rounded-2xl hover:bg-orange-50 transition-all shadow-2xl hover:shadow-3xl hover:shadow-orange-900/50 hover:scale-105 font-bold text-lg"
-            >
-              Get Started Free
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-            <Link
-              href="/books"
-              className="inline-flex items-center justify-center border-2 border-white/30 text-white px-10 py-4 rounded-2xl hover:bg-white/10 hover:border-white/50 transition-all font-semibold text-lg backdrop-blur-sm"
-            >
-              Browse Books
-            </Link>
+            <div className="relative">
+              <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-6">
+                Ready to ship?
+              </h2>
+              <p className="text-lg text-cyan-100 mb-8 max-w-2xl">
+                Stop building the same features. Start with 40+ models, 10+ modules, and everything you need to launch.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-white text-neutral-900 hover:bg-neutral-100 text-base px-8 py-6 h-auto font-semibold"
+                >
+                  <Link href="/sign-up" className="gap-2">
+                    Get Started Now
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10 text-base px-8 py-6 h-auto"
+                >
+                  <Link href="/dashboard">View Demo</Link>
+                </Button>
+              </div>
+
+              <div className="mt-10 pt-8 border-t border-white/20 flex flex-wrap items-center justify-center gap-8 text-sm text-cyan-100">
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5" />
+                  <span>Open Source</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5" />
+                  <span>Production Ready</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5" />
+                  <span>100% TypeScript</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-stone-900 via-orange-950 to-amber-950 text-stone-100 py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <BookOpen className="h-5 w-5 text-white" strokeWidth={2} />
-                </div>
-                <span className="text-lg font-black">Book Heaven</span>
+      <footer className="relative py-12 border-t border-white/10 bg-neutral-950">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                <LayoutDashboard className="w-5 h-5 text-neutral-900" />
               </div>
-              <p className="text-sm text-stone-400 leading-relaxed font-medium">
-                Your personal library, reimagined for the digital age
-              </p>
+              <span className="text-lg font-bold">{siteName}</span>
             </div>
 
-            <div>
-              <h3 className="font-bold mb-4 text-white text-sm tracking-wide uppercase">Discover</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/books" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Books</Link></li>
-                <li><Link href="/marketplace" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Marketplace</Link></li>
-                <li><Link href="/blog" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Blog</Link></li>
-                <li><Link href="/quiz" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Quiz</Link></li>
-              </ul>
+            <div className="flex items-center gap-8 text-sm text-neutral-400">
+              <Link href="/terms" className="hover:text-white transition-colors">
+                Terms
+              </Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Privacy
+              </Link>
+              <Link href="/contact" className="hover:text-white transition-colors">
+                Contact
+              </Link>
             </div>
 
-            <div>
-              <h3 className="font-bold mb-4 text-white text-sm tracking-wide uppercase">Support</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/help-center" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Help Center</Link></li>
-                <li><Link href="/contact" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Contact</Link></li>
-                <li><Link href="/pricing" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Pricing</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-bold mb-4 text-white text-sm tracking-wide uppercase">Legal</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/privacy" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="text-stone-400 hover:text-orange-400 transition-colors font-medium">Terms of Service</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-stone-800 mt-12 pt-8 text-center text-sm text-stone-500">
-            <p className="font-medium">© 2025 Book Heaven. All rights reserved.</p>
+            <p className="text-sm text-neutral-600">
+              © {new Date().getFullYear()} {siteName}
+            </p>
           </div>
         </div>
       </footer>
