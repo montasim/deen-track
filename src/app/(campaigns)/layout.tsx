@@ -22,6 +22,7 @@ export default function CampaignsLayout({
   const [scrollY, setScrollY] = useState(0)
   const [siteName, setSiteName] = useState('CampaignHub')
   const [user, setUser] = useState<{ id: string; name: string; email: string; avatar?: string | null } | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -39,17 +40,23 @@ export default function CampaignsLayout({
 
     // Fetch current user
     fetch('/api/auth/me')
-      .then((res) => {
-        if (res.ok) return res.json()
-        throw new Error('Not authenticated')
-      })
-      .then((data) => {
-        if (data.success && data.data.user) {
+      .then(async (res) => {
+        const data = await res.json()
+        console.log('Auth response:', data)
+
+        if (res.ok && data.success && data.data?.user) {
+          console.log('Setting user:', data.data.user)
           setUser(data.data.user)
+        } else {
+          console.log('Not authenticated, setting user to null')
+          setUser(null)
         }
+        setAuthChecked(true)
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Auth check error:', error)
         setUser(null)
+        setAuthChecked(true)
       })
 
     return () => window.removeEventListener('scroll', handleScroll)
