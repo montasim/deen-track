@@ -152,7 +152,10 @@ export default function LandingPage() {
       .catch(console.error)
 
     // Fetch current user
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', {
+      credentials: 'include',
+      cache: 'no-store',
+    })
       .then(async (res) => {
         const data = await res.json()
         console.log('Auth response:', data)
