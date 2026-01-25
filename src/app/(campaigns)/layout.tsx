@@ -2,8 +2,17 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Trophy } from 'lucide-react'
+import { Trophy, User, LogOut, LayoutDashboard, Settings } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export default function CampaignsLayout({
   children,
@@ -12,11 +21,13 @@ export default function CampaignsLayout({
 }) {
   const [scrollY, setScrollY] = useState(0)
   const [siteName, setSiteName] = useState('CampaignHub')
+  const [user, setUser] = useState<{ id: string; name: string; email: string; avatar?: string | null } | null>(null)
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener('scroll', handleScroll)
 
+    // Fetch site settings
     fetch('/api/public/site/settings')
       .then((res) => res.json())
       .then((data) => {
@@ -25,6 +36,21 @@ export default function CampaignsLayout({
         }
       })
       .catch(console.error)
+
+    // Fetch current user
+    fetch('/api/auth/me')
+      .then((res) => {
+        if (res.ok) return res.json()
+        throw new Error('Not authenticated')
+      })
+      .then((data) => {
+        if (data.success && data.data.user) {
+          setUser(data.data.user)
+        }
+      })
+      .catch(() => {
+        setUser(null)
+      })
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -111,19 +137,72 @@ export default function CampaignsLayout({
             </div>
 
             <div className="flex items-center gap-3">
-              <Button
-                asChild
-                variant="ghost"
-                className="text-neutral-400 hover:text-white hover:bg-white/5"
-              >
-                <Link href="/auth/sign-in">Sign In</Link>
-              </Button>
-              <Button
-                asChild
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
-              >
-                <Link href="/sign-up">Get Started</Link>
-              </Button>
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                      <Avatar className="h-9 w-9 border-2 border-cyan-500/30">
+                        {user.avatar ? (
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                        ) : (
+                          <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
+                            <User className="h-5 w-5" />
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user.name}</p>
+                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard" className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/settings" className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer text-red-600 focus:text-red-600"
+                      onClick={() => {
+                        fetch('/api/auth/logout', { method: 'POST' }).then(() => {
+                          window.location.href = '/'
+                        })
+                      }}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="text-neutral-400 hover:text-white hover:bg-white/5"
+                  >
+                    <Link href="/auth/sign-in">Sign In</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
+                  >
+                    <Link href="/sign-up">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
