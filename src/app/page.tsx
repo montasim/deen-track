@@ -24,8 +24,9 @@ import {
   LogOut,
   LayoutDashboard,
   Settings,
+  Home,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   DropdownMenu,
@@ -36,6 +37,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getProxiedImageUrl } from '@/lib/image-proxy'
+import { getUserInitials } from '@/lib/utils/user'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/context/auth-context'
 
 // Sample featured campaigns data
 const featuredCampaigns = [
@@ -130,11 +135,16 @@ const stats = [
 ]
 
 export default function LandingPage() {
+  const { user, logout, isLoading } = useAuth()
   const [mounted, setMounted] = useState(false)
   const [scrollY, setScrollY] = useState(0)
   const [siteName, setSiteName] = useState('CampaignHub')
-  const [user, setUser] = useState<{ id: string; name: string; email: string; avatar?: string | null } | null>(null)
-  const [authChecked, setAuthChecked] = useState(false)
+
+  // Get proxied avatar URL for Google Drive images
+  const avatarUrl = useMemo(() => {
+    const rawUrl = user?.avatar ?? (user as any)?.directAvatarUrl ?? undefined
+    return rawUrl ? (getProxiedImageUrl(rawUrl) || rawUrl) : undefined
+  }, [user?.avatar, (user as any)?.directAvatarUrl])
 
   useEffect(() => {
     setMounted(true)
@@ -151,32 +161,12 @@ export default function LandingPage() {
       })
       .catch(console.error)
 
-    // Fetch current user
-    fetch('/api/auth/me', {
-      credentials: 'include',
-      cache: 'no-store',
-    })
-      .then(async (res) => {
-        const data = await res.json()
-        console.log('Auth response:', data)
-
-        if (res.ok && data.success && data.data?.user) {
-          console.log('Setting user:', data.data.user)
-          setUser(data.data.user)
-        } else {
-          console.log('Not authenticated, setting user to null')
-          setUser(null)
-        }
-        setAuthChecked(true)
-      })
-      .catch((error) => {
-        console.error('Auth check error:', error)
-        setUser(null)
-        setAuthChecked(true)
-      })
-
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleLogout = async () => {
+    await logout()
+  }
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white overflow-hidden">
@@ -248,29 +238,39 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              {user ? (
+              {isLoading ? (
+                /* Show skeleton buttons during loading */
+                <>
+                  <Skeleton className="h-9 w-20 bg-white/10" />
+                  <Skeleton className="h-9 w-24 bg-white/10" />
+                </>
+              ) : user ? (
+                /* User is logged in - show profile dropdown */
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-9 w-9 border-2 border-cyan-500/30">
-                        {user.avatar ? (
-                          <AvatarImage src={user.avatar} alt={user.name} />
-                        ) : (
-                          <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
-                            <User className="h-5 w-5" />
-                          </AvatarFallback>
-                        )}
+                    <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                      <Avatar className="h-8 w-8 border-2 border-cyan-500/30">
+                        <AvatarImage src={avatarUrl} alt={user.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white text-xs font-semibold">
+                          {getUserInitials(user)}
+                        </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user.name}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                        <p className="text-sm font-medium leading-none text-white">{user.name}</p>
+                        <p className="text-xs leading-none text-neutral-400">{user.email}</p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/" className="cursor-pointer">
+                        <Home className="mr-2 h-4 w-4" />
+                        <span>Home</span>
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard" className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -286,11 +286,7 @@ export default function LandingPage() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="cursor-pointer text-red-600 focus:text-red-600"
-                      onClick={() => {
-                        fetch('/api/auth/logout', { method: 'POST' }).then(() => {
-                          window.location.href = '/'
-                        })
-                      }}
+                      onClick={handleLogout}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
@@ -298,6 +294,7 @@ export default function LandingPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
+                /* User is not logged in - show sign in/up buttons */
                 <>
                   <Button
                     asChild
@@ -501,7 +498,7 @@ export default function LandingPage() {
                             {campaign.participants.toLocaleString()}
                           </span>
                           <span className="flex items-center gap-1">
-                            <Star className="w-4 h-4 text-amber-400" />
+                            <Star className="w-4 w-4 text-amber-400" />
                             {campaign.points}
                           </span>
                         </div>
