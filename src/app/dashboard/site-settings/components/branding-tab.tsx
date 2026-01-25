@@ -39,9 +39,9 @@ export function BrandingTab({ settings, setSettings, isSaving, onSave }: Brandin
             <Label htmlFor="siteName">Site Name</Label>
             <Input
               id="siteName"
-              value={settings.siteName || 'Book Heaven'}
+              value={settings.siteName}
               onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-              placeholder="Book Heaven"
+              placeholder=""
               maxLength={100}
             />
             <p className="text-sm text-muted-foreground">

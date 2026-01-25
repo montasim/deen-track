@@ -34,13 +34,13 @@ export function SEOTab({ settings, setSettings, isSaving, onSave }: SEOTabProps)
             <Label htmlFor="seoTitle">SEO Title</Label>
             <Input
               id="seoTitle"
-              value={settings.seoTitle || 'Book Heaven - AI-Powered Digital Library'}
+              value={settings.seoTitle}
               onChange={(e) => setSettings({ ...settings, seoTitle: e.target.value })}
-              placeholder="Book Heaven - AI-Powered Digital Library"
+              placeholder=""
               maxLength={60}
             />
             <p className="text-sm text-muted-foreground">
-              The default title for search engines (max 60 characters). Current: {(settings.seoTitle || 'Book Heaven - AI-Powered Digital Library').length}/60
+              The default title for search engines (max 60 characters). Current: {(settings.seoTitle).length}/60
             </p>
           </div>
 

@@ -10,7 +10,7 @@ import { getSiteSettings } from '@/lib/cache/site-settings'
  */
 export async function getSiteName(): Promise<string> {
   const settings = await getSiteSettings()
-  return settings.siteName || 'Book Heaven'
+  return settings.siteName
 }
 
 /**
@@ -47,9 +47,9 @@ export async function getSEOMetadata(): Promise<{
 }> {
   const settings = await getSiteSettings()
   return {
-    title: settings.seoTitle || 'Book Heaven - AI-Powered Digital Library',
-    description: settings.seoDescription || 'Discover, read, and interact with books using AI-powered features. Chat with books, generate summaries, and explore a vast digital library.',
-    keywords: settings.seoKeywords || 'digital library, AI chat, ebooks, audiobooks, reading, book recommendations, online library',
+    title: settings.seoTitle,
+    description: settings.seoDescription,
+    keywords: settings.seoKeywords,
   }
 }
 
@@ -108,7 +108,7 @@ export async function getBrandingInfo(): Promise<{
 }> {
   const settings = await getSiteSettings()
   return {
-    siteName: settings.siteName || 'Book Heaven',
+    siteName: settings.siteName,
     siteSlogan: settings.siteSlogan || '',
     logoUrl: settings.directLogoUrl || settings.logoUrl || '/logo.svg',
     faviconUrl: settings.directFaviconUrl || settings.faviconUrl || '/favicon.ico',

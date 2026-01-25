@@ -33,7 +33,7 @@ export async function getSiteSettings() {
     console.log('[Site Settings Cache] No settings found, creating defaults')
     const newSettings = await prisma.systemSettings.create({
       data: {
-        siteName: 'Book Heaven',
+        siteName: '',
       },
     })
     settingsCache = newSettings
@@ -43,7 +43,7 @@ export async function getSiteSettings() {
       console.log('[Site Settings Cache] siteName missing, updating...')
       const updated = await prisma.systemSettings.update({
         where: { id: settings.id },
-        data: { siteName: 'Book Heaven' },
+        data: { siteName: '' },
       })
       settingsCache = updated
     } else {
@@ -95,7 +95,7 @@ export async function invalidateSiteSettingsCache(): Promise<void> {
  */
 export async function getSiteName(): Promise<string> {
   const settings = await getSiteSettings()
-  return settings.siteName || 'Book Heaven'
+  return settings.siteName
 }
 
 /**

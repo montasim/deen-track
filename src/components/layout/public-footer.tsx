@@ -15,7 +15,7 @@ interface SocialLinks {
 
 export function PublicFooter() {
   const currentYear = new Date().getFullYear()
-  const [siteName, setSiteName] = useState('Book Heaven')
+  const [siteName, setSiteName] = useState('')
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({})
 
   useEffect(() => {

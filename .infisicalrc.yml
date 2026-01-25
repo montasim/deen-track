@@ -1,7 +1,7 @@
 # Infisocal Configuration
 # See https://infisical.com/docs/cli/configuration for options
 
-projectId: 508c8d98-a951-4121-9e54-67c423639e67
+projectId: 4f27b05d-3ed6-4012-b8ac-af7b08e262d8
 
 # Default environment when no --env flag is provided
 # Options: dev, staging, prod
