@@ -6,7 +6,7 @@ import { Megaphone, Calendar, ChevronDown, ChevronUp, Home } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MDXViewer } from '@/components/ui/mdx-viewer'
-import { BreadcrumbList } from '@/components/breadcrumb/breadcrumb-list'
+import { BreadcrumbList } from '@/components/breadcrumb/breadcrumb'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 
