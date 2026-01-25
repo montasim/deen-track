@@ -21,22 +21,22 @@ export async function generateMetadata(): Promise<Metadata> {
       default: seo.title,
       template: `%s | ${siteName}`
     },
-    description: seo.description,
-    keywords: seo.keywords.split(','),
+    description: seo.description || 'Default description',
+    keywords: seo.keywords?.split(',') || [],
     authors: [{ name: siteName }],
     openGraph: {
       type: 'website',
       locale: 'en_US',
       url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
       title: seo.title,
-      description: seo.description,
+      description: seo.description || 'Default description',
       siteName: siteName,
       images: ogImage ? [{ url: ogImage }] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
       title: seo.title,
-      description: seo.description,
+      description: seo.description || 'Default description',
     },
   }
 }
