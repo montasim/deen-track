@@ -91,6 +91,18 @@ export default function CampaignsLayout({
                 Leaderboard
               </Link>
               <Link
+                href="/sponsors"
+                className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+              >
+                Sponsors
+              </Link>
+              <Link
+                href="/blog"
+                className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+              >
+                Blog
+              </Link>
+              <Link
                 href="/about"
                 className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
               >

@@ -106,7 +106,7 @@ export default function SponsorsPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden">
+      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
@@ -122,7 +122,7 @@ export default function SponsorsPage() {
             </Badge>
 
             <h1
-              className={`flex items-center justify-center gap-4 text-5xl font-black tracking-tight mb-6 transition-all duration-1000 ${
+              className={`flex items-center justify-center gap-4 text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6 transition-all duration-1000 ${
                 mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
               }`}
             >
@@ -150,7 +150,7 @@ export default function SponsorsPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <Diamond className="w-6 h-6 text-cyan-400" />
-            <h2 className="text-3xl font-black text-white">Platinum Partners</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">Platinum Partners</h2>
           </div>
           <p className="text-neutral-400">Our highest level of partnership</p>
         </div>
@@ -210,7 +210,7 @@ export default function SponsorsPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
               <Award className="w-6 h-6 text-violet-400" />
-              <h2 className="text-3xl font-black text-white">Premium Partners</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">Premium Partners</h2>
             </div>
             <p className="text-neutral-400">Trusted supporters of our community</p>
           </div>
@@ -266,7 +266,7 @@ export default function SponsorsPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <Building2 className="w-6 h-6 text-blue-400" />
-            <h2 className="text-3xl font-black text-white">Community Partners</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">Community Partners</h2>
           </div>
           <p className="text-neutral-400">Supporting our mission from the beginning</p>
         </div>
@@ -322,7 +322,7 @@ export default function SponsorsPage() {
                   <Sparkles className="w-12 h-12 text-white" />
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-black text-white mb-6">
+                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
                   Interested in Sponsoring?
                 </h2>
 
