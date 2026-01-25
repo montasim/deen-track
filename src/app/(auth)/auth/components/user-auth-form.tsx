@@ -245,33 +245,33 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='space-y-1'>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-neutral-300">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder='name@example.com' {...field} />
+                      <Input placeholder='name@example.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button className='mt-2' disabled={isLoading}>
+              <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
                 {isLoading ? 'Checking...' : 'Continue'}
               </Button>
 
-              <div className='relative my-2'>
+              <div className='relative my-4'>
                 <div className='absolute inset-0 flex items-center'>
-                  <span className='w-full border-t' />
+                  <span className='w-full border-t border-white/10' />
                 </div>
                 <div className='relative flex justify-center text-xs uppercase'>
-                  <span className='bg-background px-2 text-muted-foreground'>
+                  <span className='bg-neutral-900 px-2 text-neutral-500'>
                     Or continue with
                   </span>
                 </div>
               </div>
 
-              <div className='grid grid-cols-2 gap-2'>
+              <div className='grid grid-cols-2 gap-3'>
                 <Button
                   variant='outline'
-                  className='w-full'
+                  className='border-white/10 hover:bg-white/5 hover:border-white/20 text-white w-full'
                   type='button'
                   disabled={isLoading}
                   onClick={() => handleSocialLogin('google')}
@@ -280,7 +280,7 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 </Button>
                 <Button
                   variant='outline'
-                  className='w-full'
+                  className='border-white/10 hover:bg-white/5 hover:border-white/20 text-white w-full'
                   type='button'
                   disabled={isLoading}
                   onClick={() => handleSocialLogin('github')}
@@ -312,16 +312,16 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
               render={({ field }) => (
                 <FormItem className='space-y-1'>
                   <div className='flex items-center justify-between'>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-neutral-300">Password</FormLabel>
                     <Link
                       href={`/forgot-password?email=${encodeURIComponent(email)}`}
-                      className='text-sm font-medium text-muted-foreground hover:opacity-75'
+                      className='text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors'
                     >
                       Forgot password?
                     </Link>
                   </div>
                   <FormControl>
-                    <PasswordInput placeholder='Enter your password' {...field} />
+                    <PasswordInput placeholder='Enter your password' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -349,14 +349,14 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 }}
               />
             </div>
-            <Button className='mt-2' disabled={isLoading || !turnstileToken}>
+            <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading || !turnstileToken}>
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
             <Button
               type='button'
               variant='ghost'
               onClick={goBackToEmail}
-              className='mt-2'
+              className='mt-3 w-full text-neutral-400 hover:text-white hover:bg-white/5'
             >
               Back to email
             </Button>

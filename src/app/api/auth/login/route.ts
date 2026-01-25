@@ -7,7 +7,7 @@
  * 
  * Security:
  * - Constant-time password comparison (with dummy hash for non-existent users)
- * - Generic error messages (no hint about which field is wrong)
+ * - Generic error messages (no hint about-2 which field is wrong)
  * - Rate limiting per email + IP
  * - HttpOnly session cookie
  */
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
                 }).catch(console.error)
             }
 
-            // Generic error message - no hint about which field is wrong
+            // Generic error message - no hint about-2 which field is wrong
             return errorResponse('Invalid email or password', 401)
         }
 

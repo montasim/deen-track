@@ -36,6 +36,9 @@ import {
     Palette,
     Monitor,
     Link2,
+    Target,
+    CheckCircle,
+    Files,
 } from 'lucide-react'
 import { type SidebarData, UserRole } from '../types'
 import { ROUTES } from '@/lib/routes/client-routes'
@@ -154,9 +157,19 @@ export const sidebarData: SidebarData = {
           icon: Users,
         },
         {
-          title: 'Campaigns',
+          title: 'Email Campaigns',
           url: ROUTES.dashboardCampaigns.href,
           icon: Megaphone,
+        },
+        {
+          title: 'Proof Verification',
+          url: ROUTES.adminProofVerification.href,
+          icon: CheckCircle,
+        },
+        {
+          title: 'Campaign Templates',
+          url: ROUTES.adminCampaignTemplates.href,
+          icon: Files,
         },
         {
           title: 'Support Tickets',
@@ -205,6 +218,35 @@ export const sidebarData: SidebarData = {
         {
           title: 'Achievements',
           url: ROUTES.achievements.href,
+          icon: Trophy,
+        },
+      ],
+    },
+
+    // ============================================================================
+    // GAMIFIED CAMPAIGNS - All authenticated users
+    // ============================================================================
+    {
+      title: 'Campaigns',
+      items: [
+        {
+          title: 'Browse Campaigns',
+          url: ROUTES.gamifiedCampaigns.href,
+          icon: Target,
+        },
+        {
+          title: 'My Progress',
+          url: ROUTES.myProgress.href,
+          icon: BarChart3,
+        },
+        {
+          title: 'Teams',
+          url: ROUTES.teams.href,
+          icon: Users,
+        },
+        {
+          title: 'Leaderboard',
+          url: ROUTES.leaderboard.href,
           icon: Trophy,
         },
       ],

@@ -96,7 +96,7 @@ export async function POST(
             endpoint: '/api/user/offers/[id]/respond',
         }).catch(console.error)
 
-        // Notify the buyer about the offer status change
+        // Notify the buyer about-2 the offer status change
         await notifyOfferStatusChange(
             offer.buyerId,
             offer.sellPost.title,

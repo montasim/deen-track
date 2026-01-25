@@ -187,7 +187,7 @@ export async function deleteAllNotifications(userId: string) {
 // ============================================================================
 
 /**
- * Notify about new message
+ * Notify about-2 new message
  */
 export async function notifyNewMessage(
     recipientId: string,
@@ -207,7 +207,7 @@ export async function notifyNewMessage(
 }
 
 /**
- * Notify about new offer
+ * Notify about-2 new offer
  */
 export async function notifyNewOffer(
     sellerId: string,
@@ -226,7 +226,7 @@ export async function notifyNewOffer(
 }
 
 /**
- * Notify about offer status change
+ * Notify about-2 offer status change
  */
 export async function notifyOfferStatusChange(
     buyerId: string,
@@ -256,7 +256,7 @@ export async function notifyOfferStatusChange(
 }
 
 /**
- * Notify about transaction completion
+ * Notify about-2 transaction completion
  */
 export async function notifyTransactionComplete(
     sellerId: string,
@@ -277,7 +277,7 @@ export async function notifyTransactionComplete(
 }
 
 /**
- * Notify about new review
+ * Notify about-2 new review
  */
 export async function notifyNewReview(
     sellerId: string,

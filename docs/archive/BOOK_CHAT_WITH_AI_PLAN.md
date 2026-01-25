@@ -54,7 +54,7 @@ interface Book {
 // 1. Create Assistant with file search
 const assistant = await openai.beta.assistants.create({
   name: "Book Assistant",
-  instructions: "You are a helpful assistant that answers questions about books...",
+  instructions: "You are a helpful assistant that answers questions about-2 books...",
   tools: [{ type: "file_search" }],
   model: "gpt-4o"
 })

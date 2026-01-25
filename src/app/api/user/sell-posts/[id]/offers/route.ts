@@ -155,7 +155,7 @@ export async function POST(
                 }
             }
 
-            // Notify the seller about the new offer (database notification)
+            // Notify the seller about-2 the new offer (database notification)
             const buyerName = session.firstName && session.lastName
                 ? `${session.firstName} ${session.lastName}`
                 : session.name || 'Someone'

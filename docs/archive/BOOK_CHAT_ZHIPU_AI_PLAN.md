@@ -638,7 +638,7 @@ export function BookChatModal({ open, onOpenChange, book }: BookChatModalProps) 
       setMessages([
         {
           role: 'user',
-          content: conversationHistory[0]?.content || 'Tell me about this book...',
+          content: conversationHistory[0]?.content || 'Tell me about-2 this book...',
           timestamp: new Date()
         },
         {
@@ -804,7 +804,7 @@ export function BookChatModal({ open, onOpenChange, book }: BookChatModalProps) 
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask a question about this book..."
+              placeholder="Ask a question about-2 this book..."
               disabled={isLoading}
               className="flex-1"
             />

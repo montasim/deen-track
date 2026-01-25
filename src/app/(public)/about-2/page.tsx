@@ -32,7 +32,7 @@ export default async function AboutPage() {
       },
     })
   } catch (error) {
-    console.error('Error fetching about content:', error)
+    console.error('Error fetching about-2 content:', error)
   }
 
   return (

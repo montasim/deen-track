@@ -51,88 +51,102 @@ export interface AnalyticsData {
 }
 
 export async function getAnalyticsData(): Promise<AnalyticsData> {
-  const now = new Date()
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+  try {
+    const now = new Date()
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
-  const [
-    totalViews,
-    uniqueVisitors,
-    topSellPosts,
-    activityByType,
-    totalBlogPosts,
-    totalAchievements,
-    viewsOverTime,
-  ] = await Promise.all([
-    // Total views in last 30 days (from itemSellPostView)
-    prisma.itemSellPostView.count({
-      where: { visitedAt: { gte: thirtyDaysAgo } },
-    }),
+    const [
+      totalViews,
+      uniqueVisitors,
+      topSellPosts,
+      activityByType,
+      totalBlogPosts,
+      totalAchievements,
+      viewsOverTime,
+    ] = await Promise.all([
+      // Total views in last 30 days (from itemSellPostView)
+      prisma.itemSellPostView.count({
+        where: { visitedAt: { gte: thirtyDaysAgo } },
+      }).catch(() => 0),
 
-    // Unique visitors
-    prisma.itemSellPostView.groupBy({
-      by: ['userId'],
-      where: { visitedAt: { gte: thirtyDaysAgo }, userId: { not: null } },
-    }).then(groups => groups.length),
+      // Unique visitors
+      prisma.itemSellPostView.groupBy({
+        by: ['userId'],
+        where: { visitedAt: { gte: thirtyDaysAgo }, userId: { not: null } },
+      }).then(groups => groups.length).catch(() => 0),
 
-    // Top viewed marketplace posts
-    prisma.itemSellPostView.groupBy({
-      by: ['sellPostId'],
-      where: { visitedAt: { gte: thirtyDaysAgo } },
-      _count: { sellPostId: true },
-      orderBy: { _count: { sellPostId: 'desc' } },
-      take: 5,
-    }).then(async (groups) => {
-      const posts = await prisma.itemSellPost.findMany({
-        where: { id: { in: groups.map(g => g.sellPostId) } },
-        select: { id: true, title: true },
-      })
-      return groups.map(g => ({
-        id: g.sellPostId,
-        title: posts.find(p => p.id === g.sellPostId)?.title || 'Unknown',
-        views: g._count.sellPostId,
-      }))
-    }),
+      // Top viewed marketplace posts
+      prisma.itemSellPostView.groupBy({
+        by: ['sellPostId'],
+        where: { visitedAt: { gte: thirtyDaysAgo } },
+        _count: { sellPostId: true },
+        orderBy: { _count: { sellPostId: 'desc' } },
+        take: 5,
+      }).then(async (groups) => {
+        const posts = await prisma.itemSellPost.findMany({
+          where: { id: { in: groups.map(g => g.sellPostId) } },
+          select: { id: true, title: true },
+        }).catch(() => [])
+        return groups.map(g => ({
+          id: g.sellPostId,
+          title: posts.find(p => p.id === g.sellPostId)?.title || 'Unknown',
+          views: g._count.sellPostId,
+        }))
+      }).catch(() => []),
 
-    // Activity by type (from activity logs)
-    prisma.activityLog.groupBy({
-      by: ['resourceType'],
-      where: { createdAt: { gte: thirtyDaysAgo } },
-      _count: { resourceType: true },
-      orderBy: { _count: { resourceType: 'desc' } },
-      take: 5,
-    }).then(groups => groups.map(g => ({
-      type: g.resourceType,
-      count: g._count.resourceType,
-    }))),
+      // Activity by type (from activity logs)
+      prisma.activityLog.groupBy({
+        by: ['resourceType'],
+        where: { createdAt: { gte: thirtyDaysAgo } },
+        _count: { resourceType: true },
+        orderBy: { _count: { resourceType: 'desc' } },
+        take: 5,
+      }).then(groups => groups.map(g => ({
+        type: g.resourceType,
+        count: g._count.resourceType,
+      }))).catch(() => []),
 
-    // Total blog posts
-    prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
+      // Total blog posts
+      prisma.blogPost.count({ where: { status: 'PUBLISHED' } }).catch(() => 0),
 
-    // Total achievements unlocked
-    prisma.userAchievement.count(),
+      // Total achievements unlocked
+      prisma.userAchievement.count().catch(() => 0),
 
-    // Views over time (last 30 days)
-    prisma.itemSellPostView.findMany({
-      where: { visitedAt: { gte: thirtyDaysAgo } },
-      select: { visitedAt: true },
-    }).then(views => {
-      const dailyViews = new Map<string, number>()
-      views.forEach(v => {
-        const date = v.visitedAt.toISOString().split('T')[0]
-        dailyViews.set(date, (dailyViews.get(date) || 0) + 1)
-      })
-      return Array.from(dailyViews.entries()).map(([date, views]) => ({ date, views }))
-    }),
-  ])
+      // Views over time (last 30 days)
+      prisma.itemSellPostView.findMany({
+        where: { visitedAt: { gte: thirtyDaysAgo } },
+        select: { visitedAt: true },
+      }).then(views => {
+        const dailyViews = new Map<string, number>()
+        views.forEach(v => {
+          const date = v.visitedAt.toISOString().split('T')[0]
+          dailyViews.set(date, (dailyViews.get(date) || 0) + 1)
+        })
+        return Array.from(dailyViews.entries()).map(([date, views]) => ({ date, views }))
+      }).catch(() => []),
+    ])
 
-  return {
-    totalViews,
-    uniqueVisitors,
-    topContent: topSellPosts,
-    activityByType,
-    totalBlogPosts,
-    totalAchievementsUnlocked: totalAchievements,
-    viewsOverTime,
+    return {
+      totalViews,
+      uniqueVisitors,
+      topContent: topSellPosts,
+      activityByType,
+      totalBlogPosts,
+      totalAchievementsUnlocked: totalAchievements,
+      viewsOverTime,
+    }
+  } catch (error) {
+    console.error('Error in getAnalyticsData:', error)
+    // Return default values on error
+    return {
+      totalViews: 0,
+      uniqueVisitors: 0,
+      topContent: [],
+      activityByType: [],
+      totalBlogPosts: 0,
+      totalAchievementsUnlocked: 0,
+      viewsOverTime: [],
+    }
   }
 }
 
@@ -152,49 +166,64 @@ export interface AdminDashboardStats {
 }
 
 export async function getAdminDashboardStats(): Promise<AdminDashboardStats> {
-  const now = new Date()
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  try {
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  const [
-    totalUsers,
-    totalViews,
-    totalMarketplacePosts,
-    activeSupportTickets,
-    pendingSupportTickets,
-    usersThisMonth,
-    viewsThisMonth,
-    marketplacePostsThisMonth,
-  ] = await Promise.all([
-    // Total users
-    prisma.user.count({ where: { isActive: true } }),
+    const [
+      totalUsers,
+      totalViews,
+      totalMarketplacePosts,
+      activeSupportTickets,
+      pendingSupportTickets,
+      usersThisMonth,
+      viewsThisMonth,
+      marketplacePostsThisMonth,
+    ] = await Promise.all([
+      // Total users
+      prisma.user.count({ where: { isActive: true } }).catch(() => 0),
 
-    // Total marketplace views
-    prisma.itemSellPostView.count(),
+      // Total marketplace views
+      prisma.itemSellPostView.count().catch(() => 0),
 
-    // Total marketplace posts
-    prisma.itemSellPost.count(),
+      // Total marketplace posts
+      prisma.itemSellPost.count().catch(() => 0),
 
-    // Active support tickets
-    prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
+      // Active support tickets
+      prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }).catch(() => 0),
 
-    // Pending support tickets
-    prisma.supportTicket.count({ where: { status: 'OPEN' } }),
+      // Pending support tickets
+      prisma.supportTicket.count({ where: { status: 'OPEN' } }).catch(() => 0),
 
-    // This month stats
-    prisma.user.count({ where: { createdAt: { gte: startOfMonth }, isActive: true } }),
-    prisma.itemSellPostView.count({ where: { visitedAt: { gte: startOfMonth } } }),
-    prisma.itemSellPost.count({ where: { createdAt: { gte: startOfMonth } } }),
-  ])
+      // This month stats
+      prisma.user.count({ where: { createdAt: { gte: startOfMonth }, isActive: true } }).catch(() => 0),
+      prisma.itemSellPostView.count({ where: { visitedAt: { gte: startOfMonth } } }).catch(() => 0),
+      prisma.itemSellPost.count({ where: { createdAt: { gte: startOfMonth } } }).catch(() => 0),
+    ])
 
-  return {
-    totalUsers,
-    totalViews,
-    totalMarketplacePosts,
-    activeSupportTickets,
-    pendingSupportTickets,
-    usersThisMonth,
-    viewsThisMonth,
-    marketplacePostsThisMonth,
+    return {
+      totalUsers,
+      totalViews,
+      totalMarketplacePosts,
+      activeSupportTickets,
+      pendingSupportTickets,
+      usersThisMonth,
+      viewsThisMonth,
+      marketplacePostsThisMonth,
+    }
+  } catch (error) {
+    console.error('Error in getAdminDashboardStats:', error)
+    // Return default values on error
+    return {
+      totalUsers: 0,
+      totalViews: 0,
+      totalMarketplacePosts: 0,
+      activeSupportTickets: 0,
+      pendingSupportTickets: 0,
+      usersThisMonth: 0,
+      viewsThisMonth: 0,
+      marketplacePostsThisMonth: 0,
+    }
   }
 }
 

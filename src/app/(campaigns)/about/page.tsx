@@ -1,0 +1,454 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  Trophy,
+  Heart,
+  Lightbulb,
+  Shield,
+  Star,
+  Users,
+  TrendingUp,
+  Sparkles,
+  ArrowUpRight,
+  Target,
+  Flame,
+  Calendar,
+  Github,
+  Twitter,
+  Linkedin,
+  Rocket,
+} from 'lucide-react'
+
+const stats = [
+  { label: 'Active Users', value: '50K+', icon: Users, color: 'from-cyan-500 to-blue-600' },
+  { label: 'Campaigns Hosted', value: '1,200+', icon: Trophy, color: 'from-violet-500 to-purple-600' },
+  { label: 'Tasks Completed', value: '2.5M+', icon: Sparkles, color: 'from-emerald-500 to-green-600' },
+  { label: 'Rewards Earned', value: '$500K+', icon: Star, color: 'from-amber-500 to-orange-600' },
+]
+
+const values = [
+  {
+    icon: Lightbulb,
+    title: 'Innovation First',
+    description: 'We constantly push boundaries to create engaging gamification experiences that challenge and inspire.',
+    color: 'from-yellow-500 to-amber-600',
+  },
+  {
+    icon: Heart,
+    title: 'Community Driven',
+    description: 'Our platform thrives on the energy and passion of our diverse global community of achievers.',
+    color: 'from-rose-500 to-pink-600',
+  },
+  {
+    icon: Shield,
+    title: 'Integrity Always',
+    description: 'Trust is the foundation. We maintain transparency and fairness in every campaign and interaction.',
+    color: 'from-blue-500 to-cyan-600',
+  },
+  {
+    icon: Trophy,
+    title: 'Excellence Matters',
+    description: 'We obsess over details, ensuring every experience is polished, rewarding, and memorable.',
+    color: 'from-violet-500 to-purple-600',
+  },
+]
+
+const milestones = [
+  {
+    year: '2021',
+    title: 'Platform Launch',
+    description: 'Started with a vision to gamify personal growth and achievement tracking.',
+    icon: Rocket,
+    color: 'from-cyan-500 to-blue-600',
+  },
+  {
+    year: '2022',
+    title: 'First 10K Users',
+    description: 'Rapid growth as communities embraced our campaign-based challenge system.',
+    icon: TrendingUp,
+    color: 'from-emerald-500 to-green-600',
+  },
+  {
+    year: '2023',
+    title: 'Enterprise Launch',
+    description: 'Expanded to serve businesses and organizations with custom campaign solutions.',
+    icon: Sparkles,
+    color: 'from-violet-500 to-purple-600',
+  },
+  {
+    year: '2024',
+    title: 'Global Reach',
+    description: 'Now serving users in 50+ countries with localized campaigns and rewards.',
+    icon: Target,
+    color: 'from-amber-500 to-orange-600',
+  },
+]
+
+const team = [
+  {
+    name: 'Sarah Chen',
+    role: 'CEO & Co-Founder',
+    bio: 'Former product lead at Stripe. Passionate about gamification and behavioral psychology.',
+    avatar: 'SC',
+    social: { github: '#', twitter: '#', linkedin: '#' },
+    color: 'from-cyan-500 to-blue-600',
+  },
+  {
+    name: 'Marcus Johnson',
+    role: 'CTO & Co-Founder',
+    bio: 'Ex-Google engineer with expertise in scalable systems and real-time platforms.',
+    avatar: 'MJ',
+    social: { github: '#', twitter: '#', linkedin: '#' },
+    color: 'from-violet-500 to-purple-600',
+  },
+  {
+    name: 'Elena Rodriguez',
+    role: 'Head of Product',
+    bio: 'Building delightful experiences that users love. Design-thinking advocate.',
+    avatar: 'ER',
+    social: { github: '#', twitter: '#', linkedin: '#' },
+    color: 'from-emerald-500 to-green-600',
+  },
+  {
+    name: 'David Kim',
+    role: 'Head of Community',
+    bio: 'Community architect who believes in the power of shared challenges and growth.',
+    avatar: 'DK',
+    social: { github: '#', twitter: '#', linkedin: '#' },
+    color: 'from-amber-500 to-orange-600',
+  },
+]
+
+export default function AboutPage() {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
+  return (
+    <>
+      {/* Hero Section */}
+      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
+          <div className="absolute w-[600px] h-[600px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 bottom-0 right-0 animate-pulse delay-1000" />
+        </div>
+
+        <div className="relative container mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center max-w-4xl mx-auto">
+            <Badge
+              className={`mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30 ${
+                isVisible ? 'animate-fade-in' : 'opacity-0'
+              }`}
+            >
+              <Sparkles className="w-3 h-3 mr-2" />
+              Our Story
+            </Badge>
+
+            <h1
+              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-8 transition-all duration-1000 ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
+            >
+              <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+                Turning Challenges
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+                Into Triumphs
+              </span>
+            </h1>
+
+            <p
+              className={`text-xl text-neutral-400 leading-relaxed mb-8 transition-all duration-1000 delay-200 ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
+            >
+              We're on a mission to make personal growth exciting, rewarding, and social. Through
+              gamified campaigns and friendly competition, we help millions unlock their potential
+              and celebrate every achievement along the way.
+            </p>
+
+            <div
+              className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-400 ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
+            >
+              <Button
+                asChild
+                size="lg"
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
+              >
+                <Link href="/campaigns" className="gap-2">
+                  Explore Campaigns
+                  <ArrowUpRight className="w-5 h-5" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/5"
+              >
+                <Link href="/sign-up">Join Our Community</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="container mx-auto max-w-7xl px-6 py-20">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <Card
+                key={stat.label}
+                className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+              >
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                />
+                <CardContent className="relative p-8 text-center">
+                  <div
+                    className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${stat.color} shadow-lg mb-6 group-hover:scale-110 transition-transform duration-500`}
+                  >
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-black text-white mb-2">{stat.value}</div>
+                  <div className="text-neutral-400 font-medium">{stat.label}</div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Our Story / Timeline */}
+      <div className="border-y border-white/5 bg-neutral-900/20">
+        <div className="container mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16">
+            <Badge className="mb-6 bg-gradient-to-r from-violet-500/20 to-purple-600/20 text-violet-300 border-violet-500/30">
+              <Calendar className="w-3 h-3 mr-2" />
+              Our Journey
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-black mb-4">
+              <span className="bg-gradient-to-r from-violet-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Building Something
+              </span>
+              <br />
+              <span className="text-white">Extraordinary</span>
+            </h2>
+            <p className="text-base text-neutral-400 max-w-2xl mx-auto">
+              From a simple idea to a global movement, here's how we've grown
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {milestones.map((milestone, index) => {
+              const Icon = milestone.icon
+              return (
+                <Card
+                  key={milestone.year}
+                  className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+                  style={{
+                    animationDelay: `${index * 150}ms`,
+                  }}
+                >
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${milestone.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                  />
+                  <CardContent className="relative p-6">
+                    <div
+                      className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${milestone.color} shadow-lg mb-4 group-hover:scale-110 transition-transform duration-500`}
+                    >
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-3xl font-black text-white mb-3">{milestone.year}</div>
+                    <h3 className="text-xl font-bold text-white mb-3">{milestone.title}</h3>
+                    <p className="text-neutral-400 text-sm leading-relaxed">{milestone.description}</p>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Values Section */}
+      <div className="container mx-auto max-w-7xl px-6 py-24">
+        <div className="text-center mb-16">
+          <Badge className="mb-6 bg-gradient-to-r from-emerald-500/20 to-green-600/20 text-emerald-300 border-emerald-500/30">
+            <Star className="w-3 h-3 mr-2" />
+            What We Believe
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-black mb-4">
+            <span className="bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 bg-clip-text text-transparent">
+              Core Values
+            </span>
+          </h2>
+          <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
+            The principles that guide everything we do
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {values.map((value, index) => {
+            const Icon = value.icon
+            return (
+              <Card
+                key={value.title}
+                className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+                style={{
+                  animationDelay: `${index * 150}ms`,
+                }}
+              >
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                />
+                <CardContent className="relative p-8">
+                  <div className="flex items-start gap-6">
+                    <div
+                      className={`flex-shrink-0 p-4 rounded-2xl bg-gradient-to-br ${value.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}
+                    >
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-white mb-3">{value.title}</h3>
+                      <p className="text-neutral-400 leading-relaxed">{value.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Team Section */}
+      <div className="border-y border-white/5 bg-neutral-900/20">
+        <div className="container mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16">
+            <Badge className="mb-6 bg-gradient-to-r from-amber-500/20 to-orange-600/20 text-amber-300 border-amber-500/30">
+              <Users className="w-3 h-3 mr-2" />
+              The Team
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-black mb-4">
+              <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
+                Meet the People
+              </span>
+              <br />
+              <span className="text-white">Behind the Magic</span>
+            </h2>
+            <p className="text-base text-neutral-400 max-w-2xl mx-auto">
+              A passionate team of builders, dreamers, and achievers
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {team.map((member, index) => (
+              <Card
+                key={member.name}
+                className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+              >
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${member.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                />
+                <CardContent className="relative p-6 text-center">
+                  <div
+                    className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${member.color} mx-auto mb-4 flex items-center justify-center text-2xl font-black text-white group-hover:scale-110 transition-transform duration-500`}
+                  >
+                    {member.avatar}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
+                  <div className="text-sm font-semibold text-cyan-400 mb-4">{member.role}</div>
+                  <p className="text-sm text-neutral-400 leading-relaxed mb-6">{member.bio}</p>
+                  <div className="flex items-center justify-center gap-3">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-neutral-400 hover:text-white hover:bg-white/5"
+                      asChild
+                    >
+                      <Link href={member.social.github}>
+                        <Github className="w-4 h-4" />
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-neutral-400 hover:text-white hover:bg-white/5"
+                      asChild
+                    >
+                      <Link href={member.social.twitter}>
+                        <Twitter className="w-4 h-4" />
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-neutral-400 hover:text-white hover:bg-white/5"
+                      asChild
+                    >
+                      <Link href={member.social.linkedin}>
+                        <Linkedin className="w-4 h-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="border-t border-white/5 bg-neutral-900/30">
+        <div className="container mx-auto max-w-4xl px-6 py-24 text-center">
+          <div
+            className={`inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-8 ${
+              isVisible ? 'animate-bounce-subtle' : ''
+            }`}
+          >
+            <Flame className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mb-6">
+            Ready to Start Your Journey?
+          </h2>
+          <p className="text-lg text-neutral-400 mb-10 max-w-2xl mx-auto">
+            Join thousands of users who are already challenging themselves, earning rewards, and
+            achieving their goals through our gamified campaigns.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
+            >
+              <Link href="/sign-up" className="gap-2">
+                Create Free Account
+                <ArrowUpRight className="w-5 h-5" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/5"
+            >
+              <Link href="/campaigns">Browse Campaigns</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

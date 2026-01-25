@@ -32,6 +32,10 @@ import {
   Link2,
   Ticket,
   Sparkles,
+  Target,
+  Files,
+  CheckCircle,
+  Layers,
 } from 'lucide-react'
 import { AccessConfig, AccessLevel, RoleAccess } from '@/lib/auth/roles'
 
@@ -156,7 +160,7 @@ export const ROUTES = {
   },
   about: {
     label: 'About Us',
-    href: '/about',
+    href: '/about-2',
     icon: Info,
     access: RoleAccess.ALL,
   },
@@ -384,6 +388,60 @@ export const ROUTES = {
     label: 'Blog Comments',
     href: '/dashboard/blog/comments',
     icon: MessageSquare,
+    access: RoleAccess.ADMIN_ONLY,
+  },
+
+  // Gamified Campaigns Routes
+  gamifiedCampaigns: {
+    label: 'Campaigns',
+    href: '/dashboard/campaigns/gamified',
+    icon: Target,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  myProgress: {
+    label: 'My Progress',
+    href: '/dashboard/campaigns/my-progress',
+    icon: BarChart3,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  teams: {
+    label: 'Teams',
+    href: '/dashboard/campaigns/teams',
+    icon: Users,
+    access: RoleAccess.AUTHENTICATED,
+  },
+  leaderboard: {
+    label: 'Leaderboard',
+    href: '/dashboard/leaderboard',
+    icon: Trophy,
+    access: RoleAccess.AUTHENTICATED,
+  },
+
+  // Public Campaign Routes
+  publicCampaigns: {
+    label: 'Campaigns',
+    href: '/campaigns',
+    icon: Target,
+    access: RoleAccess.ALL,
+  },
+  publicLeaderboard: {
+    label: 'Leaderboard',
+    href: '/leaderboard',
+    icon: Trophy,
+    access: RoleAccess.ALL,
+  },
+
+  // Admin Campaign Routes
+  adminProofVerification: {
+    label: 'Proof Verification',
+    href: '/dashboard/admin/proof-verification',
+    icon: CheckCircle,
+    access: RoleAccess.ADMIN_ONLY,
+  },
+  adminCampaignTemplates: {
+    label: 'Campaign Templates',
+    href: '/dashboard/admin/campaign-templates',
+    icon: Files,
     access: RoleAccess.ADMIN_ONLY,
   },
 } as const

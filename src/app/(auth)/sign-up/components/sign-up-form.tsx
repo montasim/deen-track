@@ -72,19 +72,12 @@ const detailsSchema = z
   })
 
 const Header = () => (
-  <div className='mb-2 flex flex-col space-y-2 text-left'>
-    <h1 className='text-lg font-semibold tracking-tight'>
-      Create an account
-    </h1>
-    <p className='text-sm text-muted-foreground'>
-      Enter your email and password to create an account. <br />
-      Already have an account?{' '}
-      <Link
-        href={ROUTES.signIn.href}
-        className='underline underline-offset-4 hover:text-primary'
-      >
-        Sign In
-      </Link>
+  <div className='mb-6 flex flex-col space-y-2 text-left'>
+    <h2 className='text-xl font-bold text-white'>
+      Create Your Account
+    </h2>
+    <p className='text-sm text-neutral-400'>
+      Enter your details to get started
     </p>
   </div>
 )
@@ -446,9 +439,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='space-y-1'>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-neutral-300">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder='name@example.com' {...field} />
+                      <Input placeholder='name@example.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -476,7 +469,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                   }}
                 />
               </div>
-              <Button className='mt-2' disabled={isLoading || !turnstileToken}>
+              <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading || !turnstileToken}>
                 {isLoading ? 'Sending...' : 'Continue'}
               </Button>
             </div>
@@ -492,12 +485,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       <div className={cn('grid gap-4', className)} {...props}>
         <Header />
         <div className='mb-4'>
-          <p className='text-sm text-muted-foreground'>
-            We sent a 6-digit code to <strong>{email}</strong>
+          <p className='text-sm text-neutral-400'>
+            We sent a 6-digit code to <span className="text-cyan-400 font-semibold">{email}</span>
           </p>
         </div>
 
-        <Card className={cn('border-2', otpError ? 'border-red-500' : '')}>
+        <Card className={cn('bg-neutral-900/60 backdrop-blur-xl border-white/10', otpError ? 'border-red-500' : '')}>
           <CardContent className='pt-6 space-y-4'>
             <div className='flex justify-center'>
               <OtpInput
@@ -509,7 +502,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             </div>
 
             {otpError && (
-              <p className='text-sm text-red-600 text-center'>{otpError}</p>
+              <p className='text-sm text-red-400 text-center'>{otpError}</p>
             )}
 
             <ResendButton
@@ -531,7 +524,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           type='button'
           variant='ghost'
           onClick={() => setStep('email')}
-          className='w-full'
+          className='w-full text-neutral-400 hover:text-white hover:bg-white/5'
         >
           Back to Email
         </Button>
@@ -551,11 +544,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name='name'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="text-neutral-300">Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder='John Doe'
                       autoComplete='name'
+                      className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20"
                       {...field}
                     />
                   </FormControl>
@@ -568,9 +562,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name='password'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-neutral-300">Password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder='********' {...field} />
+                    <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -581,15 +575,15 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name='confirmPassword'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="text-neutral-300">Confirm Password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder='********' {...field} />
+                    <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className='mt-2' disabled={isLoading}>
+            <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
               {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </div>

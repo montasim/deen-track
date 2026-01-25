@@ -275,15 +275,15 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='space-y-1'>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-neutral-300">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder='name@example.com' {...field} />
+                      <Input placeholder='name@example.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button className='mt-2' disabled={isLoading}>
+              <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
                 {isLoading ? 'Sending...' : 'Send Reset Code'}
               </Button>
             </div>
@@ -298,12 +298,12 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
     return (
       <div className={cn('grid gap-4', className)} {...props}>
         <div>
-          <p className='text-sm text-muted-foreground'>
-            We sent a 6-digit code to <strong>{email}</strong>
+          <p className='text-sm text-neutral-400'>
+            We sent a 6-digit code to <span className="text-cyan-400 font-semibold">{email}</span>
           </p>
         </div>
 
-        <Card className={cn('border-0', otpError ? 'border-2 border-red-500' : '')}>
+        <Card className={cn('bg-neutral-900/60 backdrop-blur-xl border-white/10', otpError ? 'border-red-500' : '')}>
           <CardContent className='p-4 space-y-4'>
             <div className='flex justify-center'>
               <OtpInput
@@ -315,7 +315,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
             </div>
 
             {otpError && (
-              <p className='text-sm text-red-600 text-center'>{otpError}</p>
+              <p className='text-sm text-red-400 text-center'>{otpError}</p>
             )}
 
             <ResendButton
@@ -337,7 +337,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
           type='button'
           variant='ghost'
           onClick={() => setStep('email')}
-          className='w-full'
+          className='w-full text-neutral-400 hover:text-white hover:bg-white/5'
         >
           Back to Email
         </Button>
@@ -356,9 +356,9 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               name='password'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel className="text-neutral-300">New Password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder='********' {...field} />
+                    <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -369,15 +369,15 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               name='confirmPassword'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="text-neutral-300">Confirm Password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder='********' {...field} />
+                    <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className='mt-2' disabled={isLoading}>
+            <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
               {isLoading ? 'Resetting...' : 'Reset Password'}
             </Button>
           </div>

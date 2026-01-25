@@ -1,0 +1,7 @@
+export * from './campaign.repository'
+export * from './task.repository'
+export * from './submission.repository'
+export * from './proof.repository'
+export * from './team.repository'
+export * from './leaderboard.repository'
+export * from './template.repository'

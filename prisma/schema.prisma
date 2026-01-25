@@ -101,6 +101,22 @@ model User {
   // Campaign management
   campaigns              Campaign[]                @relation("UserCampaigns")
 
+  // Gamified Campaigns
+  campaignProgress       UserCampaignProgress[]    @relation()
+  createdTasks           CampaignTask[]            @relation("TaskCreator")
+  createdCampaigns       GamifiedCampaign[]        @relation("CampaignCreator")
+  submittedTasks         UserTaskSubmission[]      @relation("TaskSubmitter")
+  reviewedTasks          UserTaskSubmission[]      @relation("TaskReviewer")
+  validatedProofs        ProofSubmission[]         @relation("ProofValidator")
+
+  // Teams
+  captainedTeams         Team[]                   @relation("TeamCaptain")
+  teamMemberships        TeamMembership[]         @relation("TeamMembers")
+
+  // Templates
+  createdTemplates       CampaignTemplate[]       @relation("TemplateCreator")
+  createdSponsors        Sponsor[]                @relation("SponsorCreator")
+
   // Blog & Community
   blogPosts              BlogPost[]                @relation("UserBlogPosts")
   blogComments           BlogComment[]             @relation("UserBlogComments")
@@ -613,6 +629,8 @@ enum NotificationType {
   POST_APPROVED
   POST_REJECTED
   MARKETPLACE_UPDATE
+  TASK_APPROVED
+  TASK_REJECTED
 }
 
 // WebSocket features
@@ -770,6 +788,31 @@ enum ActivityAction {
 
   // Achievements
   ACHIEVEMENT_UNLOCKED
+
+  // Gamified Campaigns (Legacy - keep for compatibility)
+  TASK_CAMPAIGN_CREATED
+  TASK_CAMPAIGN_UPDATED
+  TASK_CAMPAIGN_STARTED
+  TASK_CAMPAIGN_ENDED
+  TASK_SUBMISSION_CREATED
+  TASK_SUBMISSION_APPROVED
+  TASK_SUBMISSION_REJECTED
+  TASK_ACHIEVEMENT_UNLOCKED
+  TASK_CAMPAIGN_ENROLLED
+  TASK_CAMPAIGN_COMPLETED
+
+  // Gamified Campaigns (New)
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_DELETED
+  TASK_SUBMITTED
+  TASK_APPROVED
+  TASK_REJECTED
+  CAMPAIGN_GAMIFIED_CREATED
+  CAMPAIGN_GAMIFIED_UPDATED
+  CAMPAIGN_GAMIFIED_JOINED
+  CAMPAIGN_GAMIFIED_COMPLETED
+  PROOF_VALIDATED
 }
 
 enum ActivityResourceType {
@@ -789,6 +832,15 @@ enum ActivityResourceType {
   LEGAL_CONTENT
   PRICING_TIER
   FAQ
+  // Legacy - keep for compatibility
+  TASK_CAMPAIGN
+  TASK
+  TASK_ACHIEVEMENT
+  // New
+  GAMIFIED_CAMPAIGN
+  CAMPAIGN_TASK
+  TASK_SUBMISSION
+  PROOF_SUBMISSION
 }
 
 // ============================================================================
@@ -1172,4 +1224,395 @@ model ContactSubmission {
   @@index([status, createdAt(sort: Desc)])
   @@index([email])
   @@map("contact_submissions")
+}
+
+// ============================================================================
+// GAMIFIED CAMPAIGN MANAGEMENT SYSTEM
+// ============================================================================
+
+// Enums
+enum TaskValidationType {
+  AUTO        // Future: AI/ML validation
+  MANUAL      // Admin review required
+  ADMIN       // Admin-only, no user input
+}
+
+enum ProofType {
+  IMAGE       // Image file
+  AUDIO       // Audio file
+  URL         // URL link
+  TEXT        // Text description
+}
+
+enum ProofValidationStatus {
+  PENDING     // Awaiting review
+  APPROVED    // Validated
+  REJECTED    // Rejected
+  NEEDS_INFO  // Needs more info
+}
+
+enum CampaignProgressStatus {
+  JOINED
+  IN_PROGRESS
+  COMPLETED
+  DISQUALIFIED
+}
+
+enum SubmissionStatus {
+  PENDING     // Awaiting action (legacy)
+  DRAFT       // User working on it
+  SUBMITTED   // Submitted for review
+  APPROVED    // Approved
+  REJECTED    // Rejected
+  RESUBMIT    // Needs resubmission
+}
+
+enum DependencyType {
+  ALL         // All prerequisite tasks must be completed
+  ANY         // At least one prerequisite task must be completed
+}
+
+enum TeamRole {
+  CAPTAIN     // Team creator/leader
+  MEMBER      // Regular team member
+}
+
+enum TeamStatus {
+  ACTIVE
+  INACTIVE
+  DISBANDED
+}
+
+enum TemplateDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+// Task Achievement - Rewards for completing tasks
+model TaskAchievement {
+  id              String      @id @default(uuid())
+  taskId          String
+  name            String
+  description     String      @db.Text
+  points          Int         @default(0)
+  icon            String?
+  imageUrl        String?
+  directImageUrl  String?
+  howToAchieve    String      @db.Text
+  order           Int         @default(0)
+
+  task            CampaignTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@map("task_achievements")
+}
+
+// Campaign Task - Individual task definition
+model CampaignTask {
+  id                      String              @id @default(uuid())
+  name                    String
+  description             String              @db.Text
+  rules                   String              @db.Text
+  disqualificationRules   String?             @db.Text
+  startDate               DateTime
+  endDate                 DateTime
+  isActive                Boolean             @default(true)
+  imageUrl                String?
+  directImageUrl          String?
+  validationType          TaskValidationType  @default(MANUAL)
+
+  // Metadata
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+  entryById               String
+
+  // Relations
+  entryBy                 User                @relation("TaskCreator", fields: [entryById], references: [id])
+  achievements            TaskAchievement[]
+  campaignTasks           CampaignToTask[]
+  submissions             UserTaskSubmission[]
+  dependencies            TaskDependency[]    @relation("TaskDependencies")
+  dependants              TaskDependency[]    @relation("TaskDependants")
+
+  @@index([isActive, startDate, endDate])
+  @@index([entryById])
+  @@map("campaign_tasks")
+}
+
+// Junction table for Campaign-Tasks many-to-many
+model CampaignToTask {
+  id          String            @id @default(uuid())
+  campaignId  String
+  taskId      String
+  order       Int               @default(0)
+
+  campaign    GamifiedCampaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  task        CampaignTask      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, taskId])
+  @@index([campaignId])
+  @@index([taskId])
+  @@map("campaign_to_tasks")
+}
+
+// Gamified Campaign - Collection of tasks
+model GamifiedCampaign {
+  id                      String              @id @default(uuid())
+  name                    String
+  description             String              @db.Text
+  imageUrl                String?
+  directImageUrl          String?
+  startDate               DateTime
+  endDate                 DateTime
+  isActive                Boolean             @default(true)
+  maxParticipants         Int?
+  rules                   String?             @db.Text
+  disqualificationRules   String?             @db.Text
+
+  // Metadata
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+  entryById               String
+
+  // Relations
+  entryBy                 User                @relation("CampaignCreator", fields: [entryById], references: [id])
+  tasks                   CampaignToTask[]
+  participations          UserCampaignProgress[]
+
+  @@index([isActive, startDate, endDate])
+  @@index([entryById])
+  @@map("gamified_campaigns")
+}
+
+// User Campaign Participation/Progress
+model UserCampaignProgress {
+  id              String                  @id @default(uuid())
+  userId          String
+  campaignId      String
+  status          CampaignProgressStatus  @default(JOINED)
+  joinedAt        DateTime                @default(now())
+  completedAt     DateTime?
+  totalPoints     Int                     @default(0)
+
+  user            User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign        GamifiedCampaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  submissions     UserTaskSubmission[]
+
+  @@unique([userId, campaignId])
+  @@index([userId, status])
+  @@index([campaignId, status])
+  @@map("user_campaign_progress")
+}
+
+// User Task Submission
+model UserTaskSubmission {
+  id              String              @id @default(uuid())
+  userId          String
+  taskId          String
+  campaignId      String
+  progressId      String
+  status          SubmissionStatus    @default(DRAFT)
+  submittedAt     DateTime?
+  reviewedAt      DateTime?
+  reviewedById    String?
+  feedback        String?             @db.Text
+
+  user            User                @relation("TaskSubmitter", fields: [userId], references: [id], onDelete: Cascade)
+  task            CampaignTask        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  progress        UserCampaignProgress @relation(fields: [progressId], references: [id], onDelete: Cascade)
+  reviewedBy      User?               @relation("TaskReviewer", fields: [reviewedById], references: [id])
+  proofs          ProofSubmission[]
+
+  @@unique([userId, taskId, campaignId])
+  @@index([userId, status])
+  @@index([campaignId, status])
+  @@index([taskId, status])
+  @@index([reviewedById])
+  @@map("user_task_submissions")
+}
+
+// Proof Submission (files/URLs)
+model ProofSubmission {
+  id              String                  @id @default(uuid())
+  submissionId    String
+  type            ProofType
+  fileUrl         String?
+  directFileUrl   String?
+  url             String?
+  text            String?                 @db.Text
+  validationStatus ProofValidationStatus @default(PENDING)
+  validatedAt     DateTime?
+  validatedById   String?
+  adminNotes      String?                 @db.Text
+
+  submission      UserTaskSubmission      @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  validatedBy     User?                   @relation("ProofValidator", fields: [validatedById], references: [id])
+
+  @@index([submissionId, validationStatus])
+  @@index([validatedById])
+  @@map("proof_submissions")
+}
+
+// ============================================================================
+// TASK DEPENDENCIES
+// ============================================================================
+
+model TaskDependency {
+  id                String          @id @default(uuid())
+  taskId            String
+  dependsOnTaskId   String
+  dependencyType    DependencyType  @default(ALL)
+  order             Int             @default(0)
+
+  task              CampaignTask    @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn         CampaignTask    @relation("TaskDependants", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, dependsOnTaskId])
+  @@index([taskId])
+  @@index([dependsOnTaskId])
+  @@map("task_dependencies")
+}
+
+// ============================================================================
+// TEAMS
+// ============================================================================
+
+model Team {
+  id                String          @id @default(uuid())
+  name              String
+  description       String?         @db.Text
+  imageUrl          String?
+  directImageUrl    String?
+  captainId         String
+  maxMembers        Int?
+  status            TeamStatus      @default(ACTIVE)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  captain           User            @relation("TeamCaptain", fields: [captainId], references: [id])
+  members           TeamMembership[]
+  campaignProgress  TeamCampaignProgress[]
+
+  @@index([status, createdAt])
+  @@index([captainId])
+  @@map("teams")
+}
+
+model TeamMembership {
+  id                String          @id @default(uuid())
+  teamId            String
+  userId            String
+  role              TeamRole        @default(MEMBER)
+  joinedAt          DateTime        @default(now())
+  pointsContributed Int             @default(0)
+
+  team              Team            @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user              User            @relation("TeamMembers", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+  @@map("team_memberships")
+}
+
+model TeamCampaignProgress {
+  id                  String                  @id @default(uuid())
+  teamId              String
+  campaignId          String
+  status              CampaignProgressStatus  @default(JOINED)
+  joinedAt            DateTime                @default(now())
+  completedAt         DateTime?
+  totalPoints         Int                     @default(0)
+  totalTasksCompleted Int                     @default(0)
+
+  team                Team                    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, campaignId])
+  @@index([teamId, status])
+  @@index([campaignId, status])
+  @@map("team_campaign_progress")
+}
+
+// ============================================================================
+// CAMPAIGN TEMPLATES
+// ============================================================================
+
+model CampaignTemplate {
+  id                      String                @id @default(uuid())
+  name                    String
+  description             String?               @db.Text
+  rules                   String?               @db.Text
+  disqualificationRules   String?               @db.Text
+  termsOfService          String?               @db.Text
+  category                String?
+  isPublic                Boolean               @default(false)
+  isSystemTemplate        Boolean               @default(false)
+  estimatedDuration       Int?                  // in hours
+  difficulty              TemplateDifficulty    @default(INTERMEDIATE)
+  imageUrl                String?
+  directImageUrl          String?
+  startDate               DateTime?
+  endDate                 DateTime?
+  minPointsToQualify      Int?                  @default(0)
+  sponsorId               String?
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  entryById               String
+
+  entryBy                 User                  @relation("TemplateCreator", fields: [entryById], references: [id])
+  sponsor                 Sponsor?              @relation("CampaignTemplateSponsor", fields: [sponsorId], references: [id])
+  templateTasks           TemplateTask[]
+
+  @@index([isPublic, category])
+  @@index([entryById])
+  @@map("campaign_templates")
+}
+
+model TemplateTask {
+  id                  String              @id @default(uuid())
+  templateId          String
+  name                String
+  description         String              @db.Text
+  rules               String              @db.Text
+  disqualificationRules String?           @db.Text
+  order               Int                 @default(0)
+  points              Int                 @default(0)
+  startDate           DateTime?
+  endDate             DateTime?
+  achievementsTemplate Json?               // Template for achievements
+
+  template            CampaignTemplate    @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+  @@map("template_tasks")
+}
+
+// ============================================================================
+// SPONSORS
+// ============================================================================
+
+model Sponsor {
+  id                String              @id @default(uuid())
+  name              String
+  description       String?             @db.Text
+  logoUrl           String?
+  directLogoUrl     String?
+  websiteUrl        String?
+  isActive          Boolean             @default(true)
+
+  // Metadata
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  entryById         String
+
+  entryBy           User                @relation("SponsorCreator", fields: [entryById], references: [id])
+
+  // Relations
+  campaignTemplates CampaignTemplate[] @relation("CampaignTemplateSponsor")
+
+  @@index([isActive, createdAt])
+  @@index([entryById])
+  @@map("sponsors")
 }
