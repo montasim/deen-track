@@ -1,58 +1,64 @@
 'use client'
 
-import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import AuthLayout from '@/components/auth-layout'
-import ForgotForm from './components/forgot-password-form'
+import { useState, Suspense } from 'react'
+import { Card } from '@/components/ui/card'
+import { BookOpen } from 'lucide-react'
 import { ROUTES } from '@/lib/routes/client-routes'
-import { KeyRound } from 'lucide-react'
+import ForgotForm from './components/forgot-password-form'
+import Link from 'next/link'
+import { useEffect } from 'react'
+
+function ForgotPasswordContent() {
+  const [siteName, setSiteName] = useState('CampaignHub')
+
+  useEffect(() => {
+    fetch('/api/public/site/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data.siteName) {
+          setSiteName(data.data.siteName)
+        }
+      })
+      .catch(console.error)
+  }, [])
+
+  return (
+    <div className='container grid h-svh flex-col items-center justify-center bg-primary-foreground lg:max-w-none lg:px-0'>
+      <div className='mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[480px] lg:p-8'>
+        <div className='mb-4 flex items-center justify-center gap-2'>
+          <BookOpen />
+          <h1 className='text-xl font-medium'>{siteName}</h1>
+        </div>
+        <Card className='m-4 p-4'>
+          <div className='flex flex-col space-y-2 text-left mb-4'>
+            <h1 className='text-xl font-semibold tracking-tight'>
+              Forgot your password?
+            </h1>
+            <p className='text-sm text-muted-foreground'>
+              No worries! We'll send you reset instructions <br />
+              Enter your email and we'll send you a link
+            </p>
+          </div>
+          <ForgotForm />
+          <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
+            Remember your password?{' '}
+            <Link
+              href={ROUTES.signIn.href}
+              className='underline underline-offset-4 hover:text-primary'
+            >
+              Sign in
+            </Link>
+          </p>
+        </Card>
+      </div>
+    </div>
+  )
+}
 
 export default function ForgotPassword() {
   return (
-    <AuthLayout>
-      <div className="space-y-6">
-        {/* Hero Badge */}
-        <div className="text-center">
-          <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
-            <KeyRound className="w-3 h-3 mr-2" />
-            Reset Password
-          </Badge>
-        </div>
-
-        {/* Main Card */}
-        <Card className="relative bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden">
-          {/* Animated Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-blue-600/0 to-violet-500/0 pointer-events-none" />
-          <CardContent className="relative p-8">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-black text-white mb-3">
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                  Forgot Password?
-                </span>
-              </h1>
-              <p className="text-base text-neutral-400 leading-relaxed">
-                No worries! We'll send you a reset link
-              </p>
-            </div>
-
-            {/* Form */}
-            <ForgotForm />
-          </CardContent>
-        </Card>
-
-        {/* Sign In Link */}
-        <p className="text-center text-sm text-neutral-400">
-          Remember your password?{' '}
-          <Link
-            href={ROUTES.signIn.href}
-            className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
-          >
-            Sign in
-          </Link>
-        </p>
-      </div>
-    </AuthLayout>
+    <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+      <ForgotPasswordContent />
+    </Suspense>
   )
 }

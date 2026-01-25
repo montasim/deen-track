@@ -83,39 +83,8 @@ export default async function PrivacyPage() {
           </div>
         </section>
 
-        {/* Privacy Commitment Cards */}
-        <section className="relative py-12">
-          <div className="container mx-auto max-w-7xl px-6">
-            <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 mb-12">
-              <div className="p-6 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-emerald-500/30 hover:shadow-xl transition-all duration-300">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/25 mb-4">
-                  <Lock className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Data Security</h3>
-                <p className="text-sm text-neutral-400">We use industry-standard encryption and security measures to protect your information.</p>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-cyan-500/30 hover:shadow-xl transition-all duration-300">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-4">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">No Selling</h3>
-                <p className="text-sm text-neutral-400">We never sell your personal data to third parties for marketing purposes.</p>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-violet-500/30 hover:shadow-xl transition-all duration-300">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 shadow-lg shadow-violet-500/25 mb-4">
-                  <Sparkles className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Transparent</h3>
-                <p className="text-sm text-neutral-400">Clear, easy-to-understand policies about how we handle your information.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Content Section */}
-        <section className="relative py-12">
+        <section className="relative pb-12">
           <div className="container mx-auto max-w-7xl px-6">
             <div className="max-w-4xl mx-auto">
               <div className="p-8 lg:p-12 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:shadow-xl transition-all duration-300">

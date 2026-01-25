@@ -107,7 +107,7 @@ export default function PublicCampaignsPage() {
   return (
     <>
       {/* Header */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl">
+      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl pt-20">
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute w-[600px] h-[600px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2" />
@@ -119,7 +119,7 @@ export default function PublicCampaignsPage() {
               <Trophy className="w-3 h-3 mr-2" />
               Active Campaigns
             </Badge>
-            <h1 className="text-4xl font-black tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
               <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
                 Discover Your Next
               </span>
@@ -306,7 +306,7 @@ export default function PublicCampaignsPage() {
           <div className="inline-flex p-4 rounded-full bg-neutral-900/60 border border-white/10 mb-6">
             <Zap className="w-8 h-8 text-cyan-400" />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Ready to start earning?
           </h2>
           <p className="text-lg text-neutral-400 mb-8 max-w-2xl mx-auto">

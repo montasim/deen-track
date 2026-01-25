@@ -134,7 +134,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden">
+      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
@@ -153,7 +153,7 @@ export default function AboutPage() {
             </Badge>
 
             <h1
-              className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-8 transition-all duration-1000 ${
+              className={`text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-8 transition-all duration-1000 ${
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
             >
@@ -240,7 +240,7 @@ export default function AboutPage() {
               <Calendar className="w-3 h-3 mr-2" />
               Our Journey
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-black mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-violet-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Building Something
               </span>
@@ -341,7 +341,7 @@ export default function AboutPage() {
               <Users className="w-3 h-3 mr-2" />
               The Team
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-black mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
                 Meet the People
               </span>
@@ -420,7 +420,7 @@ export default function AboutPage() {
           >
             <Flame className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Ready to Start Your Journey?
           </h2>
           <p className="text-lg text-neutral-400 mb-10 max-w-2xl mx-auto">

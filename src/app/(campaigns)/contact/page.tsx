@@ -92,8 +92,8 @@ export default function ContactPage() {
 
       <div className="relative">
         {/* Hero Section */}
-        <section className="relative py-24 lg:py-32">
-          <div className="container mx-auto max-w-7xl px-6">
+        <section className="relative pt-20">
+          <div className="container mx-auto max-w-7xl px-6 py-16">
             <div className="max-w-4xl mx-auto text-center">
               <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <Mail className="w-4 h-4 text-cyan-400" />
@@ -114,7 +114,7 @@ export default function ContactPage() {
         </section>
 
         {/* Contact Section - NO white overlay, let gradient show through */}
-        <section className="relative py-12">
+        <section className="relative pb-12">
           <div className="container mx-auto max-w-7xl px-6">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-3 gap-8">

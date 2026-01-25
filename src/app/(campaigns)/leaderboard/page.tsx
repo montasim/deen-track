@@ -82,7 +82,7 @@ export default function PublicLeaderboardPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden">
+      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
@@ -96,7 +96,7 @@ export default function PublicLeaderboardPage() {
               Hall of Fame
             </Badge>
 
-            <h1 className="text-4xl font-black tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
               <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
                 Global Leaderboard
               </span>
@@ -279,7 +279,7 @@ export default function PublicLeaderboardPage() {
               <div className="inline-flex p-4 rounded-full bg-white/20 backdrop-blur-xl mb-6">
                 <Target className="w-12 h-12 text-white" />
               </div>
-              <h2 className="text-3xl font-black text-white mb-4">
+              <h2 className="text-3xl font-bold text-white mb-4">
                 Want to be on the leaderboard?
               </h2>
               <p className="text-lg text-cyan-100 mb-8 max-w-2xl mx-auto leading-relaxed">

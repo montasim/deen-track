@@ -140,7 +140,7 @@ export default function CampaignsLandingPage() {
               </div>
 
               <h1
-                className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-[0.95] tracking-tight transition-all duration-1000 delay-200 ${
+                className={`text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight transition-all duration-1000 delay-200 ${
                   mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
               >
@@ -152,7 +152,7 @@ export default function CampaignsLandingPage() {
               </h1>
 
               <p
-                className={`text-lg text-neutral-400 max-w-lg leading-relaxed transition-all duration-1000 delay-300 ${
+                className={`text-xl text-neutral-400 max-w-lg leading-relaxed transition-all duration-1000 delay-300 ${
                   mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
               >
@@ -268,7 +268,7 @@ export default function CampaignsLandingPage() {
             <Badge className="mb-4 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
               Featured
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
               Active Campaigns
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
@@ -291,7 +291,7 @@ export default function CampaignsLandingPage() {
                       <Icon className="w-8 h-8 text-white" />
                     </div>
 
-                    <h3 className="text-xl font-bold text-white mb-2">{campaign.name}</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2">{campaign.name}</h3>
                     <p className="text-neutral-400 mb-6">{campaign.description}</p>
 
                     <div className="space-y-4">
@@ -351,7 +351,7 @@ export default function CampaignsLandingPage() {
             <Badge className="mb-4 bg-gradient-to-r from-violet-500/20 to-purple-600/20 text-violet-300 border-violet-500/30">
               Process
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
               How It Works
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
@@ -374,7 +374,7 @@ export default function CampaignsLandingPage() {
                       <Icon className="w-8 h-8 text-white" />
                     </div>
 
-                    <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
+                    <h3 className="text-2xl font-bold text-white mb-3">{step.title}</h3>
                     <p className="text-neutral-400 leading-relaxed">{step.description}</p>
                   </div>
                 </div>
@@ -391,7 +391,7 @@ export default function CampaignsLandingPage() {
             <Badge className="mb-4 bg-gradient-to-r from-emerald-500/20 to-teal-600/20 text-emerald-300 border-emerald-500/30">
               Features
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
+            <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
               Why Choose Us
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
@@ -414,7 +414,7 @@ export default function CampaignsLandingPage() {
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
+                      <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
                       <p className="text-neutral-400">{feature.description}</p>
                     </div>
                   </div>
@@ -428,7 +428,7 @@ export default function CampaignsLandingPage() {
       {/* CTA Section */}
       <section className="relative py-32 border-t border-white/5">
         <div className="container mx-auto max-w-4xl px-6">
-          <div className="relative p-12 lg:p-16 rounded-3xl bg-gradient-to-br from-cyan-500 to-violet-600 overflow-hidden">
+          <div className="relative p-12 lg:p-16 rounded-3xl bg-gradient-to-br from-cyan-500 via-blue-600 to-violet-600 overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
 
@@ -440,7 +440,7 @@ export default function CampaignsLandingPage() {
                 <Sparkles className="w-3 h-3 mr-2" />
                 Join Now
               </Badge>
-              <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight mb-6">
+              <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-6">
                 Ready to start your journey?
               </h2>
               <p className="text-lg text-cyan-100 mb-10 max-w-2xl mx-auto">
@@ -450,19 +450,19 @@ export default function CampaignsLandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Button
                   asChild
-                  size="default"
-                  className="bg-white text-neutral-900 hover:bg-neutral-100 text-sm px-6 py-3 font-semibold shadow-xl"
+                  size="lg"
+                  className="bg-white text-neutral-900 hover:bg-neutral-100 text-base px-10 py-6 h-auto font-semibold shadow-xl"
                 >
                   <Link href="/sign-up" className="gap-2">
                     Create Free Account
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
                 <Button
                   asChild
-                  size="default"
+                  size="lg"
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 text-sm px-6 py-3 backdrop-blur-sm"
+                  className="border-white/30 text-white hover:bg-white/10 text-base px-10 py-6 h-auto backdrop-blur-sm"
                 >
                   <Link href="/campaigns">Browse Campaigns</Link>
                 </Button>

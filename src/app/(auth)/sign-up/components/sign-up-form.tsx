@@ -71,16 +71,7 @@ const detailsSchema = z
     path: ['confirmPassword'],
   })
 
-const Header = () => (
-  <div className='mb-6 flex flex-col space-y-2 text-left'>
-    <h2 className='text-xl font-bold text-white'>
-      Create Your Account
-    </h2>
-    <p className='text-sm text-neutral-400'>
-      Enter your details to get started
-    </p>
-  </div>
-)
+const Header = () => null // Header is now handled by the parent component
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const router = useRouter()

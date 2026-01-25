@@ -1,6 +1,6 @@
 'use client'
 
-import { HTMLAttributes, useEffect, useState, Suspense } from 'react'
+import { HTMLAttributes, useEffect, useState, Suspense, useRef } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 import { OtpInput, ResendButton } from '@/components/ui/otp-input'
 import { Card, CardContent } from '@/components/ui/card'
+import { Turnstile } from '@/components/ui/turnstile'
 import { Loader2 } from 'lucide-react'
 
 type ForgotFormProps = HTMLAttributes<HTMLDivElement>
@@ -64,12 +65,14 @@ const passwordSchema = z
 export function ForgotForm({ className, ...props }: ForgotFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const turnstileRef = useRef<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isResending, setIsResending] = useState(false)
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false)
   const [step, setStep] = useState<'email' | 'otp' | 'password'>('email')
   const [email, setEmail] = useState('')
   const [otpError, setOtpError] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
@@ -106,7 +109,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       const response = await fetch('/api/auth/password-reset/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, turnstileToken }),
       })
 
       const result = await response.json()
@@ -266,7 +269,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
   // Render Step 1: Email Input
   if (step === 'email') {
     return (
-      <div className={cn('grid gap-6', className)} {...props}>
+      <div className={cn('grid gap-4', className)} {...props}>
         <Form {...emailForm}>
           <form onSubmit={emailForm.handleSubmit(onEmailSubmit)}>
             <div className='grid gap-2'>
@@ -283,7 +286,29 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
                   </FormItem>
                 )}
               />
-              <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
+              <div className='flex justify-start'>
+                <Turnstile
+                  ref={turnstileRef}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onError={() => {
+                    setTurnstileToken(null)
+                    toast({
+                      variant: 'destructive',
+                      title: 'CAPTCHA failed',
+                      description: 'Please complete the CAPTCHA verification',
+                    })
+                  }}
+                  onExpire={() => {
+                    setTurnstileToken(null)
+                    toast({
+                      variant: 'destructive',
+                      title: 'CAPTCHA expired',
+                      description: 'Please complete the CAPTCHA verification again',
+                    })
+                  }}
+                />
+              </div>
+              <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading || !turnstileToken}>
                 {isLoading ? 'Sending...' : 'Send Reset Code'}
               </Button>
             </div>
