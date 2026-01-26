@@ -141,16 +141,6 @@ export const sidebarData: SidebarData = {
           icon: Megaphone,
         },
         {
-          title: 'Proof Verification',
-          url: ROUTES.adminProofVerification.href,
-          icon: CheckCircle,
-        },
-        {
-          title: 'Campaign Templates',
-          url: ROUTES.adminCampaignTemplates.href,
-          icon: Files,
-        },
-        {
           title: 'Support Tickets',
           url: ROUTES.dashboardSupportTickets.href,
           icon: MessageSquare,
@@ -194,6 +184,16 @@ export const sidebarData: SidebarData = {
     {
       title: 'Campaigns',
       items: [
+          {
+              title: 'Campaign Templates',
+              url: ROUTES.adminCampaignTemplates.href,
+              icon: Files,
+          },
+          {
+              title: 'Proof Verification',
+              url: ROUTES.adminProofVerification.href,
+              icon: CheckCircle,
+          },
         {
           title: 'Browse Campaigns',
           url: ROUTES.gamifiedCampaigns.href,
