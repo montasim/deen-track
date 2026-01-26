@@ -1,22 +1,30 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { notFound } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { use } from 'react'
-import { getGamifiedCampaign, submitTaskProof } from '../../../gamified-campaigns/actions'
+import { getGamifiedCampaign } from '../../../gamified-campaigns/actions'
 import { DashboardPage } from '@/components/dashboard/dashboard-page'
 import { DashboardSummary } from '@/components/dashboard/dashboard-summary'
 import { DashboardSummarySkeleton } from '@/components/dashboard/dashboard-summary-skeleton'
 import { EmptyStateCard } from '@/components/ui/empty-state-card'
-import { TaskCard } from '@/components/gamified-campaigns'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { ArrowLeft, Calendar, Users, Trophy, Target } from 'lucide-react'
+import { ArrowLeft, Calendar, Users, Trophy, Target, Edit2, Trash2, CheckCircle2, XCircle, Clock, Eye } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/context/auth-context'
-import { TaskDetailDialog } from './components/task-detail-dialog'
-import { TaskSubmitDrawer } from './components/task-submit-drawer'
+import { CampaignMutateDrawer } from '../components/campaign-mutate-drawer'
+import { toggleCampaignActive } from '../../../gamified-campaigns/actions'
 import { toast } from '@/hooks/use-toast'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 export default function CampaignDetailPage({
   params,
@@ -25,27 +33,27 @@ export default function CampaignDetailPage({
 }) {
   const { id } = use(params)
   const { user } = useAuth()
+  const router = useRouter()
   const [campaign, setCampaign] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [selectedTask, setSelectedTask] = useState<any>(null)
-  const [detailOpen, setDetailOpen] = useState(false)
-  const [submitOpen, setSubmitOpen] = useState(false)
+  const [editingCampaign, setEditingCampaign] = useState<any>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Redirect if not admin
+  useEffect(() => {
+    if (user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
+      router.push('/dashboard/campaigns/templates')
+    }
+  }, [user, router])
 
   useEffect(() => {
     const fetchCampaign = async () => {
       setLoading(true)
       try {
-        console.log('Page: Fetching campaign with ID:', id)
         const campaignData = await getGamifiedCampaign(id)
-        console.log('Page: Campaign data received:', campaignData)
-        if (!campaignData) {
-          console.log('Page: Campaign data is null, calling notFound()')
-          setCampaign(null)
-        } else {
-          setCampaign(campaignData)
-        }
+        setCampaign(campaignData)
       } catch (error) {
-        console.error('Page: Error fetching campaign:', error)
+        console.error('Error fetching campaign:', error)
         setCampaign(null)
       } finally {
         setLoading(false)
@@ -58,14 +66,18 @@ export default function CampaignDetailPage({
   const summaryItems = useMemo(() => {
     if (!campaign) return []
 
-    const userProgress = campaign.participations?.find((p: any) => p.userId === user?.id)
     const totalPoints = campaign.tasks?.reduce(
       (sum: number, ct: any) =>
         sum + (ct.task.achievements?.reduce((s: number, a: any) => s + a.points, 0) || 0),
       0
     ) || 0
-    const completedTasks = userProgress?.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0
-    const earnedPoints = userProgress?.totalPoints || 0
+
+    // Calculate overall stats
+    const totalCompleted = campaign.participations?.reduce((sum: number, p: any) => {
+      return sum + (p.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0)
+    }, 0) || 0
+
+    const totalEarnedPoints = campaign.participations?.reduce((sum: number, p: any) => sum + (p.totalPoints || 0), 0) || 0
 
     return [
       {
@@ -75,25 +87,73 @@ export default function CampaignDetailPage({
         icon: Trophy,
       },
       {
-        title: 'Your Points',
-        value: earnedPoints.toString(),
-        description: 'Points earned',
-        icon: Trophy,
-      },
-      {
         title: 'Tasks',
         value: (campaign.tasks?.length || 0).toString(),
-        description: `${completedTasks} completed`,
+        description: 'Total tasks',
         icon: Target,
       },
       {
         title: 'Participants',
-        value: (campaign.participations?.length || 0).toString(),
+        value: (campaign._count?.participations || campaign.participations?.length || 0).toString(),
         description: 'People joined',
         icon: Users,
       },
+      {
+        title: 'Completed Tasks',
+        value: totalCompleted.toString(),
+        description: 'Across all users',
+        icon: CheckCircle2,
+      },
     ]
-  }, [campaign, user?.id])
+  }, [campaign])
+
+  const handleEditCampaign = () => {
+    setEditingCampaign(campaign)
+    setDrawerOpen(true)
+  }
+
+  const handleToggleActive = async () => {
+    try {
+      const result = await toggleCampaignActive(campaign.id)
+
+      if (result.success) {
+        toast({
+          title: 'Campaign updated',
+          description: `Campaign has been ${result.campaign.isActive ? 'activated' : 'deactivated'}.`,
+        })
+
+        const refreshed = await getGamifiedCampaign(id)
+        setCampaign(refreshed)
+      }
+    } catch (error: any) {
+      console.error('Error toggling campaign:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message || 'Failed to update campaign',
+      })
+    }
+  }
+
+  const getStatusBadge = () => {
+    const now = new Date()
+    const endDate = new Date(campaign.endDate)
+    endDate.setHours(23, 59, 59, 999)
+    const startDate = new Date(campaign.startDate)
+    startDate.setHours(0, 0, 0, 0)
+
+    if (!campaign.isActive) {
+      return <Badge variant="secondary">Inactive</Badge>
+    }
+
+    if (now < startDate) {
+      return <Badge variant="outline">Upcoming</Badge>
+    } else if (now > endDate) {
+      return <Badge variant="secondary">Ended</Badge>
+    } else {
+      return <Badge className="bg-green-500">Active</Badge>
+    }
+  }
 
   if (loading) {
     return (
@@ -111,11 +171,6 @@ export default function CampaignDetailPage({
         ]}
       >
         <DashboardSummarySkeleton count={4} />
-        <div className="grid gap-4 md:grid-cols-2 mt-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-48 animate-pulse bg-muted rounded-lg" />
-          ))}
-        </div>
       </DashboardPage>
     )
   }
@@ -125,7 +180,7 @@ export default function CampaignDetailPage({
       <DashboardPage
         icon={Target}
         title="Campaign Not Found"
-        description="The campaign you're looking for doesn't exist or you don't have access to it."
+        description="The campaign you're looking for doesn't exist."
         actions={[
           {
             label: 'Back to Campaigns',
@@ -138,144 +193,202 @@ export default function CampaignDetailPage({
         <EmptyStateCard
           icon={Target}
           title="Campaign not found"
-          description="The campaign may have been deleted or you may not have permission to view it."
+          description="The campaign may have been deleted."
         />
       </DashboardPage>
     )
   }
 
-  // Check which tasks are unlocked for this user
-  const userProgress = campaign.participations?.find((p: any) => p.userId === user?.id)
-  const isJoined = !!userProgress
-
-  // Get unlocked tasks (simplified - in real implementation, check dependencies)
-  const unlockedTasks = campaign.tasks?.map((ct: any) => {
-    const submission = userProgress?.submissions?.find((s: any) => s.taskId === ct.task.id)
-    return {
-      ...ct.task,
-      isLocked: !isJoined,
-      isCompleted: submission?.status === 'APPROVED',
-      isInProgress: submission && submission.status !== 'APPROVED',
-    }
-  }) || []
-
-  const handleViewTask = (task: any) => {
-    setSelectedTask(task)
-    setDetailOpen(true)
-  }
-
-  const handleSubmitTask = (task: any) => {
-    setSelectedTask(task)
-    setSubmitOpen(true)
-  }
-
-  const handleTaskSubmit = async (data: any) => {
-    return await submitTaskProof(data)
-  }
-
   return (
-    <DashboardPage
-      icon={Target}
-      title={campaign.name}
-      description={campaign.description}
-      actions={[
-        {
-          label: 'Back to Campaigns',
-          icon: ArrowLeft,
-          href: '/dashboard/campaigns/gamified',
-          variant: 'outline',
-        },
-      ]}
-    >
-      {/* Dashboard Summary */}
-      <DashboardSummary summaries={summaryItems} />
+    <>
+      <DashboardPage
+        icon={Target}
+        title={campaign.name}
+        description={campaign.description}
+        actions={[
+          {
+            label: 'Back',
+            icon: ArrowLeft,
+            href: '/dashboard/campaigns/gamified',
+            variant: 'outline',
+          },
+          {
+            label: 'Edit',
+            icon: Edit2,
+            onClick: handleEditCampaign,
+          },
+          {
+            label: campaign.isActive ? 'Deactivate' : 'Activate',
+            icon: campaign.isActive ? XCircle : CheckCircle2,
+            onClick: handleToggleActive,
+            variant: 'outline',
+          },
+        ]}
+      >
+        {/* Dashboard Summary */}
+        <DashboardSummary summaries={summaryItems} />
 
-      {/* Campaign Info */}
-      <Card className="mt-6">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-6 text-sm">
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              <span>
-                {new Date(campaign.startDate).toLocaleDateString()} - {new Date(campaign.endDate).toLocaleDateString()}
-              </span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* User Progress */}
-      {userProgress && (
+        {/* Campaign Info */}
         <Card className="mt-6">
-          <CardContent className="pt-6">
-            <h2 className="font-semibold mb-4">Your Progress</h2>
-            <div className="grid grid-cols-3 gap-4">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Campaign Information</CardTitle>
+              {getStatusBadge()}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Points Earned</p>
-                <p className="text-2xl font-bold">{userProgress.totalPoints}</p>
+                <p className="text-sm text-muted-foreground mb-1">Start Date</p>
+                <p className="font-medium">{new Date(campaign.startDate).toLocaleDateString()}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Tasks Completed</p>
-                <p className="text-2xl font-bold">
-                  {userProgress.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0} / {campaign.tasks?.length || 0}
-                </p>
+                <p className="text-sm text-muted-foreground mb-1">End Date</p>
+                <p className="font-medium">{new Date(campaign.endDate).toLocaleDateString()}</p>
               </div>
+              {campaign.maxParticipants && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Max Participants</p>
+                  <p className="font-medium">{campaign.maxParticipants}</p>
+                </div>
+              )}
               <div>
-                <p className="text-sm text-muted-foreground">Status</p>
-                <p className="text-lg font-medium">{userProgress.status}</p>
+                <p className="text-sm text-muted-foreground mb-1">Created By</p>
+                <p className="font-medium">{campaign.entryBy?.name || 'Unknown'}</p>
               </div>
+            </div>
+
+            {campaign.rules && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">Rules</p>
+                <p className="text-sm whitespace-pre-wrap">{campaign.rules}</p>
+              </div>
+            )}
+
+            {campaign.disqualificationRules && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">Disqualification Rules</p>
+                <p className="text-sm whitespace-pre-wrap">{campaign.disqualificationRules}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Tasks Overview */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Tasks ({campaign.tasks?.length || 0})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {campaign.tasks?.map((ct: any, index: number) => {
+                const task = ct.task
+                const totalPoints = task.achievements?.reduce((sum: number, a: any) => sum + a.points, 0) || 0
+
+                return (
+                  <div key={ct.task.id} className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
+                      <div>
+                        <p className="font-medium">{task.name}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-1">{task.description}</p>
+                      </div>
+                    </div>
+                    <Badge variant="outline">{totalPoints} pts</Badge>
+                  </div>
+                )
+              })}
             </div>
           </CardContent>
         </Card>
-      )}
 
-      {/* Tasks */}
-      <div className="mt-6">
-        <h2 className="text-xl font-bold mb-4">Tasks</h2>
-        {loading ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-48 animate-pulse bg-muted rounded-lg" />
-            ))}
-          </div>
-        ) : unlockedTasks.length === 0 ? (
-          <EmptyStateCard
-            icon={Target}
-            title="No tasks yet"
-            description="This campaign doesn't have any tasks yet."
-          />
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {unlockedTasks.map((task: any) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                isLocked={task.isLocked}
-                isCompleted={task.isCompleted}
-                isInProgress={task.isInProgress}
-                onViewDetails={() => handleViewTask(task)}
-                onSubmit={() => handleSubmitTask(task)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+        {/* Participants Leaderboard */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Participants ({campaign.participations?.length || 0})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {campaign.participations?.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">No participants yet</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Rank</TableHead>
+                    <TableHead>User</TableHead>
+                    <TableHead>Points</TableHead>
+                    <TableHead>Tasks</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {campaign.participations
+                    ?.sort((a: any, b: any) => b.totalPoints - a.totalPoints)
+                    .slice(0, 10)
+                    .map((progress: any, index: number) => {
+                      const completedTasks = progress.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0
+                      const totalTasks = campaign.tasks?.length || 0
 
-      {/* Task Detail Dialog */}
-      <TaskDetailDialog
-        open={detailOpen}
-        onOpenChange={setDetailOpen}
-        task={selectedTask}
+                      return (
+                        <TableRow key={progress.id}>
+                          <TableCell>#{index + 1}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-medium">
+                                {progress.user?.name?.[0] || '?'}
+                              </div>
+                              <span className="font-medium">{progress.user?.name || 'Unknown'}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span className="font-semibold">{progress.totalPoints}</span>
+                          </TableCell>
+                          <TableCell>
+                            {completedTasks} / {totalTasks}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={progress.status === 'COMPLETED' ? 'default' : 'secondary'}
+                            >
+                              {progress.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="outline" asChild>
+                              <Link href={`/dashboard/admin/proof-verification?campaignId=${campaign.id}&userId=${progress.user.id}`}>
+                                View Progress
+                              </Link>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </DashboardPage>
+
+      <CampaignMutateDrawer
+        open={drawerOpen}
+        onOpenChange={(open) => {
+          setDrawerOpen(open)
+          if (!open) setEditingCampaign(null)
+        }}
+        campaign={editingCampaign}
+        onSubmit={async (data) => {
+          const result = await toggleCampaignActive(campaign.id)
+          const refreshed = await getGamifiedCampaign(id)
+          setCampaign(refreshed)
+          return { success: true }
+        }}
+        onSuccess={async () => {
+          const refreshed = await getGamifiedCampaign(id)
+          setCampaign(refreshed)
+        }}
       />
-
-      {/* Task Submit Drawer */}
-      <TaskSubmitDrawer
-        open={submitOpen}
-        onOpenChange={setSubmitOpen}
-        task={selectedTask}
-        campaignId={id}
-        onSubmit={handleTaskSubmit}
-      />
-    </DashboardPage>
+    </>
   )
 }
