@@ -48,8 +48,6 @@ export async function getActiveGamifiedCampaigns() {
   return await prisma.gamifiedCampaign.findMany({
     where: {
       isActive: true,
-      startDate: { lte: new Date() },
-      endDate: { gte: new Date() },
     },
     include: {
       entryBy: { select: { id: true, name: true } },
@@ -69,7 +67,7 @@ export async function getActiveGamifiedCampaigns() {
         },
       },
     },
-    orderBy: { startDate: 'desc' },
+    orderBy: { createdAt: 'desc' },
   })
 }
 
