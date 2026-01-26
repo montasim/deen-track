@@ -129,7 +129,7 @@ export default function PublicLeaderboardPage() {
       </div>
 
       {/* Stats Summary */}
-      <div className="container mx-auto max-w-7xl px-6 py-12">
+      <div className="container mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-4 md:grid-cols-3">
           {stats.map((stat) => {
             const Icon = stat.icon
@@ -161,7 +161,7 @@ export default function PublicLeaderboardPage() {
       </div>
 
       {/* Leaderboard */}
-      <div className="container mx-auto max-w-4xl px-6 pb-16">
+      <div className="container mx-auto max-w-4xl px-6 py-16">
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -169,9 +169,9 @@ export default function PublicLeaderboardPage() {
             ))}
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-12">
             {/* Podium - Top 3 */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-4 items-end">
               {leaderboard.slice(0, 3).map((user, index) => {
                 const config = rankConfig[(index + 1) as keyof typeof rankConfig]
                 const Icon = config?.icon || Trophy
@@ -182,17 +182,17 @@ export default function PublicLeaderboardPage() {
                     className={`
                       relative bg-gradient-to-br ${config.cardBg} backdrop-blur-xl border border-white/10
                       transition-all duration-500 hover:scale-105
-                      ${index === 1 ? 'md:-mt-8' : index === 0 ? 'md:mt-4' : ''}
+                      ${index === 0 ? 'md:-mt-8 order-2 md:order-2' : index === 1 ? 'order-1 md:order-1' : 'order-3 md:order-3'}
                     `}
                   >
                     <CardContent className="p-6 text-center">
                       {/* Icon */}
                       <div
                         className={`inline-flex p-4 rounded-full mb-4 ${config.bg} shadow-lg ${
-                          index === 1 ? 'w-16 h-16' : 'w-14 h-14'
+                          index === 0 ? 'w-20 h-20' : 'w-14 h-14'
                         }`}
                       >
-                        <Icon className={`w-${index === 1 ? '10' : '8'} h-${index === 1 ? '10' : '8'} text-white`} />
+                        <Icon className={`w-${index === 0 ? '12' : '8'} h-${index === 0 ? '12' : '8'} text-white`} />
                       </div>
 
                       {/* Rank */}
