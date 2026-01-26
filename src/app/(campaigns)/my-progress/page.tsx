@@ -157,7 +157,7 @@ export default function MyProgressPage() {
         ]
 
         return { campaignProgress, pointsByCampaign, statusDistribution }
-    }, [displayProgress, filteredSubmissions, progressList])
+    }, [filteredProgress, filteredSubmissions, progressList])
 
     if (!user) {
         return (
@@ -226,7 +226,7 @@ export default function MyProgressPage() {
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-3">No Campaigns Yet</h3>
                             <p className="text-neutral-400 mb-8 max-w-md mx-auto">
-                                You haven't joined any campaigns yet. Browse available campaigns and start earning rewards!
+                                You haven&apos;t joined any campaigns yet. Browse available campaigns and start earning rewards!
                             </p>
                             <Button
                                 asChild
@@ -263,7 +263,7 @@ export default function MyProgressPage() {
                                 <span className="text-sm text-neutral-300 font-medium">Your Journey</span>
                             </div>
 
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4">
+                            <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black tracking-tight mb-4">
                                 <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
                                     My Progress
                                 </span>
@@ -526,59 +526,62 @@ export default function MyProgressPage() {
                                         JOINED: <Clock className="w-4 h-4 text-blue-400" />,
                                     }
 
+                                    const gradientOpacity = `from-${theme.from}-5 via-${theme.via}-5 to-${theme.to}-5`
+
                                     return (
                                         <Card
                                             key={progress.id}
                                             className="group relative bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
                                         >
                                             {/* Gradient Background */}
-                                            <div className={`absolute inset-0 bg-gradient-to-br from-${theme.from}/5 via-${theme.via}/5 to-${theme.to}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                            <div className={`absolute inset-0 bg-gradient-to-br ${gradientOpacity} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
                                             <div className="relative p-6">
                                                 {/* Header */}
                                                 <div className="flex items-start justify-between mb-4">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <h3 className="font-bold text-white text-lg">{campaign.name}</h3>
-                                                        {statusIcons[progress.status as keyof typeof statusIcons]}
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <h3 className="font-bold text-white text-lg">{campaign.name}</h3>
+                                                            {statusIcons[progress.status as keyof typeof statusIcons]}
+                                                        </div>
+                                                        <p className="text-sm text-neutral-400 line-clamp-2">{campaign.description}</p>
                                                     </div>
-                                                    <p className="text-sm text-neutral-400 line-clamp-2">{campaign.description}</p>
+                                                    <Link href={`/campaigns/${campaign.id}`}>
+                                                        <Button size="sm" variant="outline" className="border-white/20 hover:bg-white/5">
+                                                            View
+                                                        </Button>
+                                                    </Link>
                                                 </div>
-                                                <Link href={`/campaigns/${campaign.id}`}>
-                                                    <Button size="sm" variant="outline" className="border-white/20 hover:bg-white/5">
-                                                        View
-                                                    </Button>
-                                                </Link>
-                                            </div>
 
-                                            {/* Progress Bar */}
-                                            <div className="mb-4">
-                                                <div className="flex justify-between text-sm mb-2">
-                                                    <span className="text-neutral-400">Progress</span>
-                                                    <span className="font-medium text-white">
-                                                        {completedInCampaign} / {totalTasks} tasks
-                                                    </span>
+                                                {/* Progress Bar */}
+                                                <div className="mb-4">
+                                                    <div className="flex justify-between text-sm mb-2">
+                                                        <span className="text-neutral-400">Progress</span>
+                                                        <span className="font-medium text-white">
+                                                            {completedInCampaign} / {totalTasks} tasks
+                                                        </span>
+                                                    </div>
+                                                    <Progress value={progressPercent} className="h-2" />
+                                                    <div className="text-right text-xs text-neutral-500 mt-1">{Math.round(progressPercent)}% complete</div>
                                                 </div>
-                                                <Progress value={progressPercent} className="h-2" />
-                                                <div className="text-right text-xs text-neutral-500 mt-1">{Math.round(progressPercent)}% complete</div>
-                                            </div>
 
-                                            {/* Stats */}
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    <Trophy className="w-4 h-4 text-yellow-400" />
-                                                    <span className="text-sm font-medium text-white">{progress.totalPoints} points</span>
-                                                </div>
-                                                <div className="flex items-center gap-2 text-sm text-neutral-400">
-                                                    <Calendar className="w-4 h-4" />
-                                                    <span>{new Date(campaign.endDate).toLocaleDateString()}</span>
+                                                {/* Stats */}
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <Trophy className="w-4 h-4 text-yellow-400" />
+                                                        <span className="text-sm font-medium text-white">{progress.totalPoints} points</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-sm text-neutral-400">
+                                                        <Calendar className="w-4 h-4" />
+                                                        <span>{new Date(campaign.endDate).toLocaleDateString()}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Card>
-                                )
-                            })}
-                        </div>
+                                        </Card>
+                                    )
+                                })}
+                            </div>
+                        )}
                     </div>
 
                     {/* Recent Submissions */}

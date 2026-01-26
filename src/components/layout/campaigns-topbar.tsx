@@ -63,12 +63,14 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
               Leaderboard
             </Link>
             {user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN' && (
-              <Link
-                href="/my-progress"
-                className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
-              >
-                My Progress
-              </Link>
+              <>
+                <Link
+                  href="/my-progress"
+                  className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+                >
+                  My Progress
+                </Link>
+              </>
             )}
             <Link
               href="/sponsors"
@@ -76,12 +78,12 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
             >
               Sponsors
             </Link>
-            <Link
-              href="/blog"
-              className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
-            >
-              Blog
-            </Link>
+            {/*<Link*/}
+            {/*  href="/blog"*/}
+            {/*  className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"*/}
+            {/*>*/}
+            {/*  Blog*/}
+            {/*</Link>*/}
             <Link
               href="/about"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
@@ -119,19 +121,7 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/" className="cursor-pointer">
-                      <Home className="mr-2 h-4 w-4" />
-                      <span>Home</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="cursor-pointer">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard/settings" className="cursor-pointer">
+                    <Link href="/settings" className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </Link>
