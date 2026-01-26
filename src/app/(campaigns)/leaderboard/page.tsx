@@ -302,7 +302,9 @@ export default function PublicLeaderboardPage() {
             setLeaderboardLoading(true)
             try {
                 const data = await getCampaignLeaderboard(selectedCampaign.id, { limit: 20 })
-                setLeaderboard(data.leaderboard || [])
+                // Handle both array and object return types
+                const leaderboardData = Array.isArray(data) ? data : (data?.leaderboard || [])
+                setLeaderboard(leaderboardData)
             } catch (error) {
                 console.error('Error fetching leaderboard:', error)
                 setLeaderboard([])
@@ -500,7 +502,8 @@ export default function PublicLeaderboardPage() {
                                 {leaderboard.slice(0, 3).map((entry, index) => {
                                     const rank = index + 1
                                     const config = getRankConfig(rank)
-                                    const Icon = config?.icon || Trophy
+                                    if (!config) return null
+                                    const Icon = config.icon
 
                                     return (
                                         <Card
