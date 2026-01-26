@@ -10,7 +10,7 @@ export default function Forbidden() {
     <ErrorPage
       config={{
         code: '403',
-        title: 'Access Denied!',
+        title: 'Access Denied',
         description: (
           <>
             You don&apos;t have permission to access this page. <br />

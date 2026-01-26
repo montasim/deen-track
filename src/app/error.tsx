@@ -15,7 +15,7 @@ export default function Error({
     <ErrorPage
       config={{
         code: '500',
-        title: 'Oops! Something Went Wrong!',
+        title: 'Something Went Wrong',
         description: (
           <>
             We encountered an unexpected error. <br />

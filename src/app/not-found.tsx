@@ -10,11 +10,11 @@ export default function NotFound() {
     <ErrorPage
       config={{
         code: '404',
-        title: 'Oops! Page Not Found!',
+        title: 'Oops! Page Not Found',
         description: (
           <>
-            It seems like the page you&apos;re looking for <br />
-            does not exist or might have been removed.
+            The page you&apos;re looking for doesn&apos;t exist <br />
+            or might have been moved to a new location.
           </>
         ),
         secondaryButton: {
@@ -23,7 +23,7 @@ export default function NotFound() {
         },
         primaryButton: {
           label: 'Back to Home',
-          onClick: () => router.push('/books'),
+          onClick: () => router.push('/'),
         },
       }}
     />

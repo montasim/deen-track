@@ -10,7 +10,7 @@ export default function Unauthorized() {
     <ErrorPage
       config={{
         code: '401',
-        title: 'Authentication Required!',
+        title: 'Authentication Required',
         description: (
           <>
             You need to sign in to access this page. <br />
