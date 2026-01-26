@@ -180,7 +180,7 @@ export default function PublicLeaderboardPage() {
     return (
         <>
             {/* Hero Section with Animated Background */}
-            <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-24 pb-16">
+            <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-20 pb-16">
                 {/* Dynamic Background */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className={`absolute w-[1000px] h-[1000px] bg-gradient-to-br ${theme.gradient} opacity-20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse`} />
@@ -195,7 +195,7 @@ export default function PublicLeaderboardPage() {
                             <span className="text-sm text-neutral-300 font-medium">Live Rankings</span>
                         </div>
 
-                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6">
+                        <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
                             <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
                                 Campaign Leaderboards
                             </span>
