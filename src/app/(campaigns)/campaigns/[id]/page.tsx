@@ -12,7 +12,6 @@ import {
   Users,
   Trophy,
   Target,
-  Flame,
   Sparkles,
   Star,
   Zap,
@@ -20,7 +19,6 @@ import {
   Clock,
   Lock,
   Unlock,
-  Crown,
   TrendingUp,
   ArrowRight,
   Gamepad2,
@@ -477,73 +475,71 @@ export default function PublicCampaignDetailPage() {
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* User Progress Card */}
-            {user && isJoined && (
-              <Card className={`bg-gradient-to-br from-cyan-500/10 via-blue-600/10 to-violet-500/10 backdrop-blur-xl border border-cyan-500/30 transition-all hover:border-cyan-500/50`}>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
-                      <TrendingUp className="w-5 h-5 text-white" />
-                    </div>
-                    <h2 className="text-lg font-bold text-white">Your Progress</h2>
+            {/* Campaign Summary Card - For All Users */}
+            <Card className="relative overflow-hidden bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10 backdrop-blur-xl border border-cyan-500/20">
+              {/* Animated Background Pattern */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:32px_32px]" />
+              <div className="absolute w-[300px] h-[300px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[60px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2" />
+
+              <CardContent className="relative p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25">
+                    <Trophy className="w-6 h-6 text-white" />
                   </div>
-
-                  {/* Progress Bar */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-neutral-400">Overall Progress</span>
-                      <span className="text-cyan-300 font-semibold">{progressPercentage}%</span>
-                    </div>
-                    <div className="w-full h-3 bg-neutral-900 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 transition-all duration-1000"
-                        style={{ width: `${progressPercentage}%` }}
-                      />
-                    </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">Campaign Rewards</h2>
+                    <p className="text-sm text-neutral-400">Complete tasks to earn points</p>
                   </div>
+                </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/40 border border-white/10">
-                      <div className="flex items-center gap-2 text-neutral-400 text-sm">
-                        <Trophy className="w-4 h-4 text-amber-400" />
-                        <span>Points Earned</span>
-                      </div>
-                      <span className="text-xl font-bold text-white">{earnedPoints}</span>
+                {/* Points Display */}
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl bg-neutral-900/60 border border-white/10">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-neutral-400">Total Points</span>
+                      <Sparkles className="w-4 h-4 text-amber-400" />
                     </div>
-
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/40 border border-white/10">
-                      <div className="flex items-center gap-2 text-neutral-400 text-sm">
-                        <Target className="w-4 h-4 text-cyan-400" />
-                        <span>Tasks Done</span>
-                      </div>
-                      <span className="text-xl font-bold text-white">
-                        {completedTasks}/{campaign.tasks?.length || 0}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/40 border border-white/10">
-                      <div className="flex items-center gap-2 text-neutral-400 text-sm">
-                        <Crown className="w-4 h-4 text-violet-400" />
-                        <span>Status</span>
-                      </div>
-                      <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30">
-                        {userProgress?.status || 'JOINED'}
-                      </Badge>
+                    <div className="text-3xl font-black bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+                      {totalPoints.toLocaleString()}
                     </div>
                   </div>
 
+                  {user && isJoined && (
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 border border-emerald-500/30">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-emerald-300">Your Progress</span>
+                        <TrendingUp className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-bold text-white">{earnedPoints}</span>
+                        <span className="text-sm text-neutral-400">/ {totalPoints}</span>
+                      </div>
+                      <div className="mt-3">
+                        <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-1000"
+                            style={{ width: `${progressPercentage}%` }}
+                          />
+                        </div>
+                        <div className="text-right text-xs text-emerald-300 mt-1">{progressPercentage}% complete</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {user && isJoined && (
                   <Button
                     asChild
-                    className="w-full mt-6 bg-white text-neutral-900 hover:bg-neutral-100 font-semibold shadow-lg"
+                    className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                   >
-                    <Link href={`/dashboard/campaigns/gamified/${id}`} className="gap-2">
-                      View Full Progress
+                    <Link href={`/dashboard/campaigns/my-progress`} className="gap-2">
+                      View My Progress
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
-                </CardContent>
-              </Card>
-            )}
+                )}
+              </CardContent>
+            </Card>
 
             {/* Quick Info */}
             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
@@ -606,36 +602,6 @@ export default function PublicCampaignDetailPage() {
                 </CardContent>
               </Card>
             )}
-
-            {/* Campaign Info Card */}
-            <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
-              <CardContent className="p-6">
-                <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-orange-400" />
-                  Campaign Info
-                </h2>
-                <dl className="space-y-3 text-sm">
-                  {campaign.minPointsToQualify && campaign.minPointsToQualify > 0 && (
-                    <div className="flex items-center justify-between">
-                      <dt className="text-neutral-400">Min Points</dt>
-                      <dd className="text-white font-semibold">{campaign.minPointsToQualify}</dd>
-                    </div>
-                  )}
-                  {campaign.estimatedDuration && (
-                    <div className="flex items-center justify-between">
-                      <dt className="text-neutral-400">Time Commitment</dt>
-                      <dd className="text-white font-semibold">{campaign.estimatedDuration} hours</dd>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <dt className="text-neutral-400">Participants</dt>
-                    <dd className="text-white font-semibold">
-                      {campaign.participations?.length || 0}
-                    </dd>
-                  </div>
-                </dl>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
