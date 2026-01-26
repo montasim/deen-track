@@ -20,6 +20,22 @@ export async function getActiveGamifiedCampaigns() {
   }
 }
 
+// Get all campaigns (admin only)
+export async function getAllGamifiedCampaigns() {
+  const session = await requireAuth()
+
+  if (session.role !== 'ADMIN' && session.role !== 'SUPER_ADMIN') {
+    throw new Error('Unauthorized')
+  }
+
+  try {
+    return await repositories.getAllGamifiedCampaigns()
+  } catch (error) {
+    console.error('Error fetching all campaigns:', error)
+    return []
+  }
+}
+
 // Get campaign by ID
 export async function getGamifiedCampaign(campaignId: string) {
   try {

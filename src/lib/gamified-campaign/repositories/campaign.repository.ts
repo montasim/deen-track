@@ -73,6 +73,36 @@ export async function getActiveGamifiedCampaigns() {
   })
 }
 
+export async function getAllGamifiedCampaigns() {
+  return await prisma.gamifiedCampaign.findMany({
+    include: {
+      entryBy: { select: { id: true, name: true } },
+      _count: {
+        select: {
+          participations: true,
+          tasks: true,
+        },
+      },
+      tasks: {
+        include: {
+          task: {
+            include: {
+              achievements: true,
+            },
+          },
+        },
+        orderBy: { order: 'asc' },
+      },
+      participations: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  })
+}
+
 export async function getGamifiedCampaignById(id: string) {
   const campaign = await prisma.gamifiedCampaign.findUnique({
     where: { id },

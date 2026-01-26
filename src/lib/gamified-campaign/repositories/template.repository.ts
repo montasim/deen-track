@@ -269,6 +269,7 @@ export async function createCampaignFromTemplate(
       startDate: campaignData.startDate,
       endDate: campaignData.endDate,
       maxParticipants: campaignData.maxParticipants,
+      isActive: true,
       entryById: campaignData.entryById,
       tasks: {
         create: createdTasks.map((task, index) => ({
