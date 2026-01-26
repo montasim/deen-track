@@ -124,27 +124,6 @@ export const sidebarData: SidebarData = {
     },
 
     // ============================================================================
-    // BLOG - All roles (view), Admin & Super Admin (manage)
-    // ============================================================================
-    {
-      title: 'Blog',
-      items: [
-        {
-          title: 'Blog Posts',
-          url: ROUTES.dashboardBlog.href,
-          icon: FileText,
-          roles: ['ADMIN', 'SUPER_ADMIN', 'USER'],
-        },
-        {
-          title: 'Comments',
-          url: ROUTES.dashboardBlogComments.href,
-          icon: MessageSquare,
-          roles: ['ADMIN', 'SUPER_ADMIN'],
-        },
-      ],
-    },
-
-    // ============================================================================
     // USER MANAGEMENT - Admin & Super Admin only
     // ============================================================================
     {

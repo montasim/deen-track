@@ -280,12 +280,6 @@ export const ROUTES = {
     icon: UserPlus,
     access: RoleAccess.ALL,
   },
-  pricing: {
-    label: 'Pricing',
-    href: '/pricing',
-    icon: Crown,
-    access: RoleAccess.ALL,
-  },
 
   // Dashboard Routes
   dashboardUsers: {
@@ -369,26 +363,6 @@ export const ROUTES = {
     href: '/achievements',
     icon: Trophy,
     access: RoleAccess.AUTHENTICATED,
-  },
-
-  // Blog Routes
-  blog: {
-    label: 'Blog',
-    href: '/blog',
-    icon: FileText,
-    access: RoleAccess.ALL,
-  },
-  dashboardBlog: {
-    label: 'Blog Posts',
-    href: '/dashboard/blog',
-    icon: FileText,
-    access: RoleAccess.AUTHENTICATED,
-  },
-  dashboardBlogComments: {
-    label: 'Blog Comments',
-    href: '/dashboard/blog/comments',
-    icon: MessageSquare,
-    access: RoleAccess.ADMIN_ONLY,
   },
 
   // Gamified Campaigns Routes
