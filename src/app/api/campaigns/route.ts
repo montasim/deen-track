@@ -41,19 +41,12 @@ export async function GET(request: NextRequest) {
     })
 
     // Add _count for participations
-    const campaignsWithCounts = await Promise.all(
-      campaigns.map(async (campaign) => ({
-        ...campaign,
-        _count: {
-          participations: await prisma.gamifiedCampaign.count({
-              where: { id: campaign.id },
-              include: {
-                participations: true,
-              },
-            }),
-        },
-      }))
-    )
+    const campaignsWithCounts = campaigns.map((campaign) => ({
+      ...campaign,
+      _count: {
+        participations: campaign.participations.length,
+      },
+    }))
 
     return NextResponse.json(campaignsWithCounts)
   } catch (error) {

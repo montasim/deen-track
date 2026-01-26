@@ -136,7 +136,7 @@ export default function PublicCampaignDetailPage() {
   if (loading) {
     return (
       <>
-        <div className="container mx-auto max-w-7xl px-6 py-20">
+        <div className="container mx-auto max-w-7xl px-6 pt-20 pb-12">
           <div className="space-y-6">
             <div className="h-8 bg-neutral-900/40 rounded-xl animate-pulse" />
             <div className="h-64 bg-neutral-900/40 rounded-2xl animate-pulse" />
@@ -153,7 +153,7 @@ export default function PublicCampaignDetailPage() {
   if (!campaign) {
     return (
       <>
-        <div className="container mx-auto max-w-7xl px-6 text-center py-20">
+        <div className="container mx-auto max-w-7xl px-6 text-center pt-20 pb-12">
           <div className={`transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="inline-flex p-6 rounded-full bg-neutral-900/60 border border-white/10 mb-8">
               <Trophy className="w-16 h-16 text-neutral-700" />
@@ -202,19 +202,8 @@ export default function PublicCampaignDetailPage() {
       </div>
 
       {/* Header Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl">
+      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl pt-20">
         <div className="container mx-auto max-w-7xl px-6 py-8">
-          <Button
-            asChild
-            variant="ghost"
-            className="text-neutral-400 hover:text-white mb-6 group transition-all"
-          >
-            <Link href="/campaigns" className="gap-2">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Campaigns
-            </Link>
-          </Button>
-
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -230,11 +219,11 @@ export default function PublicCampaignDetailPage() {
                 </Badge>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black text-white mb-6 tracking-tight">
                 {campaign.name}
               </h1>
 
-              <p className="text-lg text-neutral-400 max-w-3xl leading-relaxed">
+              <p className="text-xl text-neutral-400 max-w-3xl leading-relaxed">
                 {campaign.description}
               </p>
             </div>
@@ -570,18 +559,24 @@ export default function PublicCampaignDetailPage() {
 
             {/* CTA for Non-Authenticated Users */}
             {!user && (
-              <Card className={`bg-gradient-to-br ${config.color} border-0 shadow-xl ${config.glow} transition-all hover:scale-105`}>
-                <CardContent className="p-6 text-center">
-                  <div className="inline-flex p-4 rounded-full bg-white/20 mb-4">
+              <Card className="relative overflow-hidden bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+                {/* Animated Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
+
+                <CardContent className="relative p-6 text-center">
+                  <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-4">
                     <Sparkles className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">Join the Challenge</h3>
-                  <p className="text-white/80 text-sm mb-6">
+                  <p className="text-neutral-400 text-sm mb-6">
                     Sign up now to start earning rewards, unlocking achievements, and competing with players worldwide.
                   </p>
                   <Button
                     asChild
-                    className="w-full bg-white text-neutral-900 hover:bg-neutral-100 font-semibold"
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                   >
                     <Link href="/sign-up" className="gap-2">
                       Create Free Account

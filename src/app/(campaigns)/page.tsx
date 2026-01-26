@@ -264,16 +264,27 @@ export default function CampaignsLandingPage() {
       {/* Featured Campaigns Section */}
       <section className="relative py-32 border-t border-white/5">
         <div className="container mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <Badge className="mb-4 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
-              Featured
-            </Badge>
-            <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
-              Active Campaigns
-            </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-              Join thousands of users competing in exciting challenges
-            </p>
+          {/* Header Card */}
+          <div className="mb-16">
+            <div className="relative p-12 lg:p-16 rounded-3xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden text-center">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+              {/* Animated Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
+
+              <div className="relative">
+                <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
+                  Featured
+                </Badge>
+                <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-4">
+                  Active Campaigns
+                </h2>
+                <p className="text-base text-neutral-400 max-w-2xl mx-auto">
+                  Join thousands of users competing in exciting challenges
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -428,57 +439,57 @@ export default function CampaignsLandingPage() {
       {/* CTA Section */}
       <section className="relative py-32 border-t border-white/5">
         <div className="container mx-auto max-w-4xl px-6">
-          <div className="relative p-12 lg:p-16 rounded-3xl bg-gradient-to-br from-cyan-500 via-blue-600 to-violet-600 overflow-hidden">
+          <div className="relative p-12 lg:p-16 rounded-3xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
 
             {/* Animated Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
 
             <div className="relative text-center">
-              <Badge className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+              <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
                 <Sparkles className="w-3 h-3 mr-2" />
                 Join Now
               </Badge>
-              <h2 className="text-4xl sm:text-5xl font-black text-white leading-tight mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
                 Ready to start your journey?
               </h2>
-              <p className="text-lg text-cyan-100 mb-10 max-w-2xl mx-auto">
+              <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">
                 Join thousands of users already competing, achieving goals, and earning rewards.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
                 <Button
                   asChild
-                  size="lg"
-                  className="bg-white text-neutral-900 hover:bg-neutral-100 text-base px-10 py-6 h-auto font-semibold shadow-xl"
+                  size="default"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
                 >
                   <Link href="/sign-up" className="gap-2">
                     Create Free Account
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
                 <Button
                   asChild
-                  size="lg"
+                  size="default"
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 text-base px-10 py-6 h-auto backdrop-blur-sm"
+                  className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
                 >
                   <Link href="/campaigns">Browse Campaigns</Link>
                 </Button>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-cyan-100">
+              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-neutral-400">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>Free to Join</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>No Credit Card Required</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>Start Earning Today</span>
                 </div>
               </div>
