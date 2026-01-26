@@ -62,6 +62,14 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
             >
               Leaderboard
             </Link>
+            {user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN' && (
+              <Link
+                href="/my-progress"
+                className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+              >
+                My Progress
+              </Link>
+            )}
             <Link
               href="/sponsors"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
