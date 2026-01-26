@@ -23,6 +23,194 @@ import {
 } from 'lucide-react'
 import { getActiveGamifiedCampaigns, getCampaignLeaderboard } from '@/app/dashboard/gamified-campaigns/actions'
 
+// Skeleton Components
+const CampaignSelectorSkeleton = () => (
+    <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+        {[1, 2, 3].map((i) => (
+            <div
+                key={i}
+                className="relative px-6 py-4 rounded-2xl w-48 overflow-hidden"
+                style={{ animationDelay: `${i * 100}ms` }}
+            >
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+                <div className="relative bg-white/5 rounded-2xl h-full border border-white/10 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white/5 animate-pulse" />
+                    <div className="flex-1">
+                        <div className="h-4 bg-white/5 rounded w-32 mb-2 animate-pulse" />
+                        <div className="h-3 bg-white/5 rounded w-16 animate-pulse" />
+                    </div>
+                </div>
+            </div>
+        ))}
+    </div>
+)
+
+const StatsCardSkeleton = ({ index }: { index: number }) => (
+    <Card className="bg-neutral-900/40 backdrop-blur-xl border-white/10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+        <CardContent className="relative p-6">
+            <div className="flex items-center gap-4">
+                <div
+                    className="flex-shrink-0 p-3 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 animate-pulse"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                >
+                    <div className="w-6 h-6 bg-white/10 rounded" />
+                </div>
+                <div className="flex-1">
+                    <div className="h-7 bg-white/5 rounded w-20 mb-2 animate-pulse" />
+                    <div className="h-4 bg-white/5 rounded w-24 animate-pulse" />
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+)
+
+const PodiumCardSkeleton = ({ rank }: { rank: number }) => {
+    const isWinner = rank === 1
+    return (
+        <Card
+            className={`
+                relative bg-neutral-900/40 backdrop-blur-xl border-2 border-white/10 overflow-hidden
+                ${isWinner ? 'md:-mt-8' : ''}
+            `}
+        >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+            <CardContent className="relative p-8 text-center">
+                {/* Icon Badge */}
+                <div className="flex justify-center mb-4">
+                    <div
+                        className={`
+                            rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-600/20 animate-pulse
+                            ${isWinner ? 'w-24 h-24' : 'w-20 h-20'}
+                        `}
+                    />
+                </div>
+
+                {/* Rank */}
+                <div className="h-14 bg-white/5 rounded-lg w-20 mx-auto mb-4 animate-pulse" />
+
+                {/* Avatar */}
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 mx-auto mb-4 animate-pulse" />
+
+                {/* Name */}
+                <div className="h-6 bg-white/5 rounded w-40 mx-auto mb-4 animate-pulse" />
+
+                {/* Points */}
+                <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-yellow-500/20 rounded animate-pulse" />
+                    <div className="h-8 bg-white/5 rounded w-24 animate-pulse" />
+                </div>
+
+                {/* Label */}
+                <div className="h-4 bg-white/5 rounded w-28 mx-auto animate-pulse" />
+            </CardContent>
+        </Card>
+    )
+}
+
+const LeaderboardItemSkeleton = ({ index }: { index: number }) => (
+    <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+        <CardContent className="relative p-5">
+            <div className="flex items-center gap-5">
+                {/* Rank Badge */}
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-neutral-700/50 to-neutral-800/50 animate-pulse" />
+
+                {/* Avatar */}
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 animate-pulse" />
+
+                {/* Info */}
+                <div className="flex-1">
+                    <div className="h-6 bg-white/5 rounded w-48 animate-pulse" />
+                </div>
+
+                {/* Points */}
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+                    <div className="w-4 h-4 bg-yellow-500/20 rounded animate-pulse" />
+                    <div className="h-5 bg-white/5 rounded w-20 animate-pulse" />
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+)
+
+const CampaignInfoSkeleton = () => (
+    <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+        <CardContent className="relative p-8">
+            <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div className="h-7 bg-white/5 rounded w-64 mb-3 animate-pulse" />
+                    <div className="h-4 bg-white/5 rounded w-full mb-2 animate-pulse" />
+                    <div className="h-4 bg-white/5 rounded w-3/4 mb-4 animate-pulse" />
+                    <div className="flex gap-3">
+                        <div className="h-8 bg-white/5 rounded w-40 animate-pulse" />
+                        <div className="h-8 bg-white/5 rounded w-24 animate-pulse" />
+                    </div>
+                </div>
+                <div className="flex items-center justify-center md:justify-end">
+                    <div className="h-14 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 rounded-lg w-48 animate-pulse" />
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+)
+
+const LeaderboardPageSkeleton = () => (
+    <div className="min-h-screen bg-neutral-950">
+        {/* Hero Section */}
+        <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-20 pb-16">
+            {/* Background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute w-[1000px] h-[1000px] bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
+            </div>
+
+            <div className="relative container mx-auto max-w-7xl px-6 my-16">
+                {/* Header */}
+                <div className="text-center max-w-4xl mx-auto mb-12">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+                        <div className="w-2 h-2 rounded-full bg-cyan-500/50 animate-pulse" />
+                        <div className="h-4 bg-white/5 rounded w-28 animate-pulse" />
+                    </div>
+                    <div className="h-16 bg-white/5 rounded w-96 mx-auto mb-6 animate-pulse" />
+                    <div className="h-6 bg-white/5 rounded w-[500px] mx-auto animate-pulse" />
+                </div>
+
+                {/* Campaign Selector */}
+                <CampaignSelectorSkeleton />
+            </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="container mx-auto max-w-7xl px-6 py-12">
+            {/* Stats Grid */}
+            <div className="grid gap-4 md:grid-cols-4 mb-12">
+                {[0, 1, 2, 3].map((i) => (
+                    <StatsCardSkeleton key={i} index={i} />
+                ))}
+            </div>
+
+            {/* Podium Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {[1, 2, 3].map((rank) => (
+                    <PodiumCardSkeleton key={rank} rank={rank} />
+                ))}
+            </div>
+
+            {/* Leaderboard List Skeleton */}
+            <div className="space-y-3 mb-12">
+                {[1, 2, 3, 4, 5].map((i) => (
+                    <LeaderboardItemSkeleton key={i} index={i} />
+                ))}
+            </div>
+
+            {/* Campaign Info Skeleton */}
+            <CampaignInfoSkeleton />
+        </div>
+    </div>
+)
+
 const campaignThemes = [
     {
         id: 'default',
@@ -147,17 +335,7 @@ export default function PublicLeaderboardPage() {
     }, [leaderboard])
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-6">
-                    <div className="relative">
-                        <div className="w-20 h-20 border-4 border-white/10 rounded-full" />
-                        <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-cyan-500 rounded-full animate-spin" />
-                    </div>
-                    <p className="text-neutral-400 text-lg">Loading leaderboards...</p>
-                </div>
-            </div>
-        )
+        return <LeaderboardPageSkeleton />
     }
 
     if (campaigns.length === 0) {
@@ -187,7 +365,7 @@ export default function PublicLeaderboardPage() {
                     <div className={`absolute w-[700px] h-[700px] bg-gradient-to-tr ${theme.gradient} opacity-10 rounded-full blur-[120px] translate-x-1/4 translate-y-1/4 bottom-0 right-0 animate-pulse delay-1000`} />
                 </div>
 
-                <div className="relative container mx-auto max-w-7xl px-6">
+                <div className="relative container mx-auto max-w-7xl px-6 my-16">
                     {/* Header */}
                     <div className="text-center max-w-4xl mx-auto mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
@@ -289,11 +467,21 @@ export default function PublicLeaderboardPage() {
 
                     {/* Leaderboard Content */}
                     {leaderboardLoading ? (
-                        <div className="grid gap-4">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <div key={i} className="h-24 bg-neutral-900/40 rounded-2xl animate-pulse" />
-                            ))}
-                        </div>
+                        <>
+                            {/* Podium Skeleton */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                {[1, 2, 3].map((rank) => (
+                                    <PodiumCardSkeleton key={rank} rank={rank} />
+                                ))}
+                            </div>
+
+                            {/* Leaderboard List Skeleton */}
+                            <div className="space-y-3">
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                    <LeaderboardItemSkeleton key={i} index={i} />
+                                ))}
+                            </div>
+                        </>
                     ) : leaderboard.length === 0 ? (
                         <Card className="bg-neutral-900/40 backdrop-blur-xl border-white/10">
                             <CardContent className="p-16 text-center">
