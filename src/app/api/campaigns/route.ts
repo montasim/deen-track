@@ -3,11 +3,14 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
+    const now = new Date()
+    const startOfDay = new Date(now)
+    startOfDay.setHours(0, 0, 0, 0)
+
     const campaigns = await prisma.gamifiedCampaign.findMany({
       where: {
         isActive: true,
-        startDate: { lte: new Date() },
-        endDate: { gte: new Date() },
+        startDate: { lte: now },
       },
       include: {
         entryBy: {
@@ -40,13 +43,19 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    // Add _count for participations
-    const campaignsWithCounts = campaigns.map((campaign) => ({
-      ...campaign,
-      _count: {
-        participations: campaign.participations.length,
-      },
-    }))
+    // Add _count for participations and filter by end date (using end of day)
+    const campaignsWithCounts = campaigns
+      .filter((campaign) => {
+        const endDate = new Date(campaign.endDate)
+        endDate.setHours(23, 59, 59, 999)
+        return now <= endDate
+      })
+      .map((campaign) => ({
+        ...campaign,
+        _count: {
+          participations: campaign.participations.length,
+        },
+      }))
 
     return NextResponse.json(campaignsWithCounts)
   } catch (error) {

@@ -60,7 +60,7 @@ export function TemplateCard({ template, onUse, onDuplicate, showActions = true 
               <span>{template.estimatedDuration}h</span>
             </div>
           )}
-          {template.minPointsToQualify !== undefined && template.minPointsToQualify > 0 && (
+          {template.minPointsToQualify !== null && template.minPointsToQualify !== undefined && template.minPointsToQualify > 0 && (
             <div className="flex items-center gap-1">
               <Trophy className="h-4 w-4 text-yellow-500" />
               <span>{template.minPointsToQualify} pts to qualify</span>

@@ -69,7 +69,7 @@ export default function GamifiedCampaignsPage() {
   const handleToggleActive = async (campaignId: string) => {
     try {
       const result = await toggleCampaignActive(campaignId)
-      if (result.success) {
+      if (result.success && result.campaign) {
         toast({
           title: 'Campaign updated',
           description: `Campaign has been ${result.campaign.isActive ? 'activated' : 'deactivated'}.`,
@@ -277,7 +277,7 @@ export default function GamifiedCampaignsPage() {
               filter === 'all'
                 ? {
                     label: 'Browse Templates',
-                    href: '/dashboard/campaigns/templates',
+                    onClick: () => router.push('/dashboard/campaigns/templates'),
                   }
                 : undefined
             }

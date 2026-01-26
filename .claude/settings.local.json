@@ -4,7 +4,8 @@
       "Bash(ls:*)",
       "Bash(npx prisma generate:*)",
       "Bash(npx prisma:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

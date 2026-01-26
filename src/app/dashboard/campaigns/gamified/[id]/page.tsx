@@ -116,7 +116,7 @@ export default function CampaignDetailPage({
     try {
       const result = await toggleCampaignActive(campaign.id)
 
-      if (result.success) {
+      if (result.success && result.campaign) {
         toast({
           title: 'Campaign updated',
           description: `Campaign has been ${result.campaign.isActive ? 'activated' : 'deactivated'}.`,

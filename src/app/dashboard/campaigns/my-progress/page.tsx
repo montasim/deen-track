@@ -8,7 +8,7 @@ import { EmptyStateCard } from '@/components/ui/empty-state-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Trophy, CheckCircle2, Clock, XCircle, Target, TrendingUp, Award } from 'lucide-react'
+import { Trophy, CheckCircle2, Clock, XCircle, Target, TrendingUp, Award, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/context/auth-context'
 import {
@@ -48,8 +48,8 @@ export default function MyProgressPage() {
           getUserCampaignProgress(),
           getUserSubmissions(),
         ])
-        setProgressList(progressData)
-        setSubmissions(submissionsData)
+        setProgressList((progressData || []) as any[])
+        setSubmissions((submissionsData || []) as any[])
       } catch (error) {
         console.error('Error fetching progress:', error)
       } finally {
@@ -124,15 +124,15 @@ export default function MyProgressPage() {
       actions={[
         {
           label: 'Refresh',
-          icon: 'RefreshCw',
+          icon: RefreshCw,
           onClick: async () => {
             setLoading(true)
             const [progressData, submissionsData] = await Promise.all([
               getUserCampaignProgress(),
               getUserSubmissions(),
             ])
-            setProgressList(progressData)
-            setSubmissions(submissionsData)
+            setProgressList((progressData || []) as any[])
+            setSubmissions((submissionsData || []) as any[])
             setLoading(false)
           },
           variant: 'outline',
@@ -154,7 +154,7 @@ export default function MyProgressPage() {
           description="You haven't joined any campaigns. Browse available campaigns to start earning rewards!"
           action={{
             label: 'Browse Campaigns',
-            href: '/dashboard/campaigns/gamified',
+            onClick: () => router.push('/dashboard/campaigns/gamified'),
           }}
         />
       ) : (
@@ -277,7 +277,7 @@ export default function MyProgressPage() {
                       cy="50%"
                       labelLine={false}
                       label={(entry) => `${entry.name}: ${entry.value}`}
-                      labelLine={false}
+                      dataKey="value"
                     >
                       {chartData.statusDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -328,8 +328,8 @@ export default function MyProgressPage() {
                     }}
                     cursor={{ fill: '#8b5cf6' }}
                   />
-                  <Bar dataKey="points" fill="#8b5cf6" radius={[4, 0]} />
-                  <Bar dataKey="completed" fill="#06b6d4" radius={[0, 4]} />
+                  <Bar dataKey="points" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="completed" fill="#06b6d4" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>

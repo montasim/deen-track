@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Users, Trophy, Shield, Target } from 'lucide-react'
+import { Users, Trophy, Shield, Target, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 export default function TeamDetailPage({
@@ -90,7 +90,7 @@ export default function TeamDetailPage({
         actions={[
           {
             label: 'Back',
-            icon: () => <span>←</span>,
+            icon: ArrowLeft,
             href: '/dashboard/campaigns/teams',
             variant: 'outline',
           },
@@ -117,7 +117,7 @@ export default function TeamDetailPage({
       actions={[
         {
           label: 'Back to Teams',
-          icon: () => <span>←</span>,
+          icon: ArrowLeft,
           href: '/dashboard/campaigns/teams',
           variant: 'outline',
         },
