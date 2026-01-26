@@ -17,27 +17,27 @@ const inter = Inter({ subsets: ['latin'] })
 const adminTopNav = [
     {
         title: 'Overview',
-        href: 'dashboard',
+        href: '/dashboard',
         isActive: true,
         disabled: false,
     },
     {
-        title: 'Customers',
-        href: 'dashboard/users',
+        title: 'Campaigns',
+        href: '/dashboard/campaigns',
         isActive: false,
-        disabled: true,
+        disabled: false,
     },
     {
-        title: 'Books',
-        href: 'dashboard/books',
+        title: 'Leaderboard',
+        href: '/leaderboard',
         isActive: false,
-        disabled: true,
+        disabled: false,
     },
     {
         title: 'Settings',
-        href: 'dashboard/settings',
+        href: '/dashboard/settings',
         isActive: false,
-        disabled: true,
+        disabled: false,
     },
 ]
 
