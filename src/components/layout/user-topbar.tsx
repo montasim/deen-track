@@ -141,12 +141,6 @@ export function UserTopbar({
                     Marketplace
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href={ROUTES.blog.href} className="w-full cursor-pointer lg:hidden">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Blog
-                  </Link>
-                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="p-0 font-normal">
