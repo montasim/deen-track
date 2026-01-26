@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -11,309 +11,449 @@ import {
     Medal,
     Star,
     Users,
-    TrendingUp,
     Target,
     Flame,
-    ArrowLeft,
     ArrowRight,
     Zap,
+    TrendingUp,
+    Calendar,
     Award,
+    ChevronDown,
+    Sparkles,
 } from 'lucide-react'
+import { getActiveGamifiedCampaigns, getCampaignLeaderboard } from '@/app/dashboard/gamified-campaigns/actions'
 
-// Mock leaderboard data
-const mockLeaderboardData = [
-    { id: '1', name: 'Alex Champion', totalPoints: 15420, campaignsCompleted: 12, rank: 1 },
-    { id: '2', name: 'Sarah Winner', totalPoints: 14350, campaignsCompleted: 11, rank: 2 },
-    { id: '3', name: 'Mike Achiever', totalPoints: 13980, campaignsCompleted: 10, rank: 3 },
-    { id: '4', name: 'Emma Success', totalPoints: 12500, campaignsCompleted: 9, rank: 4 },
-    { id: '5', name: 'John Leader', totalPoints: 11800, campaignsCompleted: 8, rank: 5 },
-    { id: '6', name: 'Lisa Pro', totalPoints: 10500, campaignsCompleted: 7, rank: 6 },
-    { id: '7', name: 'Tom Expert', totalPoints: 9800, campaignsCompleted: 6, rank: 7 },
-    { id: '8', name: 'Kate Star', totalPoints: 9200, campaignsCompleted: 6, rank: 8 },
-    { id: '9', name: 'David Ace', totalPoints: 8750, campaignsCompleted: 5, rank: 9 },
-    { id: '10', name: 'Anna Elite', totalPoints: 8200, campaignsCompleted: 5, rank: 10 },
+const campaignThemes = [
+    {
+        id: 'default',
+        gradient: 'from-cyan-500 via-blue-600 to-violet-600',
+        bgGradient: 'from-cyan-500/20 via-blue-600/10 to-violet-500/20',
+        accent: 'cyan',
+        icon: Trophy,
+    },
+    {
+        id: 'purple',
+        gradient: 'from-violet-500 via-purple-600 to-fuchsia-600',
+        bgGradient: 'from-violet-500/20 via-purple-600/10 to-fuchsia-500/20',
+        accent: 'violet',
+        icon: Sparkles,
+    },
+    {
+        id: 'orange',
+        gradient: 'from-orange-500 via-red-600 to-rose-600',
+        bgGradient: 'from-orange-500/20 via-red-600/10 to-rose-500/20',
+        accent: 'orange',
+        icon: Flame,
+    },
+    {
+        id: 'green',
+        gradient: 'from-emerald-500 via-teal-600 to-cyan-600',
+        bgGradient: 'from-emerald-500/20 via-teal-600/10 to-cyan-500/20',
+        accent: 'emerald',
+        icon: TrendingUp,
+    },
 ]
 
-const rankConfig = {
-    1: {
-        icon: Crown,
-        color: 'text-cyan-400',
-        bg: 'bg-gradient-to-br from-cyan-500 to-blue-600',
-        cardBg: 'from-cyan-500/20 via-blue-600/10 to-violet-500/20',
-        border: 'border-cyan-500/30',
-    },
-    2: {
-        icon: Medal,
-        color: 'text-violet-300',
-        bg: 'bg-gradient-to-br from-violet-500 to-purple-600',
-        cardBg: 'from-violet-500/20 via-purple-600/10 to-pink-500/20',
-        border: 'border-violet-500/30',
-    },
-    3: {
-        icon: Medal,
-        color: 'text-blue-400',
-        bg: 'bg-gradient-to-br from-blue-500 to-cyan-600',
-        cardBg: 'from-blue-500/20 via-cyan-600/10 to-teal-500/20',
-        border: 'border-blue-500/30',
-    },
+const getRankConfig = (rank: number) => {
+    if (rank === 1) {
+        return {
+            icon: Crown,
+            color: 'text-amber-400',
+            bg: 'bg-gradient-to-br from-amber-500 to-yellow-600',
+            glow: 'shadow-amber-500/50',
+        }
+    }
+    if (rank === 2) {
+        return {
+            icon: Medal,
+            color: 'text-slate-300',
+            bg: 'bg-gradient-to-br from-slate-400 to-slate-500',
+            glow: 'shadow-slate-400/50',
+        }
+    }
+    if (rank === 3) {
+        return {
+            icon: Medal,
+            color: 'text-orange-400',
+            bg: 'bg-gradient-to-br from-orange-600 to-orange-700',
+            glow: 'shadow-orange-500/50',
+        }
+    }
+    return null
 }
 
-const stats = [
-    { label: 'Total Players', value: '50,234', icon: Users, color: 'from-cyan-500 to-blue-600' },
-    { label: 'Active This Week', value: '12,456', icon: Flame, color: 'from-violet-500 to-purple-600' },
-    { label: 'Points Awarded', value: '2.5M+', icon: Zap, color: 'from-emerald-500 to-teal-600' },
-]
-
 export default function PublicLeaderboardPage() {
-    const [period, setPeriod] = useState<'all' | 'weekly' | 'monthly'>('all')
-    const [leaderboard, setLeaderboard] = useState(mockLeaderboardData)
-    const [loading, setLoading] = useState(false)
+    const [campaigns, setCampaigns] = useState<any[]>([])
+    const [selectedCampaign, setSelectedCampaign] = useState<any>(null)
+    const [leaderboard, setLeaderboard] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
+    const [leaderboardLoading, setLeaderboardLoading] = useState(false)
 
     useEffect(() => {
-        setLoading(true)
-        // Simulate API call
-        const timer = setTimeout(() => {
-            setLoading(false)
-        }, 800)
+        const fetchCampaigns = async () => {
+            try {
+                const data = await getActiveGamifiedCampaigns()
+                setCampaigns(data)
+                if (data.length > 0) {
+                    setSelectedCampaign(data[0])
+                }
+            } catch (error) {
+                console.error('Error fetching campaigns:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
 
-        return () => clearTimeout(timer)
-    }, [period])
+        fetchCampaigns()
+    }, [])
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            if (!selectedCampaign) return
+
+            setLeaderboardLoading(true)
+            try {
+                const data = await getCampaignLeaderboard(selectedCampaign.id, { limit: 20 })
+                setLeaderboard(data.leaderboard || [])
+            } catch (error) {
+                console.error('Error fetching leaderboard:', error)
+                setLeaderboard([])
+            } finally {
+                setLeaderboardLoading(false)
+            }
+        }
+
+        fetchLeaderboard()
+    }, [selectedCampaign])
+
+    const theme = useMemo(() => {
+        if (!selectedCampaign) return campaignThemes[0]
+        const index = campaigns.findIndex((c) => c.id === selectedCampaign.id)
+        return campaignThemes[index % campaignThemes.length]
+    }, [selectedCampaign, campaigns])
+
+    const stats = useMemo(() => {
+        if (leaderboard.length === 0) return []
+        const totalPoints = leaderboard.reduce((sum, entry) => sum + (entry.totalPoints || 0), 0)
+        const topPoints = leaderboard[0]?.totalPoints || 0
+        const avgPoints = Math.round(totalPoints / leaderboard.length)
+
+        return [
+            { label: 'Participants', value: leaderboard.length.toString(), icon: Users },
+            { label: 'Top Score', value: topPoints.toLocaleString(), icon: Award },
+            { label: 'Avg Score', value: avgPoints.toLocaleString(), icon: TrendingUp },
+            { label: 'Total Points', value: totalPoints.toLocaleString(), icon: Star },
+        ]
+    }, [leaderboard])
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-6">
+                    <div className="relative">
+                        <div className="w-20 h-20 border-4 border-white/10 rounded-full" />
+                        <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-cyan-500 rounded-full animate-spin" />
+                    </div>
+                    <p className="text-neutral-400 text-lg">Loading leaderboards...</p>
+                </div>
+            </div>
+        )
+    }
+
+    if (campaigns.length === 0) {
+        return (
+            <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+                <Card className="max-w-md bg-neutral-900/40 backdrop-blur-xl border-white/10">
+                    <CardContent className="p-12 text-center">
+                        <Trophy className="w-16 h-16 text-neutral-700 mx-auto mb-6" />
+                        <h2 className="text-2xl font-bold text-white mb-3">No Active Campaigns</h2>
+                        <p className="text-neutral-400 mb-6">Check back later for exciting competitions!</p>
+                        <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
+                            <Link href="/campaigns">Browse Campaigns</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
 
     return (
         <>
-            {/* Hero Section */}
-            <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
-                {/* Animated Background */}
+            {/* Hero Section with Animated Background */}
+            <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-24 pb-16">
+                {/* Dynamic Background */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
-                    <div className="absolute w-[600px] h-[600px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 bottom-0 right-0 animate-pulse delay-1000" />
+                    <div className={`absolute w-[1000px] h-[1000px] bg-gradient-to-br ${theme.gradient} opacity-20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse`} />
+                    <div className={`absolute w-[700px] h-[700px] bg-gradient-to-tr ${theme.gradient} opacity-10 rounded-full blur-[120px] translate-x-1/4 translate-y-1/4 bottom-0 right-0 animate-pulse delay-1000`} />
                 </div>
 
-                <div className="relative container mx-auto max-w-7xl px-6 py-16">
-                    <div className="text-center max-w-3xl mx-auto">
-                        <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
-                            <Trophy className="w-3 h-3 mr-2" />
-                            Hall of Fame
-                        </Badge>
-
-                        <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                Global Leaderboard
-              </span>
-                        </h1>
-                        <p className="text-lg text-neutral-400 mb-8">
-                            See who&apos;s topping the charts and competing for glory
-                        </p>
-
-                        {/* Period Filters */}
-                        <div className="flex items-center justify-center gap-3 flex-wrap">
-                            {(['all', 'weekly', 'monthly'] as const).map((p) => (
-                                <button
-                                    key={p}
-                                    onClick={() => setPeriod(p)}
-                                    className={`
-                    px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-300 capitalize
-                    ${
-                                        period === p
-                                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 scale-105'
-                                            : 'bg-neutral-900/60 border border-white/10 text-neutral-400 hover:border-white/20 hover:text-white hover:bg-neutral-800/60'
-                                    }
-                  `}
-                                >
-                                    {p === 'all' ? 'All Time' : p}
-                                </button>
-                            ))}
+                <div className="relative container mx-auto max-w-7xl px-6">
+                    {/* Header */}
+                    <div className="text-center max-w-4xl mx-auto mb-12">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
+                            <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${theme.gradient} animate-pulse`} />
+                            <span className="text-sm text-neutral-300 font-medium">Live Rankings</span>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            {/* Stats Summary */}
-            <div className="container mx-auto max-w-7xl px-6 py-16">
-                <div className="grid gap-4 md:grid-cols-3">
-                    {stats.map((stat) => {
-                        const Icon = stat.icon
-                        return (
-                            <Card
-                                key={stat.label}
-                                className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
-                            >
-                                <div
-                                    className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-                                />
-                                <CardContent className="relative p-6">
-                                    <div className="flex items-center gap-4">
-                                        <div
-                                            className={`flex-shrink-0 p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}
-                                        >
-                                            <Icon className="w-6 h-6 text-white" />
+                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6">
+                            <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
+                                Campaign Leaderboards
+                            </span>
+                        </h1>
+
+                        <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
+                            Compete, achieve, and dominate the rankings across all active campaigns
+                        </p>
+                    </div>
+
+                    {/* Campaign Selector */}
+                    <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+                        {campaigns.map((campaign) => {
+                            const campaignTheme = campaignThemes[campaigns.indexOf(campaign) % campaignThemes.length]
+                            const isSelected = selectedCampaign?.id === campaign.id
+                            const Icon = campaignTheme.icon
+
+                            return (
+                                <button
+                                    key={campaign.id}
+                                    onClick={() => setSelectedCampaign(campaign)}
+                                    className={`
+                                        relative group px-6 py-4 rounded-2xl font-semibold text-base
+                                        transition-all duration-500 transform
+                                        ${isSelected ? 'scale-105' : 'hover:scale-102'}
+                                    `}
+                                    style={{
+                                        background: isSelected
+                                            ? `linear-gradient(135deg, ${campaignTheme.gradient.replace(/from-|via-|to-/g, '').split(' ').join(', ')})`
+                                            : 'rgba(255,255,255,0.03)',
+                                        border: isSelected ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                                    }}
+                                >
+                                    {isSelected && (
+                                        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${campaignTheme.gradient} opacity-20 blur-xl`} />
+                                    )}
+
+                                    <div className="relative flex items-center gap-3">
+                                        <div className={`p-2 rounded-lg ${isSelected ? 'bg-white/20' : 'bg-white/5'} group-hover:bg-white/10 transition-colors`}>
+                                            <Icon className={`w-5 h-5 ${isSelected ? 'text-white' : 'text-neutral-400'}`} />
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-                                            <div className="text-sm text-neutral-400">{stat.label}</div>
+                                        <div className="text-left">
+                                            <div className={`${isSelected ? 'text-white' : 'text-neutral-300'} whitespace-nowrap`}>
+                                                {campaign.name}
+                                            </div>
+                                            <div className={`text-xs ${isSelected ? 'text-white/70' : 'text-neutral-500'}`}>
+                                                {campaign._count?.participations || 0} players
+                                            </div>
                                         </div>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        )
-                    })}
+                                </button>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
 
-            {/* Leaderboard */}
-            <div className="container mx-auto max-w-4xl px-6 py-16">
-                {loading ? (
-                    <div className="space-y-4">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                            <div key={i} className="h-24 bg-neutral-900/40 rounded-xl animate-pulse" />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="space-y-12">
-                        {/* Podium - Top 3 */}
-                        <div className="grid grid-cols-3 gap-4 items-end">
-                            {leaderboard.slice(0, 3).map((user, index) => {
-                                const config = rankConfig[(index + 1) as keyof typeof rankConfig]
-                                const Icon = config?.icon || Trophy
+            {/* Main Content */}
+            <div className="min-h-screen bg-neutral-950">
+                <div className="container mx-auto max-w-7xl px-6 py-12">
+                    {/* Stats Grid */}
+                    <div className="grid gap-4 md:grid-cols-4 mb-12">
+                        {stats.map((stat, index) => {
+                            const Icon = stat.icon
+                            const delay = index * 100
 
-                                return (
-                                    <Card
-                                        key={user.id}
-                                        className={`
-                      relative bg-gradient-to-br ${config.cardBg} backdrop-blur-xl border border-white/10
-                      transition-all duration-500 hover:scale-105
-                      ${index === 0 ? 'md:-mt-8 order-2 md:order-2' : index === 1 ? 'order-1 md:order-1' : 'order-3 md:order-3'}
-                    `}
-                                    >
-                                        <CardContent className="p-6 text-center">
-                                            {/* Icon */}
-                                            <div
-                                                className={`inline-flex p-4 rounded-full mb-4 ${config.bg} shadow-lg ${
-                                                    index === 0 ? 'w-20 h-20' : 'w-14 h-14'
-                                                }`}
-                                            >
-                                                <Icon className={`w-${index === 0 ? '12' : '8'} h-${index === 0 ? '12' : '8'} text-white`} />
-                                            </div>
-
-                                            {/* Rank */}
-                                            <div
-                                                className={`text-4xl font-black mb-3 ${config.color} drop-shadow-lg`}
-                                            >
-                                                #{user.rank}
-                                            </div>
-
-                                            {/* Avatar */}
-                                            <div
-                                                className={`w-16 h-16 rounded-full bg-gradient-to-br ${config.bg} mx-auto mb-3 flex items-center justify-center text-xl font-black text-white shadow-lg`}
-                                            >
-                                                {user.name.charAt(0)}
-                                            </div>
-
-                                            {/* Name */}
-                                            <h3 className="font-bold text-white mb-3">{user.name}</h3>
-
-                                            {/* Points */}
-                                            <div className="flex items-center justify-center gap-2 mb-2">
-                                                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                                                <span className="font-bold text-white text-lg">
-                          {user.totalPoints.toLocaleString()}
-                        </span>
-                                            </div>
-
-                                            {/* Campaigns */}
-                                            <div className="text-xs text-neutral-400">
-                                                {user.campaignsCompleted} campaigns completed
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )
-                            })}
-                        </div>
-
-                        {/* Rest of Leaderboard */}
-                        <div className="space-y-3">
-                            {leaderboard.slice(3).map((user) => (
+                            return (
                                 <Card
-                                    key={user.id}
-                                    className="group bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:bg-neutral-900/60 transition-all duration-300"
+                                    key={stat.label}
+                                    className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
                                 >
-                                    <CardContent className="p-4">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                    <CardContent className="relative p-6">
                                         <div className="flex items-center gap-4">
-                                            {/* Rank Badge */}
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-800 flex items-center justify-center font-black text-neutral-400 text-sm border border-white/10">
-                                                #{user.rank}
+                                            <div
+                                                className={`flex-shrink-0 p-3 rounded-xl bg-gradient-to-br ${theme.gradient} shadow-lg group-hover:scale-110 transition-transform duration-500`}
+                                                style={{ animationDelay: `${delay}ms` }}
+                                            >
+                                                <Icon className="w-6 h-6 text-white" />
                                             </div>
-
-                                            {/* Avatar */}
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
-                                                {user.name.charAt(0)}
-                                            </div>
-
-                                            {/* Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-white truncate group-hover:text-amber-400 transition-colors">
-                                                    {user.name}
-                                                </h3>
-                                                <p className="text-xs text-neutral-500">
-                                                    {user.campaignsCompleted} campaigns completed
-                                                </p>
-                                            </div>
-
-                                            {/* Points */}
-                                            <div className="flex items-center gap-2 flex-shrink-0">
-                                                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                                                <span className="font-bold text-white">{user.totalPoints.toLocaleString()}</span>
+                                            <div className="flex-1">
+                                                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                                                <div className="text-sm text-neutral-400">{stat.label}</div>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
+                            )
+                        })}
+                    </div>
+
+                    {/* Leaderboard Content */}
+                    {leaderboardLoading ? (
+                        <div className="grid gap-4">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                                <div key={i} className="h-24 bg-neutral-900/40 rounded-2xl animate-pulse" />
                             ))}
                         </div>
-                    </div>
-                )}
-
-                {/* CTA Section */}
-                <div className="mt-16">
-                    <Card className="relative overflow-hidden bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500">
-                        {/* Background Pattern */}
-                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-
-                        {/* Animated Glow */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
-
-                        <CardContent className="relative p-12 lg:p-16 text-center">
-                            <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-6">
-                                <Target className="w-12 h-12 text-white" />
-                            </div>
-                            <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                                Want to be on the leaderboard?
-                            </h2>
-                            <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                                Join campaigns, complete tasks, and climb the ranks to earn your place among the
-                                champions.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                <Button
-                                    asChild
-                                    size="default"
-                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
-                                >
-                                    <Link href="/campaigns" className="gap-2">
-                                        Browse Campaigns
-                                        <ArrowRight className="w-4 h-4" />
-                                    </Link>
+                    ) : leaderboard.length === 0 ? (
+                        <Card className="bg-neutral-900/40 backdrop-blur-xl border-white/10">
+                            <CardContent className="p-16 text-center">
+                                <Trophy className="w-20 h-20 text-neutral-700 mx-auto mb-6" />
+                                <h3 className="text-2xl font-bold text-white mb-3">No Rankings Yet</h3>
+                                <p className="text-neutral-400 mb-8">Be the first to compete in this campaign!</p>
+                                <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
+                                    <Link href={`/campaigns/${selectedCampaign.id}`}>Join Campaign</Link>
                                 </Button>
-                                <Button
-                                    asChild
-                                    size="default"
-                                    variant="outline"
-                                    className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
-                                >
-                                    <Link href="/sign-up">Sign Up Now</Link>
-                                </Button>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="space-y-8">
+                            {/* Podium - Top 3 */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {leaderboard.slice(0, 3).map((entry, index) => {
+                                    const rank = index + 1
+                                    const config = getRankConfig(rank)
+                                    const Icon = config?.icon || Trophy
+
+                                    return (
+                                        <Card
+                                            key={entry.userId}
+                                            className={`
+                                                relative bg-gradient-to-br ${theme.bgGradient} backdrop-blur-xl border-2
+                                                transition-all duration-500 hover:scale-105
+                                                ${rank === 1 ? 'border-amber-500/30 md:-mt-8' : 'border-white/10'}
+                                            `}
+                                            style={{ animationDelay: `${index * 150}ms` }}
+                                        >
+                                            <CardContent className="p-8 text-center">
+                                                {/* Icon Badge */}
+                                                <div className="flex justify-center mb-4">
+                                                    <div
+                                                        className={`relative p-4 rounded-2xl ${config.bg} shadow-xl ${config.glow} ${
+                                                            rank === 1 ? 'w-24 h-24' : 'w-20 h-20'
+                                                        }`}
+                                                    >
+                                                        <Icon className={`w-full h-full text-white`} />
+                                                        {rank === 1 && (
+                                                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl opacity-50 blur-lg animate-pulse" />
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Rank */}
+                                                <div className={`text-5xl font-black mb-4 ${config.color} drop-shadow-lg`}>
+                                                    #{rank}
+                                                </div>
+
+                                                {/* Avatar */}
+                                                <div
+                                                    className={`w-20 h-20 rounded-full bg-gradient-to-br ${theme.gradient} mx-auto mb-4 flex items-center justify-center text-2xl font-black text-white shadow-xl border-4 border-white/10`}
+                                                >
+                                                    {entry.user?.name?.charAt(0) || '?'}
+                                                </div>
+
+                                                {/* Name */}
+                                                <h3 className="font-bold text-white text-xl mb-4">{entry.user?.name || 'Anonymous'}</h3>
+
+                                                {/* Points */}
+                                                <div className="flex items-center justify-center gap-2 mb-2">
+                                                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                                                    <span className="font-black text-white text-2xl">
+                                                        {entry.totalPoints?.toLocaleString() || 0}
+                                                    </span>
+                                                </div>
+
+                                                {/* Label */}
+                                                <div className="text-sm text-neutral-400 font-medium">points earned</div>
+                                            </CardContent>
+                                        </Card>
+                                    )
+                                })}
                             </div>
-                        </CardContent>
-                    </Card>
+
+                            {/* Rest of Leaderboard */}
+                            <div className="space-y-3">
+                                {leaderboard.slice(3).map((entry, index) => {
+                                    const rank = index + 4
+
+                                    return (
+                                        <Card
+                                            key={entry.userId}
+                                            className="group bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:bg-neutral-900/60 transition-all duration-300"
+                                        >
+                                            <CardContent className="p-5">
+                                                <div className="flex items-center gap-5">
+                                                    {/* Rank Badge */}
+                                                    <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-800 flex items-center justify-center font-black text-neutral-400 border border-white/10 group-hover:scale-110 transition-transform">
+                                                        #{rank}
+                                                    </div>
+
+                                                    {/* Avatar */}
+                                                    <div
+                                                        className={`w-14 h-14 rounded-full bg-gradient-to-br ${theme.gradient} flex items-center justify-center text-lg font-bold text-white shadow-lg group-hover:scale-110 transition-transform`}
+                                                    >
+                                                        {entry.user?.name?.charAt(0) || '?'}
+                                                    </div>
+
+                                                    {/* Info */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-bold text-white text-lg truncate group-hover:text-amber-400 transition-colors">
+                                                            {entry.user?.name || 'Anonymous'}
+                                                        </h3>
+                                                    </div>
+
+                                                    {/* Points */}
+                                                    <div className="flex items-center gap-3 flex-shrink-0">
+                                                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-800/50 border border-white/10">
+                                                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                                            <span className="font-bold text-white text-lg">
+                                                                {entry.totalPoints?.toLocaleString() || 0}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Campaign Info Card */}
+                    {selectedCampaign && (
+                        <Card className="mt-12 bg-neutral-900/40 backdrop-blur-xl border border-white/10">
+                            <CardContent className="p-8">
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white mb-3">{selectedCampaign.name}</h3>
+                                        <p className="text-neutral-400 mb-4 leading-relaxed">{selectedCampaign.description}</p>
+                                        <div className="flex flex-wrap gap-3">
+                                            <Badge className="bg-neutral-800 text-neutral-300 border-white/10">
+                                                <Calendar className="w-3 h-3 mr-1" />
+                                                {new Date(selectedCampaign.startDate).toLocaleDateString()} - {new Date(selectedCampaign.endDate).toLocaleDateString()}
+                                            </Badge>
+                                            <Badge className="bg-neutral-800 text-neutral-300 border-white/10">
+                                                <Target className="w-3 h-3 mr-1" />
+                                                {selectedCampaign.tasks?.length || 0} tasks
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-center md:justify-end">
+                                        <Button
+                                            asChild
+                                            size="lg"
+                                            className={`bg-gradient-to-r ${theme.gradient} text-white font-semibold shadow-lg hover:shadow-xl transition-all`}
+                                        >
+                                            <Link href={`/campaigns/${selectedCampaign.id}`} className="gap-2">
+                                                View Campaign Details
+                                                <ArrowRight className="w-5 h-5" />
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
         </>
