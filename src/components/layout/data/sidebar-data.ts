@@ -189,20 +189,6 @@ export const sidebarData: SidebarData = {
     },
 
     // ============================================================================
-    // PERSONAL - All roles (except Moods which is admin only)
-    // ============================================================================
-    {
-      title: 'Personal',
-      items: [
-        {
-          title: 'Achievements',
-          url: ROUTES.achievements.href,
-          icon: Trophy,
-        },
-      ],
-    },
-
-    // ============================================================================
     // GAMIFIED CAMPAIGNS - All authenticated users
     // ============================================================================
     {

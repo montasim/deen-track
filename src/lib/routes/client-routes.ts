@@ -357,14 +357,6 @@ export const ROUTES = {
     access: RoleAccess.AUTHENTICATED,
   },
 
-  // Achievements
-  achievements: {
-    label: 'Achievements',
-    href: '/achievements',
-    icon: Trophy,
-    access: RoleAccess.AUTHENTICATED,
-  },
-
   // Gamified Campaigns Routes
   gamifiedCampaigns: {
     label: 'Campaigns',

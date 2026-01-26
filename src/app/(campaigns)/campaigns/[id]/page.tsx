@@ -24,10 +24,12 @@ import {
   TrendingUp,
   ArrowRight,
   Gamepad2,
+  Send,
 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { toast } from '@/hooks/use-toast'
-import {getGamifiedCampaign, joinCampaign} from "@/app/dashboard/gamified-campaigns/actions";
+import { getGamifiedCampaign, joinCampaign, submitTaskProof } from '@/app/dashboard/gamified-campaigns/actions'
+import { TaskSubmitDrawer } from '@/app/dashboard/campaigns/gamified/[id]/components/task-submit-drawer'
 
 const difficultyConfig = {
   BEGINNER: {
@@ -72,6 +74,8 @@ export default function PublicCampaignDetailPage() {
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<any>(null)
+  const [proofDialogOpen, setProofDialogOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -401,22 +405,38 @@ export default function PublicCampaignDetailPage() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-4">
-                                {isJoined ? (
-                                  <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                    <Unlock className="w-3.5 h-3.5" />
-                                    Unlocked
-                                  </Badge>
-                                ) : (
-                                  <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                    <Lock className="w-3.5 h-3.5" />
-                                    Join to unlock
-                                  </Badge>
-                                )}
-                                {user && !isJoined && (
-                                  <span className="text-xs text-neutral-500">
-                                    Sign in to participate
-                                  </span>
+                              <div className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                  {isJoined ? (
+                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                      <Unlock className="w-3.5 h-3.5" />
+                                      Unlocked
+                                    </Badge>
+                                  ) : (
+                                    <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                      <Lock className="w-3.5 h-3.5" />
+                                      Join to unlock
+                                    </Badge>
+                                  )}
+                                  {user && !isJoined && (
+                                    <span className="text-xs text-neutral-500">
+                                      Sign in to participate
+                                    </span>
+                                  )}
+                                </div>
+
+                                {isJoined && (
+                                  <Button
+                                    onClick={() => {
+                                      setSelectedTask(ct.task)
+                                      setProofDialogOpen(true)
+                                    }}
+                                    className={`bg-gradient-to-r ${taskConfig.color} hover:opacity-90 text-white font-semibold shadow-lg transition-all hover:scale-105`}
+                                    size="sm"
+                                  >
+                                    <Send className="w-4 h-4 mr-2" />
+                                    Submit Proof
+                                  </Button>
                                 )}
                               </div>
                             </div>
@@ -619,6 +639,18 @@ export default function PublicCampaignDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Task Submit Drawer */}
+      <TaskSubmitDrawer
+        open={proofDialogOpen}
+        onOpenChange={setProofDialogOpen}
+        task={selectedTask}
+        campaignId={id as string}
+        onSubmit={async (data) => {
+          const result = await submitTaskProof(data)
+          return result
+        }}
+      />
     </>
   )
 }

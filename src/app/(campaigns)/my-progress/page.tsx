@@ -52,6 +52,7 @@ export default function MyProgressPage() {
     const router = useRouter()
     const [progressList, setProgressList] = useState<any[]>([])
     const [submissions, setSubmissions] = useState<any[]>([])
+    const [achievements, setAchievements] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null)
 
@@ -72,6 +73,13 @@ export default function MyProgressPage() {
                 ])
                 setProgressList((progressData || []) as any[])
                 setSubmissions((submissionsData || []) as any[])
+
+                // Fetch achievements from API
+                const achievementsRes = await fetch('/api/user/achievements')
+                if (achievementsRes.ok) {
+                    const achievementsData = await achievementsRes.json()
+                    setAchievements(achievementsData.data || [])
+                }
             } catch (error) {
                 console.error('Error fetching progress:', error)
             } finally {
@@ -285,6 +293,13 @@ export default function MyProgressPage() {
                                 ])
                                 setProgressList((progressData || []) as any[])
                                 setSubmissions((submissionsData || []) as any[])
+
+                                // Fetch achievements from API
+                                const achievementsRes = await fetch('/api/user/achievements')
+                                if (achievementsRes.ok) {
+                                    const achievementsData = await achievementsRes.json()
+                                    setAchievements(achievementsData.data || [])
+                                }
                             }}
                         >
                             <RefreshCw className="w-5 h-5 mr-2" />
@@ -647,6 +662,147 @@ export default function MyProgressPage() {
                                                     <div className="flex items-center gap-4 text-sm text-neutral-500">
                                                         {submission.submittedAt && (
                                                             <span>{new Date(submission.submittedAt).toLocaleDateString()}</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Achievements Section */}
+                    <div className="mt-12">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-600/20">
+                                <Award className="w-5 h-5 text-amber-400" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-white">Your Achievements</h2>
+                                <p className="text-sm text-neutral-400">Track your accomplishments across the platform</p>
+                            </div>
+                        </div>
+
+                        {/* Achievement Stats */}
+                        <div className="grid gap-4 md:grid-cols-4 mb-8">
+                            {(() => {
+                                const unlockedCount = achievements.filter(a => a.userUnlocked).length
+                                const totalXP = achievements.filter(a => a.userUnlocked).reduce((sum, a) => sum + a.xp, 0)
+                                const inProgressCount = achievements.filter(a => !a.userUnlocked && a.userProgress > 0).length
+
+                                return [
+                                    { label: 'Unlocked', value: `${unlockedCount}/${achievements.length}`, icon: Award, color: 'from-amber-500 to-yellow-600' },
+                                    { label: 'Total XP', value: totalXP.toLocaleString(), icon: Sparkles, color: 'from-cyan-500 to-blue-600' },
+                                    { label: 'In Progress', value: inProgressCount.toString(), icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
+                                    { label: 'Available', value: (achievements.length - unlockedCount).toString(), icon: Target, color: 'from-emerald-500 to-teal-600' },
+                                ]
+                            })().map((stat, index) => {
+                                const Icon = stat.icon
+                                return (
+                                    <Card
+                                        key={stat.label}
+                                        className="group relative bg-neutral-900/40 backdrop-blur-xl border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+                                    >
+                                        <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                                        <CardContent className="relative p-6">
+                                            <div className="flex items-center gap-4">
+                                                <div
+                                                    className={`flex-shrink-0 p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}
+                                                >
+                                                    <Icon className="w-6 h-6 text-white" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                                                    <div className="text-sm text-neutral-400">{stat.label}</div>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })}
+                        </div>
+
+                        {/* Achievements Grid */}
+                        {achievements.length === 0 ? (
+                            <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
+                                <CardContent className="p-12 text-center">
+                                    <Award className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
+                                    <h3 className="text-lg font-semibold text-white mb-2">No achievements yet</h3>
+                                    <p className="text-sm text-neutral-400">
+                                        Complete tasks and engage with the platform to earn achievements!
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                {achievements.map((achievement) => {
+                                    const tierColors = {
+                                        BRONZE: { bg: 'from-orange-900/40 to-amber-900/40', border: 'border-orange-500/30', text: 'text-orange-400', badge: 'bg-orange-500/20' },
+                                        SILVER: { bg: 'from-slate-700/40 to-gray-600/40', border: 'border-slate-400/30', text: 'text-slate-300', badge: 'bg-slate-500/20' },
+                                        GOLD: { bg: 'from-yellow-900/40 to-amber-700/40', border: 'border-yellow-500/30', text: 'text-yellow-400', badge: 'bg-yellow-500/20' },
+                                        PLATINUM: { bg: 'from-cyan-900/40 to-sky-700/40', border: 'border-cyan-400/30', text: 'text-cyan-300', badge: 'bg-cyan-500/20' },
+                                        DIAMOND: { bg: 'from-blue-900/40 to-indigo-800/40', border: 'border-blue-400/30', text: 'text-blue-300', badge: 'bg-blue-500/20' },
+                                        LEGENDARY: { bg: 'from-purple-900/40 to-pink-800/40', border: 'border-purple-400/30', text: 'text-purple-300', badge: 'bg-purple-500/20' },
+                                    }
+                                    const tier = tierColors[achievement.tier as keyof typeof tierColors] || tierColors.BRONZE
+
+                                    return (
+                                        <Card
+                                            key={achievement.id}
+                                            className={`group relative bg-neutral-900/40 backdrop-blur-xl ${achievement.userUnlocked ? tier.border : 'border-white/10'} hover:border-white/20 transition-all duration-300 overflow-hidden`}
+                                        >
+                                            {/* Tier Background Gradient */}
+                                            {achievement.userUnlocked && (
+                                                <div className={`absolute inset-0 bg-gradient-to-br ${tier.bg} opacity-50`} />
+                                            )}
+
+                                            <CardContent className="relative p-6">
+                                                <div className="flex items-start gap-4">
+                                                    {/* Icon */}
+                                                    <div className={`text-4xl ${achievement.userUnlocked ? '' : 'grayscale opacity-40'}`}>
+                                                        {achievement.icon || '🏆'}
+                                                    </div>
+
+                                                    {/* Content */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <h3 className={`font-bold ${achievement.userUnlocked ? 'text-white' : 'text-neutral-500'}`}>
+                                                                {achievement.name}
+                                                            </h3>
+                                                            <Badge className={`${tier.badge} ${tier.text} border-0 text-xs`}>
+                                                                {achievement.tier}
+                                                            </Badge>
+                                                        </div>
+                                                        <p className={`text-sm mb-3 ${achievement.userUnlocked ? 'text-neutral-300' : 'text-neutral-600'}`}>
+                                                            {achievement.description}
+                                                        </p>
+
+                                                        {/* Progress or XP */}
+                                                        {achievement.userUnlocked ? (
+                                                            <div className="flex items-center gap-2 text-sm">
+                                                                <Sparkles className={`w-4 h-4 ${tier.text}`} />
+                                                                <span className={`${tier.text} font-medium`}>+{achievement.xp} XP</span>
+                                                            </div>
+                                                        ) : achievement.userProgress > 0 ? (
+                                                            <div>
+                                                                <div className="flex justify-between text-xs mb-1">
+                                                                    <span className="text-neutral-400">Progress</span>
+                                                                    <span className="text-neutral-300">
+                                                                        {achievement.userProgress} / {(achievement.requirements as any)?.count || '?'}
+                                                                    </span>
+                                                                </div>
+                                                                <Progress
+                                                                    value={Math.min((achievement.userProgress / ((achievement.requirements as any)?.count || 1)) * 100, 100)}
+                                                                    className="h-1.5"
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                                                <Lock className="w-4 h-4" />
+                                                                <span>Not started</span>
+                                                            </div>
                                                         )}
                                                     </div>
                                                 </div>
