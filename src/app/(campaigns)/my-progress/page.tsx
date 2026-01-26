@@ -53,6 +53,7 @@ export default function MyProgressPage() {
     const [progressList, setProgressList] = useState<any[]>([])
     const [submissions, setSubmissions] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null)
 
     // Redirect admins away and unauthenticated users
     useEffect(() => {
@@ -81,27 +82,44 @@ export default function MyProgressPage() {
         if (user) fetchData()
     }, [user])
 
+    // Filter data based on selected campaign
+    const filteredProgress = useMemo(() => {
+        if (!selectedCampaignId) return progressList
+        return progressList.filter((p) => p.campaignId === selectedCampaignId)
+    }, [progressList, selectedCampaignId])
+
+    const filteredSubmissions = useMemo(() => {
+        if (!selectedCampaignId) return submissions
+        return submissions.filter((s: any) => s.progress?.campaignId === selectedCampaignId)
+    }, [submissions, selectedCampaignId])
+
     // Calculate stats
     const stats = useMemo(() => {
-        const totalPoints = progressList.reduce((sum: number, p: any) => sum + p.totalPoints, 0)
-        const totalCampaigns = progressList.length
-        const completedTasks = submissions.filter((s: any) => s.status === 'APPROVED').length
-        const totalTasks = progressList.reduce((sum: number, p: any) => sum + p.campaign.tasks.length, 0)
+        const displayProgress = filteredProgress
+        const displaySubmissions = filteredSubmissions
+
+        const totalPoints = displayProgress.reduce((sum: number, p: any) => sum + p.totalPoints, 0)
+        const totalCampaigns = displayProgress.length
+        const completedTasks = displaySubmissions.filter((s: any) => s.status === 'APPROVED').length
+        const totalTasks = displayProgress.reduce((sum: number, p: any) => sum + p.campaign.tasks.length, 0)
         const overallProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
         return [
-            { label: 'Total Points', value: totalPoints.toLocaleString(), icon: Trophy, color: 'from-amber-500 to-yellow-600' },
-            { label: 'Campaigns', value: totalCampaigns.toString(), icon: Target, color: 'from-cyan-500 to-blue-600' },
-            { label: 'Tasks Completed', value: `${completedTasks}/${totalTasks}`, icon: CheckCircle2, color: 'from-emerald-500 to-teal-600' },
-            { label: 'Overall Progress', value: `${overallProgress}%`, icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
+            { label: selectedCampaignId ? 'Points' : 'Total Points', value: totalPoints.toLocaleString(), icon: Trophy, color: 'from-amber-500 to-yellow-600' },
+            { label: selectedCampaignId ? 'Tasks' : 'Campaigns', value: selectedCampaignId ? totalTasks.toString() : totalCampaigns.toString(), icon: Target, color: 'from-cyan-500 to-blue-600' },
+            { label: 'Completed', value: `${completedTasks}${selectedCampaignId ? '' : '/' + totalTasks}`, icon: CheckCircle2, color: 'from-emerald-500 to-teal-600' },
+            { label: 'Progress', value: `${overallProgress}%`, icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
         ]
-    }, [progressList, submissions])
+    }, [filteredProgress, filteredSubmissions, selectedCampaignId])
 
     // Chart data
     const chartData = useMemo(() => {
-        if (progressList.length === 0) return { campaignProgress: [], pointsByCampaign: [], statusDistribution: [] }
+        const displayProgress = filteredProgress
+        const displaySubmissions = filteredSubmissions
 
-        const campaignProgress = progressList.map((progress) => {
+        if (displayProgress.length === 0) return { campaignProgress: [], pointsByCampaign: [], statusDistribution: [] }
+
+        const campaignProgress = displayProgress.map((progress) => {
             const campaign = progress.campaign
             const totalTasks = campaign.tasks.length
             const completedTasks = progress.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0
@@ -128,9 +146,9 @@ export default function MyProgressPage() {
                 }
             })
 
-        const completedTasks = submissions.filter((s: any) => s.status === 'APPROVED').length
-        const pendingTasks = submissions.filter((s: any) => s.status === 'SUBMITTED').length
-        const rejectedTasks = submissions.filter((s: any) => s.status === 'REJECTED').length
+        const completedTasks = displaySubmissions.filter((s: any) => s.status === 'APPROVED').length
+        const pendingTasks = displaySubmissions.filter((s: any) => s.status === 'SUBMITTED').length
+        const rejectedTasks = displaySubmissions.filter((s: any) => s.status === 'REJECTED').length
 
         const statusDistribution = [
             { name: 'Completed', value: completedTasks, color: '#10b981' },
@@ -139,7 +157,7 @@ export default function MyProgressPage() {
         ]
 
         return { campaignProgress, pointsByCampaign, statusDistribution }
-    }, [progressList, submissions])
+    }, [displayProgress, filteredSubmissions, progressList])
 
     if (!user) {
         return (
@@ -187,7 +205,7 @@ export default function MyProgressPage() {
                             <span className="text-sm text-neutral-300 font-medium">Your Journey</span>
                         </div>
 
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-6">
+                        <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black tracking-tight mb-6">
                             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
                                 My Progress
                             </span>
@@ -273,6 +291,56 @@ export default function MyProgressPage() {
                             Refresh
                         </Button>
                     </div>
+
+                    {/* Campaign Selector */}
+                    {progressList.length > 0 && (
+                        <div className="mb-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Target className="w-5 h-5 text-cyan-400" />
+                                <h2 className="text-lg font-semibold text-white">
+                                    {selectedCampaignId ? 'Campaign Details' : 'All Campaigns'}
+                                </h2>
+                            </div>
+                            <div className="flex flex-wrap gap-3">
+                                {/* All Campaigns Button */}
+                                <button
+                                    onClick={() => setSelectedCampaignId(null)}
+                                    className={`
+                                        px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
+                                        ${!selectedCampaignId
+                                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25'
+                                            : 'bg-neutral-900/60 border border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
+                                        }
+                                    `}
+                                >
+                                    All Campaigns
+                                </button>
+
+                                {/* Individual Campaign Buttons */}
+                                {progressList.map((progress, index) => {
+                                    const campaign = progress.campaign
+                                    const isSelected = selectedCampaignId === campaign.id
+                                    const theme = gradientThemes[index % gradientThemes.length]
+
+                                    return (
+                                        <button
+                                            key={campaign.id}
+                                            onClick={() => setSelectedCampaignId(campaign.id)}
+                                            className={`
+                                                px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
+                                                ${isSelected
+                                                    ? `bg-gradient-to-r from-${theme.from} to-${theme.to} text-white shadow-lg`
+                                                    : 'bg-neutral-900/60 border border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
+                                                }
+                                            `}
+                                        >
+                                            {campaign.name.length > 20 ? campaign.name.substring(0, 20) + '...' : campaign.name}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -425,35 +493,50 @@ export default function MyProgressPage() {
                                 <Target className="w-5 h-5 text-amber-400" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-white">Campaign Progress</h2>
-                                <p className="text-sm text-neutral-400">Your active campaigns</p>
+                                <h2 className="text-2xl font-bold text-white">
+                                    {selectedCampaignId ? 'Selected Campaign' : 'Your Campaigns'}
+                                </h2>
+                                <p className="text-sm text-neutral-400">
+                                    {selectedCampaignId ? 'Campaign details and progress' : 'All your active campaigns'}
+                                </p>
                             </div>
                         </div>
 
-                        <div className="grid gap-6 md:grid-cols-2">
-                            {progressList.map((progress: any, index: number) => {
-                                const campaign = progress.campaign
-                                const totalTasks = campaign.tasks.length
-                                const completedInCampaign = progress.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0
-                                const progressPercent = totalTasks > 0 ? (completedInCampaign / totalTasks) * 100 : 0
-                                const theme = gradientThemes[index % gradientThemes.length]
-                                const statusIcons = {
-                                    COMPLETED: <CheckCircle2 className="w-4 h-4 text-emerald-400" />,
-                                    IN_PROGRESS: <Flame className="w-4 h-4 text-orange-400" />,
-                                    JOINED: <Clock className="w-4 h-4 text-blue-400" />,
-                                }
+                        {filteredProgress.length === 0 ? (
+                            <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
+                                <CardContent className="p-12 text-center">
+                                    <Target className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
+                                    <h3 className="text-lg font-semibold text-white mb-2">No Data Found</h3>
+                                    <p className="text-sm text-neutral-400">
+                                        {selectedCampaignId ? 'No progress data available for this campaign' : 'No campaigns found'}
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            <div className="grid gap-6 md:grid-cols-2">
+                                {filteredProgress.map((progress: any, index: number) => {
+                                    const campaign = progress.campaign
+                                    const totalTasks = campaign.tasks.length
+                                    const completedInCampaign = progress.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0
+                                    const progressPercent = totalTasks > 0 ? (completedInCampaign / totalTasks) * 100 : 0
+                                    const theme = gradientThemes[index % gradientThemes.length]
+                                    const statusIcons = {
+                                        COMPLETED: <CheckCircle2 className="w-4 h-4 text-emerald-400" />,
+                                        IN_PROGRESS: <Flame className="w-4 h-4 text-orange-400" />,
+                                        JOINED: <Clock className="w-4 h-4 text-blue-400" />,
+                                    }
 
-                                return (
-                                    <Card
-                                        key={progress.id}
-                                        className="group relative bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
-                                    >
-                                        {/* Gradient Background */}
-                                        <div className={`absolute inset-0 bg-gradient-to-br from-${theme.from}/5 via-${theme.via}/5 to-${theme.to}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                    return (
+                                        <Card
+                                            key={progress.id}
+                                            className="group relative bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+                                        >
+                                            {/* Gradient Background */}
+                                            <div className={`absolute inset-0 bg-gradient-to-br from-${theme.from}/5 via-${theme.via}/5 to-${theme.to}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
-                                        <div className="relative p-6">
-                                            {/* Header */}
-                                            <div className="flex items-start justify-between mb-4">
+                                            <div className="relative p-6">
+                                                {/* Header */}
+                                                <div className="flex items-start justify-between mb-4">
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <h3 className="font-bold text-white text-lg">{campaign.name}</h3>
@@ -506,21 +589,25 @@ export default function MyProgressPage() {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Recent Submissions</h2>
-                                <p className="text-sm text-neutral-400">Your latest task submissions</p>
+                                <p className="text-sm text-neutral-400">
+                                    {selectedCampaignId ? 'Campaign submissions' : 'Your latest task submissions'}
+                                </p>
                             </div>
                         </div>
 
-                        {submissions.length === 0 ? (
+                        {filteredSubmissions.length === 0 ? (
                             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
                                 <CardContent className="p-12 text-center">
                                     <XCircle className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
                                     <h3 className="text-lg font-semibold text-white mb-2">No submissions yet</h3>
-                                    <p className="text-sm text-neutral-400">Complete tasks in campaigns to earn points!</p>
+                                    <p className="text-sm text-neutral-400">
+                                        {selectedCampaignId ? 'No submissions for this campaign' : 'Complete tasks in campaigns to earn points!'}
+                                    </p>
                                 </CardContent>
                             </Card>
                         ) : (
                             <div className="space-y-3">
-                                {submissions.slice(0, 10).map((submission: any) => {
+                                {filteredSubmissions.slice(0, 10).map((submission: any) => {
                                     const statusConfig = {
                                         APPROVED: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/20', label: 'Approved' },
                                         REJECTED: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-500/20', label: 'Rejected' },
