@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -29,6 +29,7 @@ interface Props {
 export function CampaignDetailDialog({ open, onOpenChange, campaign, onJoin, userProgress }: Props) {
   const [joining, setJoining] = useState(false)
   const [hasJoined, setHasJoined] = useState(!!userProgress)
+  const [timeLeft, setTimeLeft] = useState<string>('')
 
   // Safely calculate total points
   const totalPoints = campaign?.tasks?.reduce((sum: number, ct: any) => {
@@ -37,8 +38,42 @@ export function CampaignDetailDialog({ open, onOpenChange, campaign, onJoin, use
     return sum + taskPoints
   }, 0) || 0
 
-  const isActive = campaign?.isActive && new Date() <= new Date(campaign?.endDate)
-  const isUpcoming = campaign && new Date() < new Date(campaign?.startDate)
+  // Get end of day for endDate (23:59:59.999)
+  const endDate = campaign?.endDate ? new Date(campaign.endDate) : new Date()
+  endDate.setHours(23, 59, 59, 999)
+
+  // Get start of day for startDate (00:00:00)
+  const startDate = campaign?.startDate ? new Date(campaign.startDate) : new Date()
+  startDate.setHours(0, 0, 0, 0)
+
+  const now = new Date()
+  const isActive = campaign?.isActive && now <= endDate
+  const isUpcoming = campaign && now < startDate
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (!isActive) return
+
+    const updateCountdown = () => {
+      const currentTime = new Date()
+      const timeRemaining = endDate.getTime() - currentTime.getTime()
+      const twoHoursInMs = 2 * 60 * 60 * 1000
+
+      if (timeRemaining <= twoHoursInMs && timeRemaining > 0) {
+        const hours = Math.floor(timeRemaining / (1000 * 60 * 60))
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60))
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000)
+        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`)
+      } else {
+        setTimeLeft('')
+      }
+    }
+
+    updateCountdown()
+    const interval = setInterval(updateCountdown, 1000)
+
+    return () => clearInterval(interval)
+  }, [endDate, isActive])
 
   const handleJoin = async () => {
     if (!campaign?.id) return
@@ -92,7 +127,13 @@ export function CampaignDetailDialog({ open, onOpenChange, campaign, onJoin, use
             <div className="flex gap-2">
               {!isActive && !isUpcoming && <Badge variant="secondary">Ended</Badge>}
               {isUpcoming && <Badge variant="outline">Upcoming</Badge>}
-              {isActive && <Badge className="bg-green-500">Active</Badge>}
+              {isActive && !timeLeft && <Badge className="bg-green-500">Active</Badge>}
+              {timeLeft && (
+                <Badge className="bg-red-500 animate-pulse flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  Ending in {timeLeft}
+                </Badge>
+              )}
             </div>
           </DialogTitle>
           <DialogDescription className="text-base">

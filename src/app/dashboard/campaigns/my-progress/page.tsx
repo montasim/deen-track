@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { getUserCampaignProgress, getUserSubmissions } from '../../gamified-campaigns/actions'
 import { DashboardPage } from '@/components/dashboard/dashboard-page'
 import { EmptyStateCard } from '@/components/ui/empty-state-card'
@@ -9,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Trophy, CheckCircle2, Clock, XCircle, Target, TrendingUp, Award } from 'lucide-react'
 import Link from 'next/link'
+import { useAuth } from '@/context/auth-context'
 import {
   AreaChart,
   Area,
@@ -25,9 +27,18 @@ import {
 } from 'recharts'
 
 export default function MyProgressPage() {
+  const { user } = useAuth()
+  const router = useRouter()
   const [progressList, setProgressList] = useState<any[]>([])
   const [submissions, setSubmissions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Redirect admins away from this page
+  useEffect(() => {
+    if (user && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN')) {
+      router.push('/dashboard/admin/campaigns')
+    }
+  }, [user, router])
 
   useEffect(() => {
     const fetchData = async () => {

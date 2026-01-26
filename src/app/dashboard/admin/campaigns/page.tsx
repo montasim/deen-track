@@ -97,8 +97,14 @@ export default function AdminCampaignsPage() {
 
   const getStatusBadge = (campaign: any) => {
     const now = new Date()
-    const startDate = new Date(campaign.startDate)
+
+    // Get end of day for endDate (23:59:59.999)
     const endDate = new Date(campaign.endDate)
+    endDate.setHours(23, 59, 59, 999)
+
+    // Get start of day for startDate (00:00:00)
+    const startDate = new Date(campaign.startDate)
+    startDate.setHours(0, 0, 0, 0)
 
     if (!campaign.isActive) {
       return <Badge variant="secondary">Inactive</Badge>
