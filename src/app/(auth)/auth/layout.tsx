@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import {BookOpen} from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useEffect, useState } from 'react'
 
 interface Props {

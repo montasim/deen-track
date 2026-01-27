@@ -88,12 +88,12 @@ const silverSponsors = [
 ]
 
 const benefits = [
-  'Brand visibility across all campaigns',
-  'Direct access to engaged tech community',
-  'Custom campaign sponsorship opportunities',
-  'Logo placement on leaderboard and achievements',
-  'Social media promotion and featured spots',
-  'Analytics and engagement reports',
+  'সকল ক্যাম্পেইনে ব্র্যান্ডের প্রচারণা',
+  'সরাসরি সক্রিয় টেক কমিউনিটির সঙ্গে যুক্ত হওয়ার সুযোগ',
+  'কাস্টম ক্যাম্পেইন স্পন্সরশিপের সুবিধা',
+  'লিডারবোর্ড এবং সাফল্যে লোগো প্রদর্শন',
+  'সোশ্যাল মিডিয়া প্রচার এবং বিশেষ ফোকাস',
+  'অ্যানালিটিক্স এবং এনগেজমেন্ট রিপোর্ট',
 ]
 
 export default function SponsorsPage() {
@@ -116,30 +116,26 @@ export default function SponsorsPage() {
 
         <div className="relative container mx-auto max-w-7xl px-6 py-24">
           <div className="text-center max-w-3xl mx-auto">
-            <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
-              <Heart className="w-3 h-3 mr-2" />
-              Trusted Partners
+            <Badge className="mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
+              <Heart className="w-3.5 h-3.5 mr-2 text-cyan-400" />
+              নির্ভরযোগ্য সহযোগী
             </Badge>
 
             <h1
-              className={`flex items-center justify-center gap-4 text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6 transition-all duration-1000 ${
-                mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
+              className={`flex items-center justify-center gap-4 text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6 transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                }`}
             >
-              <span className="block text-white">Our</span>
+              <span className="block text-white">আমাদের</span>
               <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                Sponsors
+                স্পন্সরবৃন্দ
               </span>
             </h1>
 
             <p
-              className={`text-lg text-neutral-400 leading-relaxed transition-all duration-1000 delay-200 ${
-                mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
+              className={`text-lg text-neutral-400 leading-relaxed transition-all duration-1000 delay-200 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                }`}
             >
-              We&apos;re proud to partner with industry leaders who share our vision for gamification,
-              innovation, and community building. Our sponsors make it possible to create amazing
-              campaigns and reward our dedicated users.
+              গেমিনিফিকেশন, উদ্ভাবন এবং কমিউনিটি গঠনে আমাদের লক্ষ্য পূরণে সহায়তাকারী শীর্ষস্থানীয় প্রতিষ্ঠানগুলোর সঙ্গে অংশীদার হতে পেরে আমরা গর্বিত। আমাদের স্পন্সরদের সহযোগিতায় আমরা চমৎকার সব ক্যাম্পেইন তৈরি করতে এবং আমাদের একনিষ্ঠ ব্যবহারকারীদের পুরস্কৃত করতে সক্ষম হই।
             </p>
           </div>
         </div>
@@ -150,9 +146,9 @@ export default function SponsorsPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <Diamond className="w-6 h-6 text-cyan-400" />
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Platinum Partners</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">প্লাটিনাম পার্টনার</h2>
           </div>
-          <p className="text-neutral-400">Our highest level of partnership</p>
+          <p className="text-neutral-400">আমাদের সর্বোচ্চ পর্যায়ের অংশীদারিত্ব</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -194,7 +190,7 @@ export default function SponsorsPage() {
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 group-hover:shadow-cyan-500/40 transition-all"
                 >
                   <Link href={sponsor.website} target="_blank" rel="noopener noreferrer" className="gap-2">
-                    Visit Website
+                    ওয়েবসাইট দেখুন
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                 </Button>
@@ -210,9 +206,9 @@ export default function SponsorsPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
               <Award className="w-6 h-6 text-violet-400" />
-              <h2 className="text-3xl sm:text-4xl font-bold text-white">Premium Partners</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">প্রিমিয়াম পার্টনার</h2>
             </div>
-            <p className="text-neutral-400">Trusted supporters of our community</p>
+            <p className="text-neutral-400">কমিউনিটির বিশ্বস্ত সহযোগী</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -250,7 +246,7 @@ export default function SponsorsPage() {
                     className="w-full border-violet-500/30 text-white hover:bg-violet-500/10 hover:border-violet-500/50 font-semibold"
                   >
                     <Link href={sponsor.website} target="_blank" rel="noopener noreferrer" className="gap-2">
-                      Visit Website
+                      ওয়েবসাইট দেখুন
                       <ArrowUpRight className="w-4 h-4" />
                     </Link>
                   </Button>
@@ -266,9 +262,9 @@ export default function SponsorsPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <Building2 className="w-6 h-6 text-blue-400" />
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Community Partners</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">কমিউনিটি পার্টনার</h2>
           </div>
-          <p className="text-neutral-400">Supporting our mission from the beginning</p>
+          <p className="text-neutral-400">শুরু থেকেই আমাদের লক্ষ্য অর্জনে সহায়ক</p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -297,7 +293,7 @@ export default function SponsorsPage() {
                 >
                   <Link href={sponsor.website} target="_blank" rel="noopener noreferrer" className="gap-2">
                     <Globe className="w-3 h-3" />
-                    Visit
+                    দেখুন
                   </Link>
                 </Button>
               </CardContent>
@@ -323,12 +319,11 @@ export default function SponsorsPage() {
                 </div>
 
                 <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                  Interested in Sponsoring?
+                  স্পন্সর করতে আগ্রহী?
                 </h2>
 
                 <p className="text-base text-neutral-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                  Join our roster of amazing partners and connect with thousands of engaged users.
-                  We offer flexible sponsorship packages tailored to your goals.
+                  আমাদের সাথে যুক্ত হয়ে হাজার হাজার সক্রিয় ব্যবহারকারীর কাছে পৌঁছান। আমরা আপনাদের লক্ষ্যের সাথে মিল রেখে নমনীয় স্পন্সরশিপ প্যাকেজ অফার করি।
                 </p>
 
                 {/* Benefits Grid */}
@@ -351,9 +346,9 @@ export default function SponsorsPage() {
                     size="default"
                     className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
                   >
-                    <Link href="mailto:sponsors@example.com" className="gap-2">
+                    <Link href="mailto:sponsors@deen-track.com" className="gap-2">
                       <Mail className="w-4 h-4" />
-                      Contact Us
+                      যোগাযোগ করুন
                     </Link>
                   </Button>
                   <Button
@@ -362,7 +357,7 @@ export default function SponsorsPage() {
                     variant="outline"
                     className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
                   >
-                    <Link href="/about">Learn More</Link>
+                    <Link href="/about">আরও জানুন</Link>
                   </Button>
                 </div>
               </div>

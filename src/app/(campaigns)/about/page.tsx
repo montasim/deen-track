@@ -25,65 +25,65 @@ import {
 } from 'lucide-react'
 
 const stats = [
-  { label: 'Active Users', value: '50K+', icon: Users, color: 'from-cyan-500 to-blue-600' },
-  { label: 'Campaigns Hosted', value: '1,200+', icon: Trophy, color: 'from-violet-500 to-purple-600' },
-  { label: 'Tasks Completed', value: '2.5M+', icon: Sparkles, color: 'from-emerald-500 to-green-600' },
-  { label: 'Rewards Earned', value: '$500K+', icon: Star, color: 'from-amber-500 to-orange-600' },
+  { label: 'সক্রিয় ব্যবহারকারী', value: '৫০কে+', icon: Users, color: 'from-cyan-500 to-blue-600' },
+  { label: 'আয়োজিত ক্যাম্পেইন', value: '১,২০০+', icon: Trophy, color: 'from-violet-500 to-purple-600' },
+  { label: 'সম্পন্ন চ্যালেঞ্জ', value: '২.৫এম+', icon: Sparkles, color: 'from-emerald-500 to-green-600' },
+  { label: 'অর্জিত পুরস্কার', value: '$৫০০কে+', icon: Star, color: 'from-amber-500 to-orange-600' },
 ]
 
 const values = [
   {
     icon: Lightbulb,
-    title: 'Innovation First',
-    description: 'We constantly push boundaries to create engaging gamification experiences that challenge and inspire.',
+    title: 'উদ্ভাবনই প্রথম',
+    description: 'আমরা চ্যালেঞ্জিং এবং অনুপ্রেরণীয় গেমিনিফিকেশন অভিজ্ঞতা তৈরির জন্য ক্রমাগত নতুন পথ খুঁজি।',
     color: 'from-yellow-500 to-amber-600',
   },
   {
     icon: Heart,
-    title: 'Community Driven',
-    description: 'Our platform thrives on the energy and passion of our diverse global community of achievers.',
+    title: 'কমিউনিটি নির্ভর',
+    description: 'আমাদের প্ল্যাটফর্মটি বিশ্বজুড়ে ছড়িয়ে থাকা একদল উদ্যমী মানুষের শক্তি এবং আবেগের উপর ভিত্তি করে গড়ে উঠেছে।',
     color: 'from-rose-500 to-pink-600',
   },
   {
     icon: Shield,
-    title: 'Integrity Always',
-    description: 'Trust is the foundation. We maintain transparency and fairness in every campaign and interaction.',
+    title: 'সর্বদা সততা',
+    description: 'বিশ্বাসই আমাদের ভিত্তি। প্রতিটি ক্যাম্পেইন এবং কার্যক্রমে আমরা স্বচ্ছতা ও নিরপেক্ষতা বজায় রাখি।',
     color: 'from-blue-500 to-cyan-600',
   },
   {
     icon: Trophy,
-    title: 'Excellence Matters',
-    description: 'We obsess over details, ensuring every experience is polished, rewarding, and memorable.',
+    title: 'উৎকর্ষের গুরুত্ব',
+    description: 'আমরা প্রতিটি খুঁটিনাটি বিষয়ের উপর গুরুত্ব দিই এবং নিশ্চিত করি যে প্রতিটি অভিজ্ঞতা যেন স্মরণীয় হয়।',
     color: 'from-violet-500 to-purple-600',
   },
 ]
 
 const milestones = [
   {
-    year: '2021',
-    title: 'Platform Launch',
-    description: 'Started with a vision to gamify personal growth and achievement tracking.',
+    year: '২০২১',
+    title: 'প্ল্যাটফর্মের শুভ সূচনা',
+    description: 'ব্যক্তিগত উন্নয়ন এবং সাফল্য ট্র্যাকিংকে গেমের মতো সহজ করার লক্ষ্য নিয়ে আমাদের যাত্রা শুরু।',
     icon: Rocket,
     color: 'from-cyan-500 to-blue-600',
   },
   {
-    year: '2022',
-    title: 'First 10K Users',
-    description: 'Rapid growth as communities embraced our campaign-based challenge system.',
+    year: '২০২২',
+    title: 'প্রথম ১০ হাজার ব্যবহারকারী',
+    description: 'আমাদের ক্যাম্পেইন-ভিত্তিক চ্যালেঞ্জ সিস্টেম দ্রুত মানুষের কাছে জনপ্রিয় হয়ে ওঠে।',
     icon: TrendingUp,
     color: 'from-emerald-500 to-green-600',
   },
   {
-    year: '2023',
-    title: 'Enterprise Launch',
-    description: 'Expanded to serve businesses and organizations with custom campaign solutions.',
+    year: '২০২৩',
+    title: 'এন্টারপ্রাইজ সংস্করণ',
+    description: 'ব্যবসা এবং বিভিন্ন সংস্থার জন্য কাস্টম ক্যাম্পেইন সেবা প্রদান শুরু করি।',
     icon: Sparkles,
     color: 'from-violet-500 to-purple-600',
   },
   {
-    year: '2024',
-    title: 'Global Reach',
-    description: 'Now serving users in 50+ countries with localized campaigns and rewards.',
+    year: '২০২৪',
+    title: 'বিশ্বজুড়ে বিস্তার',
+    description: 'বর্তমানে ৫০টিরও বেশি দেশে স্থানীয় ক্যাম্পেইন এবং পুরস্কার নিয়ে সফলভাবে কাজ করছি।',
     icon: Target,
     color: 'from-amber-500 to-orange-600',
   },
@@ -144,42 +144,36 @@ export default function AboutPage() {
         <div className="relative container mx-auto max-w-7xl px-6 py-24">
           <div className="text-center max-w-4xl mx-auto">
             <Badge
-              className={`mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30 ${
-                isVisible ? 'animate-fade-in' : 'opacity-0'
-              }`}
+              className={`mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md ${isVisible ? 'animate-fade-in' : 'opacity-0'
+                }`}
             >
-              <Sparkles className="w-3 h-3 mr-2" />
-              Our Story
+              <Sparkles className="w-3.5 h-3.5 mr-2 text-cyan-400" />
+              আমাদের গল্প
             </Badge>
 
             <h1
-              className={`text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-8 transition-all duration-1000 ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-              }`}
+              className={`text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-8 transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                }`}
             >
               <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
-                Turning Challenges
+                চ্যালেঞ্জকে সাফল্যে
               </span>
               <br />
               <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                Into Triumphs
+                রূপান্তর করুন
               </span>
             </h1>
 
             <p
-              className={`text-xl text-neutral-400 leading-relaxed mb-8 transition-all duration-1000 delay-200 ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-              }`}
+              className={`text-xl text-neutral-400 leading-relaxed mb-8 transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                }`}
             >
-              We're on a mission to make personal growth exciting, rewarding, and social. Through
-              gamified campaigns and friendly competition, we help millions unlock their potential
-              and celebrate every achievement along the way.
+              আমাদের লক্ষ্য হ'ল ব্যক্তিগত উন্নয়নকে আনন্দদায়ক, ফলপ্রসূ এবং সামাজিক করে তোলা। গেমিনিফাইড ক্যাম্পেইন এবং বন্ধুসুলভ প্রতিযোগিতার মাধ্যমে আমরা লক্ষ লক্ষ মানুষকে তাদের সুপ্ত প্রতিভা বিকাশে এবং প্রতিটি সাফল্য উদযাপনে সহায়তা করছি।
             </p>
 
             <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-400 ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-              }`}
+              className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                }`}
             >
               <Button
                 asChild
@@ -187,7 +181,7 @@ export default function AboutPage() {
                 className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
               >
                 <Link href="/campaigns" className="gap-2">
-                  Explore Campaigns
+                  ক্যাম্পেইনগুলো দেখুন
                   <ArrowUpRight className="w-5 h-5" />
                 </Link>
               </Button>
@@ -197,7 +191,7 @@ export default function AboutPage() {
                 variant="outline"
                 className="border-white/20 text-white hover:bg-white/5"
               >
-                <Link href="/sign-up">Join Our Community</Link>
+                <Link href="/sign-up">আমাদের কমিউনিটিতে যোগ দিন</Link>
               </Button>
             </div>
           </div>
@@ -236,19 +230,19 @@ export default function AboutPage() {
       <div className="border-y border-white/5 bg-neutral-900/20">
         <div className="container mx-auto max-w-7xl px-6 py-24">
           <div className="text-center mb-16">
-            <Badge className="mb-6 bg-gradient-to-r from-violet-500/20 to-purple-600/20 text-violet-300 border-violet-500/30">
-              <Calendar className="w-3 h-3 mr-2" />
-              Our Journey
+            <Badge className="mb-6 bg-violet-500/15 text-violet-400 border-violet-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
+              <Calendar className="w-3.5 h-3.5 mr-2 text-violet-400" />
+              আমাদের পথচলা
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-violet-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Building Something
+                ব্যতিক্রমী কিছু
               </span>
               <br />
-              <span className="text-white">Extraordinary</span>
+              <span className="text-white">গড়ে তোলার গল্প</span>
             </h2>
             <p className="text-base text-neutral-400 max-w-2xl mx-auto">
-              From a simple idea to a global movement, here's how we've grown
+              একটি সাধারণ চিন্তা থেকে বৈশ্বিক আন্দোলনে রূপান্তর হওয়ার যাত্রা
             </p>
           </div>
 
@@ -286,17 +280,17 @@ export default function AboutPage() {
       {/* Values Section */}
       <div className="container mx-auto max-w-7xl px-6 py-24">
         <div className="text-center mb-16">
-          <Badge className="mb-6 bg-gradient-to-r from-emerald-500/20 to-green-600/20 text-emerald-300 border-emerald-500/30">
-            <Star className="w-3 h-3 mr-2" />
-            What We Believe
+          <Badge className="mb-6 bg-emerald-500/15 text-emerald-400 border-emerald-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
+            <Star className="w-3.5 h-3.5 mr-2 text-emerald-400" />
+            আমাদের বিশ্বাস
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-black mb-4">
             <span className="bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 bg-clip-text text-transparent">
-              Core Values
+              মূল আদর্শ
             </span>
           </h2>
           <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-            The principles that guide everything we do
+            যে নীতিগুলো আমাদের প্রতিটি কাজকে পরিচালিত করে
           </p>
         </div>
 
@@ -337,19 +331,19 @@ export default function AboutPage() {
       <div className="border-y border-white/5 bg-neutral-900/20">
         <div className="container mx-auto max-w-7xl px-6 py-24">
           <div className="text-center mb-16">
-            <Badge className="mb-6 bg-gradient-to-r from-amber-500/20 to-orange-600/20 text-amber-300 border-amber-500/30">
-              <Users className="w-3 h-3 mr-2" />
-              The Team
+            <Badge className="mb-6 bg-amber-500/15 text-amber-400 border-amber-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
+              <Users className="w-3.5 h-3.5 mr-2 text-amber-400" />
+              আমাদের সদস্যবৃন্দ
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
-                Meet the People
+                নেপথ্যের কারিগরদের
               </span>
               <br />
-              <span className="text-white">Behind the Magic</span>
+              <span className="text-white">সাথে পরিচিত হোন</span>
             </h2>
             <p className="text-base text-neutral-400 max-w-2xl mx-auto">
-              A passionate team of builders, dreamers, and achievers
+              সৃজনশীল এবং উদ্যমী আধুনিক নির্মাতাদের একটি নিবেদিত দল
             </p>
           </div>
 
@@ -425,11 +419,10 @@ export default function AboutPage() {
                 <Flame className="w-10 h-10 text-white" />
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                Ready to Start Your Journey?
+                আপনার যাত্রা শুরু করতে প্রস্তুত?
               </h2>
               <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">
-                Join thousands of users who are already challenging themselves, earning rewards, and
-                achieving their goals through our gamified campaigns.
+                আমাদের হাজার হাজার ব্যবহারকারীর সাথে যোগ দিন যারা ইতোমধ্যে নিজেদের চ্যালেঞ্জ করছেন এবং পুরস্কার পাচ্ছেন।
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
@@ -438,7 +431,7 @@ export default function AboutPage() {
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
                 >
                   <Link href="/sign-up" className="gap-2">
-                    Create Free Account
+                    ফ্রি অ্যাকাউন্ট তৈরি করুন
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                 </Button>
@@ -448,7 +441,7 @@ export default function AboutPage() {
                   variant="outline"
                   className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
                 >
-                  <Link href="/campaigns">Browse Campaigns</Link>
+                  <Link href="/campaigns">ক্যাম্পেইনগুলো দেখুন</Link>
                 </Button>
               </div>
             </CardContent>
