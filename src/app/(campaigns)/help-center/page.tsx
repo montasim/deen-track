@@ -188,10 +188,10 @@ function HelpCenterPageContent() {
           prev.map((faq) =>
             faq.id === faqId
               ? {
-                  ...faq,
-                  helpfulCount: helpful ? faq.helpfulCount + 1 : faq.helpfulCount,
-                  notHelpfulCount: helpful ? faq.notHelpfulCount : faq.notHelpfulCount + 1,
-                }
+                ...faq,
+                helpfulCount: helpful ? faq.helpfulCount + 1 : faq.helpfulCount,
+                notHelpfulCount: helpful ? faq.notHelpfulCount : faq.notHelpfulCount + 1,
+              }
               : faq
           )
         )

@@ -22,12 +22,10 @@ import {
   TrendingUp,
   ArrowRight,
   Gamepad2,
-  Send,
 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { toast } from '@/hooks/use-toast'
-import { getGamifiedCampaign, joinCampaign, submitTaskProof } from '@/app/dashboard/gamified-campaigns/actions'
-import { TaskSubmitDrawer } from '@/app/dashboard/campaigns/gamified/[id]/components/task-submit-drawer'
+import { getGamifiedCampaign, joinCampaign } from "@/app/dashboard/gamified-campaigns/actions";
 
 const difficultyConfig = {
   BEGINNER: {
@@ -35,7 +33,7 @@ const difficultyConfig = {
     bg: 'bg-emerald-500/10',
     text: 'text-emerald-300',
     border: 'border-emerald-500/30',
-    label: 'Beginner',
+    label: 'সহজ',
     glow: 'shadow-emerald-500/25',
   },
   INTERMEDIATE: {
@@ -43,7 +41,7 @@ const difficultyConfig = {
     bg: 'bg-blue-500/10',
     text: 'text-blue-300',
     border: 'border-blue-500/30',
-    label: 'Intermediate',
+    label: 'মধ্যম',
     glow: 'shadow-blue-500/25',
   },
   ADVANCED: {
@@ -51,7 +49,7 @@ const difficultyConfig = {
     bg: 'bg-violet-500/10',
     text: 'text-violet-300',
     border: 'border-violet-500/30',
-    label: 'Advanced',
+    label: 'উন্নত',
     glow: 'shadow-violet-500/25',
   },
   EXPERT: {
@@ -59,7 +57,7 @@ const difficultyConfig = {
     bg: 'bg-red-500/10',
     text: 'text-red-300',
     border: 'border-red-500/30',
-    label: 'Expert',
+    label: 'কঠিন',
     glow: 'shadow-red-500/25',
   },
 }
@@ -72,8 +70,6 @@ export default function PublicCampaignDetailPage() {
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [selectedTask, setSelectedTask] = useState<any>(null)
-  const [proofDialogOpen, setProofDialogOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -99,8 +95,8 @@ export default function PublicCampaignDetailPage() {
     if (!user) {
       toast({
         variant: 'destructive',
-        title: 'Authentication Required',
-        description: 'Please sign in to join this campaign.',
+        title: 'লগইন করা প্রয়োজন',
+        description: 'এই ক্যাম্পেইনে যোগ দিতে দয়া করে সাইন-ইন করুন।',
       })
       return
     }
@@ -111,16 +107,16 @@ export default function PublicCampaignDetailPage() {
 
       if (result.success) {
         toast({
-          title: 'Successfully joined!',
-          description: 'You have joined this campaign. Good luck!',
+          title: 'সফলভাবে যোগ দিয়েছেন!',
+          description: 'আপনি ক্যাম্পেইনে অংশ নিয়েছেন। শুভকামনা রইলো!',
         })
         const campaignData = await getGamifiedCampaign(id as string)
         setCampaign(campaignData)
       } else {
         toast({
           variant: 'destructive',
-          title: 'Cannot join campaign',
-          description: result.message || 'Failed to join campaign',
+          title: 'ক্যাম্পেইনে যোগ দেওয়া সম্ভব হচ্ছে না',
+          description: result.message || 'ক্যাম্পেইনে যোগ দিতে ব্যর্থ হয়েছে',
         })
       }
     } catch (error: any) {
@@ -160,9 +156,9 @@ export default function PublicCampaignDetailPage() {
             <div className="inline-flex p-6 rounded-full bg-neutral-900/60 border border-white/10 mb-8">
               <Trophy className="w-16 h-16 text-neutral-700" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-4">Campaign not found</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-4">ক্যাম্পেইনটি পাওয়া যায়নি</h2>
             <p className="text-lg text-neutral-400 mb-8 max-w-xl mx-auto">
-              The campaign you&apos;re looking for doesn&apos;t exist or has been removed.
+              আপনি যে ক্যাম্পেইনটি খুঁজছেন তা বর্তমানে নেই অথবা সরিয়ে ফেলা হয়েছে।
             </p>
             <Button
               asChild
@@ -172,7 +168,7 @@ export default function PublicCampaignDetailPage() {
             >
               <Link href="/campaigns" className="gap-2">
                 <ArrowLeft className="w-5 h-5" />
-                Back to Campaigns
+                ক্যাম্পেইন তালিকায় ফিরে যান
               </Link>
             </Button>
           </div>
@@ -210,9 +206,9 @@ export default function PublicCampaignDetailPage() {
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 {campaign.isActive && (
-                  <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-2 px-4 py-2">
+                  <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30 flex items-center gap-2 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
                     <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Active
+                    সক্রিয়
                   </Badge>
                 )}
                 <Badge className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>
@@ -239,7 +235,7 @@ export default function PublicCampaignDetailPage() {
                   >
                     <Link href="/dashboard/campaigns/gamified" className="gap-2">
                       <CheckCircle2 className="w-5 h-5" />
-                      View Progress
+                      অগ্রগতি দেখুন
                     </Link>
                   </Button>
                 ) : (
@@ -251,12 +247,12 @@ export default function PublicCampaignDetailPage() {
                     {joining ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white/30 border-t-transparent rounded-full animate-spin" />
-                        Joining...
+                        যুক্ত হচ্ছে...
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-5 h-5" />
-                        Join Campaign
+                        ক্যাম্পেইনে যোগ দিন
                       </>
                     )}
                   </Button>
@@ -267,7 +263,7 @@ export default function PublicCampaignDetailPage() {
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 px-8 py-6"
                 >
                   <Link href="/auth/sign-in" className="gap-2">
-                    Sign In to Join
+                    যোগ দিতে সাইন-ইন করুন
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
@@ -287,7 +283,7 @@ export default function PublicCampaignDetailPage() {
               <div className="group">
                 <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
                   <Trophy className="w-4 h-4 text-amber-400" />
-                  <span>Total Points</span>
+                  <span>মোট পয়েন্ট</span>
                 </div>
                 <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                   {totalPoints.toLocaleString()}
@@ -297,7 +293,7 @@ export default function PublicCampaignDetailPage() {
               <div className="group">
                 <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
                   <Target className="w-4 h-4 text-cyan-400" />
-                  <span>Tasks</span>
+                  <span>চ্যালেঞ্জ</span>
                 </div>
                 <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                   {campaign.tasks?.length || 0}
@@ -307,7 +303,7 @@ export default function PublicCampaignDetailPage() {
               <div className="group">
                 <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
                   <Users className="w-4 h-4 text-violet-400" />
-                  <span>Participants</span>
+                  <span>অংশগ্রহণকারী</span>
                 </div>
                 <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                   {campaign.participations?.length || campaign._count?.participations || 0}
@@ -318,10 +314,10 @@ export default function PublicCampaignDetailPage() {
                 <div className="group">
                   <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
                     <Clock className="w-4 h-4 text-blue-400" />
-                    <span>Duration</span>
+                    <span>সময়কাল</span>
                   </div>
                   <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
-                    {campaign.estimatedDuration}h
+                    {campaign.estimatedDuration} ঘণ্টা
                   </div>
                 </div>
               )}
@@ -334,7 +330,7 @@ export default function PublicCampaignDetailPage() {
                   <div className="flex items-center gap-4">
                     <Calendar className="w-6 h-6 text-neutral-400" />
                     <div>
-                      <p className="text-sm text-neutral-500 mb-1">Campaign Duration</p>
+                      <p className="text-sm text-neutral-500 mb-1">ক্যাম্পেইনের সময়কাল</p>
                       <p className="text-white font-semibold">
                         {new Date(campaign.startDate).toLocaleDateString('en-US', {
                           month: 'long',
@@ -360,10 +356,10 @@ export default function PublicCampaignDetailPage() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                     <Gamepad2 className="w-6 h-6 text-cyan-400" />
-                    Tasks
+                    চ্যালেঞ্জসমূহ
                   </h2>
                   <Badge variant="outline" className="border-white/20 text-neutral-300">
-                    {campaign.tasks?.length || 0} Available
+                    {campaign.tasks?.length || 0} টি উপলব্ধ
                   </Badge>
                 </div>
 
@@ -403,38 +399,22 @@ export default function PublicCampaignDetailPage() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                  {isJoined ? (
-                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                      <Unlock className="w-3.5 h-3.5" />
-                                      Unlocked
-                                    </Badge>
-                                  ) : (
-                                    <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                      <Lock className="w-3.5 h-3.5" />
-                                      Join to unlock
-                                    </Badge>
-                                  )}
-                                  {user && !isJoined && (
-                                    <span className="text-xs text-neutral-500">
-                                      Sign in to participate
-                                    </span>
-                                  )}
-                                </div>
-
-                                {isJoined && (
-                                  <Button
-                                    onClick={() => {
-                                      setSelectedTask(ct.task)
-                                      setProofDialogOpen(true)
-                                    }}
-                                    className={`bg-gradient-to-r ${taskConfig.color} hover:opacity-90 text-white font-semibold shadow-lg transition-all hover:scale-105`}
-                                    size="sm"
-                                  >
-                                    <Send className="w-4 h-4 mr-2" />
-                                    Submit Proof
-                                  </Button>
+                              <div className="flex items-center gap-4">
+                                {isJoined ? (
+                                  <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                    <Unlock className="w-3.5 h-3.5" />
+                                    আনলকড
+                                  </Badge>
+                                ) : (
+                                  <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                    <Lock className="w-3.5 h-3.5" />
+                                    আনলক করতে যোগ দিন
+                                  </Badge>
+                                )}
+                                {user && !isJoined && (
+                                  <span className="text-xs text-neutral-500">
+                                    অংশ নিতে লগইন করুন
+                                  </span>
                                 )}
                               </div>
                             </div>
@@ -448,9 +428,9 @@ export default function PublicCampaignDetailPage() {
                     <div className="inline-flex p-6 rounded-full bg-neutral-900/60 border border-white/10 mb-4">
                       <Gamepad2 className="w-12 h-12 text-neutral-700" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-2">No tasks yet</h3>
+                    <h3 className="text-xl font-semibold text-white mb-2">এখনো কোনো চ্যালেঞ্জ নেই</h3>
                     <p className="text-neutral-500">
-                      This campaign doesn&apos;t have any tasks yet. Check back soon!
+                      এই ক্যাম্পেইনে এখনো কোনো চ্যালেঞ্জ যোগ করা হয়নি। শীঘ্রই আবার দেখুন!
                     </p>
                   </div>
                 )}
@@ -463,7 +443,7 @@ export default function PublicCampaignDetailPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                     <Zap className="w-5 h-5 text-amber-400" />
-                    Campaign Rules
+                    ক্যাম্পেইনের নিয়মাবলী
                   </h2>
                   <div className="prose prose-invert max-w-none text-neutral-300">
                     <p className="whitespace-pre-wrap">{campaign.rules}</p>
@@ -487,8 +467,8 @@ export default function PublicCampaignDetailPage() {
                     <Trophy className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-white">Campaign Rewards</h2>
-                    <p className="text-sm text-neutral-400">Complete tasks to earn points</p>
+                    <h2 className="text-lg font-bold text-white">ক্যাম্পেইন পুরস্কার</h2>
+                    <p className="text-sm text-neutral-400">পয়েন্ট অর্জন করতে চ্যালেঞ্জগুলো সম্পন্ন করুন</p>
                   </div>
                 </div>
 
@@ -496,7 +476,7 @@ export default function PublicCampaignDetailPage() {
                 <div className="space-y-4">
                   <div className="p-4 rounded-xl bg-neutral-900/60 border border-white/10">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-neutral-400">Total Points</span>
+                      <span className="text-sm text-neutral-400">মোট পয়েন্ট</span>
                       <Sparkles className="w-4 h-4 text-amber-400" />
                     </div>
                     <div className="text-3xl font-black bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
@@ -507,7 +487,7 @@ export default function PublicCampaignDetailPage() {
                   {user && isJoined && (
                     <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 border border-emerald-500/30">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-emerald-300">Your Progress</span>
+                        <span className="text-sm text-emerald-300">আপনার অগ্রগতি</span>
                         <TrendingUp className="w-4 h-4 text-emerald-400" />
                       </div>
                       <div className="flex items-baseline gap-2">
@@ -521,7 +501,7 @@ export default function PublicCampaignDetailPage() {
                             style={{ width: `${progressPercentage}%` }}
                           />
                         </div>
-                        <div className="text-right text-xs text-emerald-300 mt-1">{progressPercentage}% complete</div>
+                        <div className="text-right text-xs text-emerald-300 mt-1">{progressPercentage}% সম্পন্ন হয়েছে</div>
                       </div>
                     </div>
                   )}
@@ -533,7 +513,7 @@ export default function PublicCampaignDetailPage() {
                     className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                   >
                     <Link href={`/dashboard/campaigns/my-progress`} className="gap-2">
-                      View My Progress
+                      আমার অগ্রগতি দেখুন
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
@@ -546,28 +526,28 @@ export default function PublicCampaignDetailPage() {
               <CardContent className="p-6">
                 <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-violet-400" />
-                  How It Works
+                  এটি যেভাবে কাজ করে
                 </h2>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3 text-sm text-neutral-300">
                     <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Complete tasks to earn points</span>
+                    <span>পয়েন্ট অর্জন করতে চ্যালেঞ্জগুলো সম্পন্ন করুন</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-neutral-300">
                     <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Climb the global leaderboard</span>
+                    <span>গ্লোবাল লিডারবোর্ডে এগিয়ে যান</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-neutral-300">
                     <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Unlock achievement badges</span>
+                    <span>অ্যাচিভমেন্ট ব্যাজ আনলক করুন</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-neutral-300">
                     <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Compete with others worldwide</span>
+                    <span>বিশ্বজুড়ে অন্য সবার সাথে প্রতিযোগিতা করুন</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-neutral-300">
                     <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                    <span>Get verified by admin review</span>
+                    <span>অ্যাডমিন রিভিউয়ের মাধ্যমে যাচাই করে নিন</span>
                   </li>
                 </ul>
               </CardContent>
@@ -586,16 +566,16 @@ export default function PublicCampaignDetailPage() {
                   <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-4">
                     <Sparkles className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Join the Challenge</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">প্রতিযোগিতায় যোগ দিন</h3>
                   <p className="text-neutral-400 text-sm mb-6">
-                    Sign up now to start earning rewards, unlocking achievements, and competing with players worldwide.
+                    পুরস্কার জেতা শুরু করতে আজই সাইন-আপ করুন, নতুন অ্যাচিভমেন্ট আনলক করুন এবং বিশ্বজুড়ে অন্য খেলোয়াড়দের সাথে প্রতিযোগিতা করুন।
                   </p>
                   <Button
                     asChild
                     className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                   >
                     <Link href="/sign-up" className="gap-2">
-                      Create Free Account
+                      ফ্রি অ্যাকাউন্ট তৈরি করুন
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
@@ -605,18 +585,6 @@ export default function PublicCampaignDetailPage() {
           </div>
         </div>
       </div>
-
-      {/* Task Submit Drawer */}
-      <TaskSubmitDrawer
-        open={proofDialogOpen}
-        onOpenChange={setProofDialogOpen}
-        task={selectedTask}
-        campaignId={id as string}
-        onSubmit={async (data) => {
-          const result = await submitTaskProof(data)
-          return result
-        }}
-      />
     </>
   )
 }

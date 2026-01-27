@@ -83,27 +83,27 @@ export default function CampaignsLayout({
                 <span className="text-xl font-bold text-white">{siteName}</span>
               </Link>
               <p className="text-sm text-neutral-400">
-                Turn your challenges into achievements with gamified campaigns and exciting rewards.
+                মজার সব ক্যাম্পেইন আর আকর্ষণীয় পুরষ্কারের মাধ্যমে আপনার প্রতিটি চ্যালেঞ্জকে রূপ দিন সাফল্যে।
               </p>
             </div>
 
             {/* Navigation */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Platform</h4>
+              <h4 className="font-semibold text-white mb-4">প্ল্যাটফর্ম</h4>
               <ul className="space-y-3">
                 <li>
                   <Link href="/campaigns" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Campaigns
+                    ক্যাম্পেইন
                   </Link>
                 </li>
                 <li>
                   <Link href="/leaderboard" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Leaderboard
+                    লিডারবোর্ড
                   </Link>
                 </li>
                 <li>
                   <Link href="/teams" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Teams
+                    দলসমূহ
                   </Link>
                 </li>
               </ul>
@@ -111,21 +111,21 @@ export default function CampaignsLayout({
 
             {/* Company */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Company</h4>
+              <h4 className="font-semibold text-white mb-4">কোম্পানি</h4>
               <ul className="space-y-3">
                 <li>
                   <Link href="/about" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    About Us
+                    আমাদের সম্পর্কে
                   </Link>
                 </li>
                 <li>
                   <Link href="/contact" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Contact
+                    যোগাযোগ
                   </Link>
                 </li>
                 <li>
                   <Link href="/help-center" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Help Center
+                    সহায়তা কেন্দ্র
                   </Link>
                 </li>
               </ul>
@@ -133,16 +133,16 @@ export default function CampaignsLayout({
 
             {/* Legal */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <h4 className="font-semibold text-white mb-4">আইনি</h4>
               <ul className="space-y-3">
                 <li>
                   <Link href="/terms" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Terms of Service
+                    ব্যবহারের শর্তাবলী
                   </Link>
                 </li>
                 <li>
                   <Link href="/privacy" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Privacy Policy
+                    গোপনীয়তা নীতি
                   </Link>
                 </li>
               </ul>
@@ -151,7 +151,7 @@ export default function CampaignsLayout({
 
           <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10">
             <p className="text-sm text-neutral-500">
-              © {new Date().getFullYear()} {siteName}. All rights reserved.
+              © {new Date().getFullYear()} {siteName}. সর্বস্বত্ব সংরক্ষিত।
             </p>
             <div className="flex items-center gap-6 mt-4 md:mt-0">
               <a href="#" className="text-neutral-500 hover:text-white transition-colors">

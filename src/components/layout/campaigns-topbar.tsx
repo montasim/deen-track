@@ -54,41 +54,31 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
               href="/campaigns"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
             >
-              Campaigns
+              ক্যাম্পেইন
             </Link>
             <Link
               href="/leaderboard"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
             >
-              Leaderboard
+              লিডারবোর্ড
             </Link>
-            {user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN' && (
-              <>
-                <Link
-                  href="/my-progress"
-                  className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
-                >
-                  My Progress
-                </Link>
-              </>
-            )}
             <Link
               href="/sponsors"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
             >
-              Sponsors
+              স্পন্সর
             </Link>
-            {/*<Link*/}
-            {/*  href="/blog"*/}
-            {/*  className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"*/}
-            {/*>*/}
-            {/*  Blog*/}
-            {/*</Link>*/}
+            <Link
+              href="/blog"
+              className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+            >
+              ব্লগ
+            </Link>
             <Link
               href="/about"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
             >
-              About
+              আমাদের সম্পর্কে
             </Link>
           </div>
 
@@ -121,9 +111,21 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer">
+                    <Link href="/" className="cursor-pointer">
+                      <Home className="mr-2 h-4 w-4" />
+                      <span>হোম</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>ড্যাশবোর্ড</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings" className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
+                      <span>সেটিংস</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -132,7 +134,7 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>লগ আউট</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -144,13 +146,13 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
                   variant="ghost"
                   className="text-neutral-400 hover:text-white hover:bg-white/5"
                 >
-                  <Link href="/auth/sign-in">Sign In</Link>
+                  <Link href="/auth/sign-in">লগইন</Link>
                 </Button>
                 <Button
                   asChild
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
                 >
-                  <Link href="/sign-up">Get Started</Link>
+                  <Link href="/sign-up">শুরু করুন</Link>
                 </Button>
               </>
             )}

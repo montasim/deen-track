@@ -329,10 +329,10 @@ export default function PublicLeaderboardPage() {
         const avgPoints = Math.round(totalPoints / leaderboard.length)
 
         return [
-            { label: 'Participants', value: leaderboard.length.toString(), icon: Users },
-            { label: 'Top Score', value: topPoints.toLocaleString(), icon: Award },
-            { label: 'Avg Score', value: avgPoints.toLocaleString(), icon: TrendingUp },
-            { label: 'Total Points', value: totalPoints.toLocaleString(), icon: Star },
+            { label: 'অংশগ্রহণকারী', value: leaderboard.length.toString(), icon: Users },
+            { label: 'সর্বোচ্চ স্কোর', value: topPoints.toLocaleString(), icon: Award },
+            { label: 'গড় স্কোর', value: avgPoints.toLocaleString(), icon: TrendingUp },
+            { label: 'মোট পয়েন্ট', value: totalPoints.toLocaleString(), icon: Star },
         ]
     }, [leaderboard])
 
@@ -346,10 +346,10 @@ export default function PublicLeaderboardPage() {
                 <Card className="max-w-md bg-neutral-900/40 backdrop-blur-xl border-white/10">
                     <CardContent className="p-12 text-center">
                         <Trophy className="w-16 h-16 text-neutral-700 mx-auto mb-6" />
-                        <h2 className="text-2xl font-bold text-white mb-3">No Active Campaigns</h2>
-                        <p className="text-neutral-400 mb-6">Check back later for exciting competitions!</p>
+                        <h2 className="text-2xl font-bold text-white mb-3">বর্তমানে কোনো সক্রিয় ক্যাম্পেইন নেই</h2>
+                        <p className="text-neutral-400 mb-6">নতুন কোনো রোমাঞ্চকর প্রতিযোগিতার জন্য আবার দেখুন!</p>
                         <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
-                            <Link href="/campaigns">Browse Campaigns</Link>
+                            <Link href="/campaigns">ক্যাম্পেইনগুলো দেখুন</Link>
                         </Button>
                     </CardContent>
                 </Card>
@@ -372,17 +372,17 @@ export default function PublicLeaderboardPage() {
                     <div className="text-center max-w-4xl mx-auto mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
                             <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${theme.gradient} animate-pulse`} />
-                            <span className="text-sm text-neutral-300 font-medium">Live Rankings</span>
+                            <span className="text-sm text-neutral-300 font-medium">চলমান র‍্যাঙ্কিং</span>
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
                             <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
-                                Campaign Leaderboards
+                                ক্যাম্পেইন লিডারবোর্ড
                             </span>
                         </h1>
 
                         <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                            Compete, achieve, and dominate the rankings across all active campaigns
+                            প্রতিযোগিতায় অংশ নিন, লক্ষ্য অর্জন করুন এবং সক্রিয় ক্যাম্পেইনগুলোতে আপনার আধিপত্য বজায় রাখুন
                         </p>
                     </div>
 
@@ -422,7 +422,7 @@ export default function PublicLeaderboardPage() {
                                                 {campaign.name}
                                             </div>
                                             <div className={`text-xs ${isSelected ? 'text-white/70' : 'text-neutral-500'}`}>
-                                                {campaign._count?.participations || 0} players
+                                                {campaign._count?.participations || 0} জন অংশগ্রহণকারী
                                             </div>
                                         </div>
                                     </div>
@@ -488,10 +488,10 @@ export default function PublicLeaderboardPage() {
                         <Card className="bg-neutral-900/40 backdrop-blur-xl border-white/10">
                             <CardContent className="p-16 text-center">
                                 <Trophy className="w-20 h-20 text-neutral-700 mx-auto mb-6" />
-                                <h3 className="text-2xl font-bold text-white mb-3">No Rankings Yet</h3>
-                                <p className="text-neutral-400 mb-8">Be the first to compete in this campaign!</p>
+                                <h3 className="text-2xl font-bold text-white mb-3">এখনো কোনো র‍্যাঙ্কিং নেই</h3>
+                                <p className="text-neutral-400 mb-8">এই ক্যাম্পেইনে অংশ নিয়ে লিডারবোর্ডে এগিয়ে থাকার সুযোগ নিন!</p>
                                 <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
-                                    <Link href={`/campaigns/${selectedCampaign.id}`}>Join Campaign</Link>
+                                    <Link href={`/campaigns/${selectedCampaign.id}`}>ক্যাম্পেইনে যোগ দিন</Link>
                                 </Button>
                             </CardContent>
                         </Card>
@@ -519,9 +519,8 @@ export default function PublicLeaderboardPage() {
                                                 {/* Icon Badge */}
                                                 <div className="flex justify-center mb-4">
                                                     <div
-                                                        className={`relative p-4 rounded-2xl ${config.bg} shadow-xl ${config.glow} ${
-                                                            rank === 1 ? 'w-24 h-24' : 'w-20 h-20'
-                                                        }`}
+                                                        className={`relative p-4 rounded-2xl ${config.bg} shadow-xl ${config.glow} ${rank === 1 ? 'w-24 h-24' : 'w-20 h-20'
+                                                            }`}
                                                     >
                                                         <Icon className={`w-full h-full text-white`} />
                                                         {rank === 1 && (
@@ -543,7 +542,7 @@ export default function PublicLeaderboardPage() {
                                                 </div>
 
                                                 {/* Name */}
-                                                <h3 className="font-bold text-white text-xl mb-4">{entry.user?.name || 'Anonymous'}</h3>
+                                                <h3 className="font-bold text-white text-xl mb-4">{entry.user?.name || 'অজ্ঞাত'}</h3>
 
                                                 {/* Points */}
                                                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -554,7 +553,7 @@ export default function PublicLeaderboardPage() {
                                                 </div>
 
                                                 {/* Label */}
-                                                <div className="text-sm text-neutral-400 font-medium">points earned</div>
+                                                <div className="text-sm text-neutral-400 font-medium">অর্জিত পয়েন্ট</div>
                                             </CardContent>
                                         </Card>
                                     )
@@ -588,7 +587,7 @@ export default function PublicLeaderboardPage() {
                                                     {/* Info */}
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="font-bold text-white text-lg truncate group-hover:text-amber-400 transition-colors">
-                                                            {entry.user?.name || 'Anonymous'}
+                                                            {entry.user?.name || 'অজ্ঞাত'}
                                                         </h3>
                                                     </div>
 
@@ -625,7 +624,7 @@ export default function PublicLeaderboardPage() {
                                             </Badge>
                                             <Badge className="bg-neutral-800 text-neutral-300 border-white/10">
                                                 <Target className="w-3 h-3 mr-1" />
-                                                {selectedCampaign.tasks?.length || 0} tasks
+                                                {selectedCampaign.tasks?.length || 0} টি চ্যালেঞ্জ
                                             </Badge>
                                         </div>
                                     </div>
@@ -636,7 +635,7 @@ export default function PublicLeaderboardPage() {
                                             className={`bg-gradient-to-r ${theme.gradient} text-white font-semibold shadow-lg hover:shadow-xl transition-all`}
                                         >
                                             <Link href={`/campaigns/${selectedCampaign.id}`} className="gap-2">
-                                                View Campaign Details
+                                                ক্যাম্পেইনের বিস্তারিত দেখুন
                                                 <ArrowRight className="w-5 h-5" />
                                             </Link>
                                         </Button>
