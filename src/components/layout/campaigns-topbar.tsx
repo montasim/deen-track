@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useAuth } from '@/context/auth-context'
 import { Button } from '@/components/ui/button'
 import { Trophy, User, LogOut, LayoutDashboard, Settings, Home } from 'lucide-react'
 import { useEffect, useState, useMemo } from 'react'
@@ -16,7 +17,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getProxiedImageUrl } from '@/lib/image-proxy'
 import { getUserInitials } from '@/lib/utils/user'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useAuth } from '@/context/auth-context'
 
 interface CampaignsTopbarProps {
   siteName: string
