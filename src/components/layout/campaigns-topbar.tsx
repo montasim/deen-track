@@ -57,6 +57,12 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
               ক্যাম্পেইন
             </Link>
             <Link
+              href="/my-progress"
+              className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+            >
+              আমার অগ্রগতি
+            </Link>
+            <Link
               href="/leaderboard"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
             >

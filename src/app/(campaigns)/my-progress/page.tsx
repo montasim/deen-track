@@ -113,10 +113,10 @@ export default function MyProgressPage() {
         const overallProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
 
         return [
-            { label: selectedCampaignId ? 'Points' : 'Total Points', value: totalPoints.toLocaleString(), icon: Trophy, color: 'from-amber-500 to-yellow-600' },
-            { label: selectedCampaignId ? 'Tasks' : 'Campaigns', value: selectedCampaignId ? totalTasks.toString() : totalCampaigns.toString(), icon: Target, color: 'from-cyan-500 to-blue-600' },
-            { label: 'Completed', value: `${completedTasks}${selectedCampaignId ? '' : '/' + totalTasks}`, icon: CheckCircle2, color: 'from-emerald-500 to-teal-600' },
-            { label: 'Progress', value: `${overallProgress}%`, icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
+            { label: selectedCampaignId ? 'পয়েন্ট' : 'মোট পয়েন্ট', value: totalPoints.toLocaleString(), icon: Trophy, color: 'from-amber-500 to-yellow-600' },
+            { label: selectedCampaignId ? 'টাস্ক' : 'ক্যাম্পেইন', value: selectedCampaignId ? totalTasks.toString() : totalCampaigns.toString(), icon: Target, color: 'from-cyan-500 to-blue-600' },
+            { label: 'সম্পন্ন', value: `${completedTasks}${selectedCampaignId ? '' : '/' + totalTasks}`, icon: CheckCircle2, color: 'from-emerald-500 to-teal-600' },
+            { label: 'অগ্রগতি', value: `${overallProgress}%`, icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
         ]
     }, [filteredProgress, filteredSubmissions, selectedCampaignId])
 
@@ -159,9 +159,9 @@ export default function MyProgressPage() {
         const rejectedTasks = displaySubmissions.filter((s: any) => s.status === 'REJECTED').length
 
         const statusDistribution = [
-            { name: 'Completed', value: completedTasks, color: '#10b981' },
-            { name: 'Pending', value: pendingTasks, color: '#f59e0b' },
-            { name: 'Rejected', value: rejectedTasks, color: '#ef4444' },
+            { name: 'সম্পন্ন', value: completedTasks, color: '#10b981' },
+            { name: 'অপেক্ষমান', value: pendingTasks, color: '#f59e0b' },
+            { name: 'প্রত্যাখ্যাত', value: rejectedTasks, color: '#ef4444' },
         ]
 
         return { campaignProgress, pointsByCampaign, statusDistribution }
@@ -173,10 +173,10 @@ export default function MyProgressPage() {
                 <Card className="max-w-md bg-neutral-900/40 backdrop-blur-xl border-white/10">
                     <CardContent className="p-12 text-center">
                         <Trophy className="w-16 h-16 text-neutral-700 mx-auto mb-6" />
-                        <h2 className="text-2xl font-bold text-white mb-3">Sign In Required</h2>
-                        <p className="text-neutral-400 mb-6">Please sign in to view your progress.</p>
+                        <h2 className="text-2xl font-bold text-white mb-3">সাইন ইন প্রয়োজন</h2>
+                        <p className="text-neutral-400 mb-6">আপনার অগ্রগতি দেখতে দয়া করে সাইন ইন করুন।</p>
                         <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
-                            <Link href="/auth/sign-in">Sign In</Link>
+                            <Link href="/auth/sign-in">সাইন ইন</Link>
                         </Button>
                     </CardContent>
                 </Card>
@@ -192,7 +192,7 @@ export default function MyProgressPage() {
                         <div className="w-20 h-20 border-4 border-white/10 rounded-full" />
                         <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-cyan-500 rounded-full animate-spin" />
                     </div>
-                    <p className="text-neutral-400 text-lg">Loading your progress...</p>
+                    <p className="text-neutral-400 text-lg">আপনার অগ্রগতি লোড হচ্ছে...</p>
                 </div>
             </div>
         )
@@ -210,17 +210,17 @@ export default function MyProgressPage() {
                     <div className="relative container mx-auto max-w-4xl px-6 py-16 text-center">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
                             <Sparkles className="w-4 h-4 text-cyan-400" />
-                            <span className="text-sm text-neutral-300 font-medium">Your Journey</span>
+                            <span className="text-sm text-neutral-300 font-medium">আপনার যাত্রা</span>
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black tracking-tight mb-6">
                             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                                My Progress
+                                আমার অগ্রগতি
                             </span>
                         </h1>
 
                         <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                            Track your campaign progress and achievements
+                            আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করুন
                         </p>
                     </div>
                 </div>
@@ -232,9 +232,9 @@ export default function MyProgressPage() {
                             <div className="inline-flex p-6 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 mb-6">
                                 <Target className="w-16 h-16 text-cyan-400" />
                             </div>
-                            <h3 className="text-2xl font-bold text-white mb-3">No Campaigns Yet</h3>
+                            <h3 className="text-2xl font-bold text-white mb-3">এখনো কোনো ক্যাম্পেইন নেই</h3>
                             <p className="text-neutral-400 mb-8 max-w-md mx-auto">
-                                You haven&apos;t joined any campaigns yet. Browse available campaigns and start earning rewards!
+                                আপনি এখনো কোনো ক্যাম্পেইনে যোগ দেননি। উপলব্ধ ক্যাম্পেইনগুলো দেখুন এবং পুরস্কার অর্জন শুরু করুন!
                             </p>
                             <Button
                                 asChild
@@ -242,7 +242,7 @@ export default function MyProgressPage() {
                                 className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                             >
                                 <Link href="/campaigns" className="gap-2">
-                                    Browse Campaigns
+                                    ক্যাম্পেইন দেখুন
                                     <ArrowRight className="w-5 h-5" />
                                 </Link>
                             </Button>
@@ -263,22 +263,22 @@ export default function MyProgressPage() {
                     <div className="absolute w-[700px] h-[700px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[120px] translate-x-1/4 translate-y-1/4 bottom-0 right-0 animate-pulse delay-1000" />
                 </div>
 
-                <div className="relative container mx-auto max-w-7xl px-6 py-16">
+                <div className="relative container mx-auto max-w-7xl px-6 pt-16">
                     <div className="flex items-center justify-between mb-12">
                         <div className="max-w-2xl">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
                                 <Sparkles className="w-4 h-4 text-cyan-400" />
-                                <span className="text-sm text-neutral-300 font-medium">Your Journey</span>
+                                <span className="text-sm text-neutral-300 font-medium">আপনার যাত্রা</span>
                             </div>
 
                             <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black tracking-tight mb-4">
                                 <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                                    My Progress
+                                    আমার অগ্রগতি
                                 </span>
                             </h1>
 
                             <p className="text-xl text-neutral-400 leading-relaxed">
-                                Track your campaign progress and achievements
+                                আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করুন
                             </p>
                         </div>
 
@@ -303,7 +303,7 @@ export default function MyProgressPage() {
                             }}
                         >
                             <RefreshCw className="w-5 h-5 mr-2" />
-                            Refresh
+                            রিফ্রেশ
                         </Button>
                     </div>
 
@@ -313,7 +313,7 @@ export default function MyProgressPage() {
                             <div className="flex items-center gap-3 mb-4">
                                 <Target className="w-5 h-5 text-cyan-400" />
                                 <h2 className="text-lg font-semibold text-white">
-                                    {selectedCampaignId ? 'Campaign Details' : 'All Campaigns'}
+                                    {selectedCampaignId ? 'ক্যাম্পেইন বিবরণ' : 'সব ক্যাম্পেইন'}
                                 </h2>
                             </div>
                             <div className="flex flex-wrap gap-3">
@@ -328,7 +328,7 @@ export default function MyProgressPage() {
                                         }
                                     `}
                                 >
-                                    All Campaigns
+                                    সব ক্যাম্পেইন
                                 </button>
 
                                 {/* Individual Campaign Buttons */}
@@ -400,8 +400,8 @@ export default function MyProgressPage() {
                                         <TrendingUp className="w-5 h-5 text-cyan-400" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-white">Campaign Progress</h3>
-                                        <p className="text-sm text-neutral-400">Points per campaign</p>
+                                        <h3 className="text-lg font-semibold text-white">ক্যাম্পেইন অগ্রগতি</h3>
+                                        <p className="text-sm text-neutral-400">প্রতি ক্যাম্পেইনে পয়েন্ট</p>
                                     </div>
                                 </div>
                             </div>
@@ -417,7 +417,7 @@ export default function MyProgressPage() {
                                                 border: '1px solid #374151',
                                                 borderRadius: '6px',
                                             }}
-                                            formatter={(value: any) => `${value} points`}
+                                            formatter={(value: any) => `${value} পয়েন্ট`}
                                         />
                                         <Area type="monotone" dataKey="points" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} />
                                         <Area type="monotone" dataKey="completed" stroke="#06b6d4" fill="#06b6d4" fillOpacity={0.5} />
@@ -434,8 +434,8 @@ export default function MyProgressPage() {
                                         <PieChart className="w-5 h-5 text-emerald-400" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-white">Submission Status</h3>
-                                        <p className="text-sm text-neutral-400">Task completion breakdown</p>
+                                        <h3 className="text-lg font-semibold text-white">জমা দেওয়ার অবস্থা</h3>
+                                        <p className="text-sm text-neutral-400">টাস্ক সম্পন্নের বিস্তারিত</p>
                                     </div>
                                 </div>
                             </div>
@@ -475,8 +475,8 @@ export default function MyProgressPage() {
                                     <Award className="w-5 h-5 text-violet-400" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white">Points by Campaign</h3>
-                                    <p className="text-sm text-neutral-400">Your top performing campaigns</p>
+                                    <h3 className="text-lg font-semibold text-white">ক্যাম্পেইন অনুযায়ী পয়েন্ট</h3>
+                                    <p className="text-sm text-neutral-400">আপনার সেরা পারফর্মিং ক্যাম্পেইনগুলো</p>
                                 </div>
                             </div>
                         </div>
@@ -509,10 +509,10 @@ export default function MyProgressPage() {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">
-                                    {selectedCampaignId ? 'Selected Campaign' : 'Your Campaigns'}
+                                    {selectedCampaignId ? 'নির্বাচিত ক্যাম্পেইন' : 'আপনার ক্যাম্পেইন'}
                                 </h2>
                                 <p className="text-sm text-neutral-400">
-                                    {selectedCampaignId ? 'Campaign details and progress' : 'All your active campaigns'}
+                                    {selectedCampaignId ? 'ক্যাম্পেইন বিবরণ এবং অগ্রগতি' : 'আপনার সব সক্রিয় ক্যাম্পেইন'}
                                 </p>
                             </div>
                         </div>
@@ -521,9 +521,9 @@ export default function MyProgressPage() {
                             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
                                 <CardContent className="p-12 text-center">
                                     <Target className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-                                    <h3 className="text-lg font-semibold text-white mb-2">No Data Found</h3>
+                                    <h3 className="text-lg font-semibold text-white mb-2">কোনো তথ্য পাওয়া যায়নি</h3>
                                     <p className="text-sm text-neutral-400">
-                                        {selectedCampaignId ? 'No progress data available for this campaign' : 'No campaigns found'}
+                                        {selectedCampaignId ? 'এই ক্যাম্পেইনের জন্য কোনো অগ্রগতির তথ্য নেই' : 'কোনো ক্যাম্পেইন পাওয়া যায়নি'}
                                     </p>
                                 </CardContent>
                             </Card>
@@ -563,7 +563,7 @@ export default function MyProgressPage() {
                                                     </div>
                                                     <Link href={`/campaigns/${campaign.id}`}>
                                                         <Button size="sm" variant="outline" className="border-white/20 hover:bg-white/5">
-                                                            View
+                                                            দেখুন
                                                         </Button>
                                                     </Link>
                                                 </div>
@@ -571,20 +571,20 @@ export default function MyProgressPage() {
                                                 {/* Progress Bar */}
                                                 <div className="mb-4">
                                                     <div className="flex justify-between text-sm mb-2">
-                                                        <span className="text-neutral-400">Progress</span>
+                                                        <span className="text-neutral-400">অগ্রগতি</span>
                                                         <span className="font-medium text-white">
-                                                            {completedInCampaign} / {totalTasks} tasks
+                                                            {completedInCampaign} / {totalTasks} টাস্ক
                                                         </span>
                                                     </div>
                                                     <Progress value={progressPercent} className="h-2" />
-                                                    <div className="text-right text-xs text-neutral-500 mt-1">{Math.round(progressPercent)}% complete</div>
+                                                    <div className="text-right text-xs text-neutral-500 mt-1">{Math.round(progressPercent)}% সম্পন্ন</div>
                                                 </div>
 
                                                 {/* Stats */}
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
                                                         <Trophy className="w-4 h-4 text-yellow-400" />
-                                                        <span className="text-sm font-medium text-white">{progress.totalPoints} points</span>
+                                                        <span className="text-sm font-medium text-white">{progress.totalPoints} পয়েন্ট</span>
                                                     </div>
                                                     <div className="flex items-center gap-2 text-sm text-neutral-400">
                                                         <Calendar className="w-4 h-4" />
@@ -606,9 +606,9 @@ export default function MyProgressPage() {
                                 <Clock className="w-5 h-5 text-pink-400" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-white">Recent Submissions</h2>
+                                <h2 className="text-2xl font-bold text-white">সাম্প্রতিক জমা</h2>
                                 <p className="text-sm text-neutral-400">
-                                    {selectedCampaignId ? 'Campaign submissions' : 'Your latest task submissions'}
+                                    {selectedCampaignId ? 'ক্যাম্পেইন জমা' : 'আপনার সাম্প্রতিক টাস্ক জমা'}
                                 </p>
                             </div>
                         </div>
@@ -617,9 +617,9 @@ export default function MyProgressPage() {
                             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
                                 <CardContent className="p-12 text-center">
                                     <XCircle className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-                                    <h3 className="text-lg font-semibold text-white mb-2">No submissions yet</h3>
+                                    <h3 className="text-lg font-semibold text-white mb-2">এখনো কোনো জমা নেই</h3>
                                     <p className="text-sm text-neutral-400">
-                                        {selectedCampaignId ? 'No submissions for this campaign' : 'Complete tasks in campaigns to earn points!'}
+                                        {selectedCampaignId ? 'এই ক্যাম্পেইনের জন্য কোনো জমা নেই' : 'পয়েন্ট অর্জন করতে ক্যাম্পেইনে টাস্ক সম্পন্ন করুন!'}
                                     </p>
                                 </CardContent>
                             </Card>
@@ -627,10 +627,10 @@ export default function MyProgressPage() {
                             <div className="space-y-3">
                                 {filteredSubmissions.slice(0, 10).map((submission: any) => {
                                     const statusConfig = {
-                                        APPROVED: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/20', label: 'Approved' },
-                                        REJECTED: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-500/20', label: 'Rejected' },
-                                        SUBMITTED: { icon: Clock, color: 'text-orange-400', bg: 'bg-orange-500/20', label: 'Pending' },
-                                        DRAFT: { icon: Clock, color: 'text-neutral-400', bg: 'bg-neutral-500/20', label: 'Draft' },
+                                        APPROVED: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/20', label: 'অনুমোদিত' },
+                                        REJECTED: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-500/20', label: 'প্রত্যাখ্যাত' },
+                                        SUBMITTED: { icon: Clock, color: 'text-orange-400', bg: 'bg-orange-500/20', label: 'অপেক্ষমান' },
+                                        DRAFT: { icon: Clock, color: 'text-neutral-400', bg: 'bg-neutral-500/20', label: 'খসড়া' },
                                     }
                                     const config = statusConfig[submission.status as keyof typeof statusConfig]
                                     const Icon = config.icon
@@ -653,7 +653,7 @@ export default function MyProgressPage() {
                                                             </Badge>
                                                         </div>
                                                         <p className="text-sm text-neutral-500">
-                                                            {submission.progress?.campaign?.name || 'Unknown Campaign'}
+                                                            {submission.progress?.campaign?.name || 'অজানা ক্যাম্পেইন'}
                                                         </p>
                                                         {submission.feedback && (
                                                             <p className="text-sm text-neutral-400 mt-2 italic">{submission.feedback}</p>
@@ -680,8 +680,8 @@ export default function MyProgressPage() {
                                 <Award className="w-5 h-5 text-amber-400" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-white">Your Achievements</h2>
-                                <p className="text-sm text-neutral-400">Track your accomplishments across the platform</p>
+                                <h2 className="text-2xl font-bold text-white">আপনার অর্জন</h2>
+                                <p className="text-sm text-neutral-400">প্ল্যাটফর্মে আপনার সাফল্য ট্র্যাক করুন</p>
                             </div>
                         </div>
 
@@ -693,10 +693,10 @@ export default function MyProgressPage() {
                                 const inProgressCount = achievements.filter(a => !a.userUnlocked && a.userProgress > 0).length
 
                                 return [
-                                    { label: 'Unlocked', value: `${unlockedCount}/${achievements.length}`, icon: Award, color: 'from-amber-500 to-yellow-600' },
-                                    { label: 'Total XP', value: totalXP.toLocaleString(), icon: Sparkles, color: 'from-cyan-500 to-blue-600' },
-                                    { label: 'In Progress', value: inProgressCount.toString(), icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
-                                    { label: 'Available', value: (achievements.length - unlockedCount).toString(), icon: Target, color: 'from-emerald-500 to-teal-600' },
+                                    { label: 'আনলক করা', value: `${unlockedCount}/${achievements.length}`, icon: Award, color: 'from-amber-500 to-yellow-600' },
+                                    { label: 'মোট XP', value: totalXP.toLocaleString(), icon: Sparkles, color: 'from-cyan-500 to-blue-600' },
+                                    { label: 'চলমান', value: inProgressCount.toString(), icon: TrendingUp, color: 'from-violet-500 to-purple-600' },
+                                    { label: 'উপলব্ধ', value: (achievements.length - unlockedCount).toString(), icon: Target, color: 'from-emerald-500 to-teal-600' },
                                 ]
                             })().map((stat, index) => {
                                 const Icon = stat.icon
@@ -729,9 +729,9 @@ export default function MyProgressPage() {
                             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
                                 <CardContent className="p-12 text-center">
                                     <Award className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-                                    <h3 className="text-lg font-semibold text-white mb-2">No achievements yet</h3>
+                                    <h3 className="text-lg font-semibold text-white mb-2">এখনো কোনো অর্জন নেই</h3>
                                     <p className="text-sm text-neutral-400">
-                                        Complete tasks and engage with the platform to earn achievements!
+                                        অর্জন অর্জন করতে টাস্ক সম্পন্ন করুন এবং প্ল্যাটফর্মের সাথে যুক্ত হন!
                                     </p>
                                 </CardContent>
                             </Card>
@@ -788,7 +788,7 @@ export default function MyProgressPage() {
                                                         ) : achievement.userProgress > 0 ? (
                                                             <div>
                                                                 <div className="flex justify-between text-xs mb-1">
-                                                                    <span className="text-neutral-400">Progress</span>
+                                                                    <span className="text-neutral-400">অগ্রগতি</span>
                                                                     <span className="text-neutral-300">
                                                                         {achievement.userProgress} / {(achievement.requirements as any)?.count || '?'}
                                                                     </span>
@@ -801,7 +801,7 @@ export default function MyProgressPage() {
                                                         ) : (
                                                             <div className="flex items-center gap-2 text-sm text-neutral-600">
                                                                 <Lock className="w-4 h-4" />
-                                                                <span>Not started</span>
+                                                                <span>শুরু হয়নি</span>
                                                             </div>
                                                         )}
                                                     </div>

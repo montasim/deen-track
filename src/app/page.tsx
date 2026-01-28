@@ -22,42 +22,48 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { CampaignsTopbar } from '@/components/layout/campaigns-topbar'
 
-// Sample featured campaigns data
-const featuredCampaigns = [
-  {
-    id: '1',
-    name: 'ফিটনেস চ্যালেঞ্জ ২০২৪',
-    description: 'প্রতিদিনের ওয়ার্কআউট চ্যালেঞ্জ সম্পন্ন করুন আর জিতে নিন আকর্ষণীয় পুরষ্কার',
-    difficulty: 'মাঝারি',
-    participants: 1247,
-    color: 'from-orange-500 to-red-600',
-    icon: Flame,
-    points: 500,
-    duration: '৩০ দিন',
-  },
-  {
-    id: '2',
-    name: 'লার্নিং স্প্রিন্ট',
-    description: 'নির্দিষ্ট লার্নিং পাথের মাধ্যমে নতুন দক্ষতা অর্জন করুন',
-    difficulty: 'শিক্ষানবিশ',
-    participants: 892,
-    color: 'from-blue-500 to-cyan-600',
-    icon: Sparkles,
-    points: 350,
-    duration: '২১ দিন',
-  },
-  {
-    id: '3',
-    name: 'প্রোডাক্টিভিটি মাস্টার',
-    description: 'ভালো অভ্যাস গড়ে তুলুন এবং প্রতিদিনের কাজের গতি বাড়ান',
-    difficulty: 'উন্নত',
-    participants: 654,
-    color: 'from-purple-500 to-violet-600',
-    icon: Trophy,
-    points: 750,
-    duration: '৪৫ দিন',
-  },
-]
+type Campaign = {
+  id: string
+  name: string
+  description: string
+  startDate: string
+  endDate: string
+  _count: {
+    participations: number
+  }
+}
+
+// Helper function to get duration in days
+const getDuration = (startDate: string, endDate: string): string => {
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+  return `${days} দিন`
+}
+
+// Map campaigns to UI format with consistent styling
+const mapCampaignToUI = (campaign: Campaign, index: number) => {
+  const colorMap = [
+    'from-orange-500 to-red-600',
+    'from-blue-500 to-cyan-600',
+    'from-purple-500 to-violet-600',
+  ]
+  const iconMap = [Flame, Sparkles, Trophy]
+  const difficultyMap = ['মাঝারি', 'শিক্ষানবিশ', 'উন্নত']
+  const pointsMap = [500, 350, 750]
+
+  return {
+    id: campaign.id,
+    name: campaign.name,
+    description: campaign.description,
+    difficulty: difficultyMap[index % 3],
+    participants: campaign._count.participations,
+    color: colorMap[index % 3],
+    icon: iconMap[index % 3],
+    points: pointsMap[index % 3],
+    duration: getDuration(campaign.startDate, campaign.endDate),
+  }
+}
 
 const steps = [
   {
@@ -107,17 +113,34 @@ const features = [
   },
 ]
 
-const stats = [
-  { value: '১০হাজার+', label: 'সক্রিয় ব্যবহারকারী' },
-  { value: '৫০০+', label: 'ক্যাম্পেইন' },
-  { value: '১মিলিয়ন+', label: 'টাস্ক সম্পন্ন হয়েছে' },
-  { value: '৫০মিলিয়ন+', label: 'পয়েন্ট অর্জিত হয়েছে' },
-]
-
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false)
   const [scrollY, setScrollY] = useState(0)
   const [siteName, setSiteName] = useState('CampaignHub')
+  const [featuredCampaigns, setFeaturedCampaigns] = useState<any[]>([])
+  const [campaignsLoading, setCampaignsLoading] = useState(true)
+  const [stats, setStats] = useState([
+    { value: '১০হাজার+', label: 'সক্রিয় ব্যবহারকারী' },
+    { value: '৫০০+', label: 'ক্যাম্পেইন' },
+    { value: '১মিলিয়ন+', label: 'টাস্ক সম্পন্ন হয়েছে' },
+    { value: '৫০মিলিয়ন+', label: 'পয়েন্ট অর্জিত হয়েছে' },
+  ])
+
+  // Convert English numbers to Bangla
+  const toBanglaNumber = (num: number): string => {
+    const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
+    return num.toString().replace(/\d/g, (d) => banglaDigits[parseInt(d)])
+  }
+
+  // Format large numbers (e.g., 1200 -> 1.2হাজার+)
+  const formatLargeNumber = (num: number): string => {
+    if (num >= 1000000) {
+      return `${toBanglaNumber(Math.floor(num / 100000))}মিলিয়ন+`
+    } else if (num >= 1000) {
+      return `${toBanglaNumber(Math.floor(num / 1000))}হাজার+`
+    }
+    return toBanglaNumber(num)
+  }
 
   useEffect(() => {
     setMounted(true)
@@ -130,6 +153,37 @@ export default function LandingPage() {
       .then((data) => {
         if (data.success && data.data.siteName) {
           setSiteName(data.data.siteName)
+        }
+      })
+      .catch(console.error)
+
+    // Fetch campaigns
+    fetch('/api/campaigns')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // Map campaigns to UI format and take first 3 for featured section
+          const mappedCampaigns = data.slice(0, 3).map((campaign: Campaign, index: number) =>
+            mapCampaignToUI(campaign, index)
+          )
+          setFeaturedCampaigns(mappedCampaigns)
+        }
+      })
+      .catch(console.error)
+      .finally(() => setCampaignsLoading(false))
+
+    // Fetch site stats
+    fetch('/api/public/site/stats')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          const { activeUsers, activeCampaigns, tasksCompleted, totalPoints } = data.data
+          setStats([
+            { value: formatLargeNumber(activeUsers), label: 'সক্রিয় ব্যবহারকারী' },
+            { value: formatLargeNumber(activeCampaigns), label: 'ক্যাম্পেইন' },
+            { value: formatLargeNumber(tasksCompleted), label: 'টাস্ক সম্পন্ন হয়েছে' },
+            { value: formatLargeNumber(totalPoints), label: 'পয়েন্ট অর্জিত হয়েছে' },
+          ])
         }
       })
       .catch(console.error)
