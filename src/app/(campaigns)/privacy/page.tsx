@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button'
 export async function generateMetadata(): Promise<Metadata> {
   const siteName = await getSiteName()
   return {
-    title: `Privacy Policy - ${siteName}`,
-    description: `Privacy Policy and how ${siteName} handles your data`,
+    title: `গোপনীয়তা নীতি - ${siteName}`,
+    description: `${siteName} কিভাবে আপনার তথ্য ব্যবহার করে তা জানুন`,
   }
 }
 
@@ -55,23 +55,23 @@ export default async function PrivacyPage() {
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-8">
                 <Shield className="w-4 h-4 text-emerald-400" />
-                <span className="text-sm font-medium text-emerald-300">Privacy</span>
+                <span className="text-sm font-medium text-emerald-300">গোপনীয়তা</span>
               </div>
 
               <h1 className="flex items-center justify-center gap-1 text-5xl font-bold tracking-tight mb-8">
-                <span className="text-white">Your Privacy</span>
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">Matters</span>
+                <span className="text-white">আপনার</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">গোপনীয়তা</span>
               </h1>
 
               <p className="text-lg text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Your privacy is important to us. This policy explains how we collect, use, disclose, and safeguard your information when you use {siteName}.
+                আপনার গোপনীয়তা আমাদের কাছে খুবই গুরুত্বপূর্ণ। এই নীতিতে বলা হয়েছে {siteName} ব্যবহার করার সময় আমরা কিভাবে আপনার তথ্য সংগ্রহ করি, ব্যবহার করি এবং সুরক্ষিত রাখি তা জানুন।
               </p>
 
               {legalContent?.effectiveDate && (
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
                   <Sparkles className="w-4 h-4 text-emerald-400" />
                   <span className="text-sm font-medium text-emerald-300">
-                    Effective: {new Date(legalContent.effectiveDate).toLocaleDateString('en-US', {
+                    কার্যকর: {new Date(legalContent.effectiveDate).toLocaleDateString('bn-BD', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric',
@@ -97,9 +97,9 @@ export default async function PrivacyPage() {
                     <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-neutral-800 border border-white/10 shadow-lg">
                       <Shield className="h-10 w-10 text-neutral-600" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Content Not Available</h3>
-                    <p className="text-neutral-400 mb-2">Privacy Policy content is not available at this time.</p>
-                    <p className="text-sm text-neutral-500">Please check back later or contact support for more information.</p>
+                    <h3 className="text-2xl font-bold text-white mb-3">এখনো কিছু নেই</h3>
+                    <p className="text-neutral-400 mb-2">গোপনীয়তা নীতি এখনো আপলোড করা হয়নি।</p>
+                    <p className="text-sm text-neutral-500">পরে আবার দেখুন বা সাপোর্ট টিমের সাথে যোগাযোগ করুন।</p>
                   </div>
                 )}
               </div>
@@ -111,9 +111,9 @@ export default async function PrivacyPage() {
                       <Shield className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white mb-2">Questions About Your Privacy?</h4>
+                      <h4 className="font-semibold text-white mb-2">আপনার গোপনীয়তা নিয়ে প্রশ্ন?</h4>
                       <p className="text-neutral-300 leading-relaxed">
-                        If you have any questions or concerns about this Privacy Policy or our data practices, please contact our support team. We will respond to your inquiries within 30 days.
+                        এই গোপনীয়তা নীতি বা আমাদের তথ্য ব্যবহার সম্পর্কে আপনার কোনো প্রশ্ন বা উদ্বেগ থাকলে আমাদের সাপোর্ট টিমের সাথে যোগাযোগ করুন। আমরা ৩০ দিনের মধ্যে উত্তর দেব।
                       </p>
                     </div>
                   </div>
@@ -123,11 +123,11 @@ export default async function PrivacyPage() {
               {legalContent?.lastUpdatedBy && (
                 <div className="mt-6 text-center">
                   <p className="text-sm text-neutral-500">
-                    Last updated: {new Date(legalContent.updatedAt).toLocaleDateString('en-US', {
+                    সর্বশেষ আপডেট: {new Date(legalContent.updatedAt).toLocaleDateString('bn-BD', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric',
-                    })} by {legalContent.lastUpdatedBy.firstName} {legalContent.lastUpdatedBy.lastName}
+                    })} | {legalContent.lastUpdatedBy.firstName} {legalContent.lastUpdatedBy.lastName} দ্বারা
                   </p>
                 </div>
               )}

@@ -20,10 +20,10 @@ import { Mail, MessageSquare, Send, Loader2, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 const contactFormSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
-  email: z.string().email('Invalid email address'),
-  subject: z.string().max(200, 'Subject is too long').optional(),
-  message: z.string().min(10, 'Message must be at least 10 characters').max(5000, 'Message is too long'),
+  name: z.string().min(1, 'নাম লিখুন').max(100, 'নাম অনেক বড় হয়ে গেছে'),
+  email: z.string().email('সঠিক ইমেইল ঠিকানা দিন'),
+  subject: z.string().max(200, 'বিষয় অনেক বড় হয়ে গেছে').optional(),
+  message: z.string().min(10, 'মেসেজ অন্তত ১০ অক্ষরের হতে হবে').max(5000, 'মেসেজ অনেক বড় হয়ে গেছে'),
 })
 
 type ContactFormValues = z.infer<typeof contactFormSchema>
@@ -65,13 +65,13 @@ export default function ContactPage() {
       })
       const data = await response.json()
       if (data.success) {
-        toast({ title: 'Message sent successfully!', description: data.message || 'We will get back to you soon.' })
+        toast({ title: 'মেসেজ পাঠানো হয়েছে! ✅', description: data.message || 'আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।' })
         form.reset()
       } else {
-        toast({ variant: 'destructive', title: 'Failed to send message', description: data.message || 'Please try again later.' })
+        toast({ variant: 'destructive', title: 'মেসেজ পাঠাতে সমস্যা হয়েছে', description: data.message || 'আবার চেষ্টা করুন।' })
       }
     } catch (err) {
-      toast({ variant: 'destructive', title: 'Error', description: 'An error occurred. Please try again.' })
+      toast({ variant: 'destructive', title: 'সমস্যা হয়েছে', description: 'আবার চেষ্টা করুন।' })
     } finally {
       setIsSubmitting(false)
     }
@@ -97,17 +97,17 @@ export default function ContactPage() {
             <div className="max-w-4xl mx-auto text-center">
               <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <Mail className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300">Get in Touch</span>
+                <span className="text-sm font-medium text-cyan-300">যোগাযোগ করুন</span>
               </div>
 
               <h1 className={`text-5xl font-bold tracking-tight mb-8 transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                <span className="text-white">Let&apos;s Start a</span>
+                <span className="text-white">আমাদের সাথে</span>
                 <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">Conversation</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">কথা বলুন!</span>
               </h1>
 
               <p className={`text-lg text-neutral-400 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                Have questions, feedback, or just want to say hello? We&apos;d love to hear from you. Fill out the form below and we&apos;ll get back to you as soon as possible.
+                কোনো প্রশ্ন আছে? মতামত দিতে চান? নাকি সাধারণ হ্যালো বলতে চান? আমরা শুনতে পছন্দ করবো! নিচের ফর্মটি পূরণ করুন আর আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।
               </p>
             </div>
           </div>
@@ -126,8 +126,8 @@ export default function ContactPage() {
                         <MessageSquare className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-white">Send us a Message</h2>
-                        <p className="text-neutral-400">Fill out the form and we&apos;ll respond shortly</p>
+                        <h2 className="text-2xl font-bold text-white">মেসেজ পাঠান</h2>
+                        <p className="text-neutral-400">ফর্মটি পূরণ করুন, আমরা শীঘ্রই উত্তর দেব</p>
                       </div>
                     </div>
 
@@ -136,9 +136,9 @@ export default function ContactPage() {
                         <div className="grid md:grid-cols-2 gap-6">
                           <FormField control={form.control} name="name" render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-neutral-300 font-medium">Name *</FormLabel>
+                              <FormLabel className="text-neutral-300 font-medium">নাম *</FormLabel>
                               <FormControl>
-                                <Input placeholder="Your name" className="border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
+                                <Input placeholder="আপনার নাম" className="border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -146,9 +146,9 @@ export default function ContactPage() {
 
                           <FormField control={form.control} name="email" render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-neutral-300 font-medium">Email *</FormLabel>
+                              <FormLabel className="text-neutral-300 font-medium">ইমেইল *</FormLabel>
                               <FormControl>
-                                <Input type="email" placeholder="your.email@example.com" className="border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
+                                <Input type="email" placeholder="your@email.com" className="border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -157,9 +157,9 @@ export default function ContactPage() {
 
                         <FormField control={form.control} name="subject" render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-neutral-300 font-medium">Subject</FormLabel>
+                            <FormLabel className="text-neutral-300 font-medium">বিষয়</FormLabel>
                             <FormControl>
-                              <Input placeholder="What is this regarding?" className="border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
+                              <Input placeholder="কি নিয়ে কথা বলতে চান?" className="border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -167,16 +167,16 @@ export default function ContactPage() {
 
                         <FormField control={form.control} name="message" render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-neutral-300 font-medium">Message *</FormLabel>
+                            <FormLabel className="text-neutral-300 font-medium">মেসেজ *</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="Tell us more about your inquiry..." className="min-h-[150px] resize-y border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
+                              <Textarea placeholder="আপনার কথা লিখুন..." className="min-h-[150px] resize-y border-white/10 focus:border-cyan-500/50 focus:ring-cyan-500/20 bg-neutral-900/60" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )} />
 
                         <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 transition-all duration-300">
-                          {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Sending...</>) : (<><Send className="mr-2 h-4 w-4" />Send Message</>)}
+                          {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />পাঠানো হচ্ছে...</>) : (<><Send className="mr-2 h-4 w-4" />📨 মেসেজ পাঠান</>)}
                         </Button>
                       </form>
                     </Form>
@@ -190,28 +190,28 @@ export default function ContactPage() {
                       <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-lg shadow-emerald-500/25">
                         <Mail className="w-5 h-5 text-white" />
                       </div>
-                      <h3 className="text-lg font-bold text-white">Email Us</h3>
+                      <h3 className="text-lg font-bold text-white">ইমেইল করুন</h3>
                     </div>
 
                     <div className="space-y-4">
                       {settings?.supportEmail && (
                         <div>
-                          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Support</div>
+                          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">সাপোর্ট</div>
                           <a href={`mailto:${settings.supportEmail}`} className="text-white font-medium hover:text-cyan-400 transition-colors">{settings.supportEmail}</a>
-                          <p className="text-sm text-neutral-400 mt-1">For technical support and account-related issues</p>
+                          <p className="text-sm text-neutral-400 mt-1">টেকনিক্যাল সাহায্য আর অ্যাকাউন্ট সমস্যার জন্য</p>
                         </div>
                       )}
 
                       {settings?.contactEmail && (
                         <div>
-                          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">General Inquiries</div>
+                          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">সাধারণ জিজ্ঞাসা</div>
                           <a href={`mailto:${settings.contactEmail}`} className="text-white font-medium hover:text-cyan-400 transition-colors">{settings.contactEmail}</a>
-                          <p className="text-sm text-neutral-400 mt-1">For business inquiries and general questions</p>
+                          <p className="text-sm text-neutral-400 mt-1">বিজনেস আর সাধারণ প্রশ্নের জন্য</p>
                         </div>
                       )}
 
                       {!settings?.supportEmail && !settings?.contactEmail && (
-                        <p className="text-sm text-neutral-400">No email contacts configured at this time.</p>
+                        <p className="text-sm text-neutral-400">এখন কোনো ইমেইল দেওয়া নেই।</p>
                       )}
                     </div>
                   </div>
@@ -219,9 +219,9 @@ export default function ContactPage() {
                   <div className={`p-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: '200ms' }}>
                     <div className="flex items-center gap-3 mb-4">
                       <Mail className="w-5 h-5 text-cyan-400" />
-                      <h3 className="text-lg font-bold text-white">Response Time</h3>
+                      <h3 className="text-lg font-bold text-white">⏰ উত্তরের সময়</h3>
                     </div>
-                    <p className="text-neutral-300 leading-relaxed">We typically respond to all inquiries within 1-2 business days. For the fastest response, please include as much detail as possible in your message.</p>
+                    <p className="text-neutral-300 leading-relaxed">আমরা সাধারণত ১-২ দিনের মধ্যে উত্তর দেই। দ্রুত উত্তর পেতে মেসেজে বিস্তারিত লিখুন!</p>
                   </div>
                 </div>
               </div>

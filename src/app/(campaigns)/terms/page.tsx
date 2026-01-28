@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button'
 export async function generateMetadata(): Promise<Metadata> {
   const siteName = await getSiteName()
   return {
-    title: `Terms of Service - ${siteName}`,
-    description: `Terms of Service and conditions for using ${siteName} platform`,
+    title: `ব্যবহারের শর্তাবলী - ${siteName}`,
+    description: `${siteName} প্ল্যাটফর্ম ব্যবহারের শর্তাবলী ও নিয়মাবলী`,
   }
 }
 
@@ -55,24 +55,24 @@ export default async function TermsPage() {
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
                 <FileText className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300">Legal</span>
+                <span className="text-sm font-medium text-cyan-300">আইনি</span>
               </div>
 
               <h1 className="flex items-center justify-center gap-1 text-5xl font-bold tracking-tight mb-8">
-                <span className="text-white">Terms of</span>
+                <span className="text-white">ব্যবহারের</span>
                 <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">Service</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
               </h1>
 
               <p className="text-lg text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Please read these terms carefully before using our platform. By accessing or using {siteName}, you agree to be bound by these terms.
+                আমাদের প্ল্যাটফর্ম ব্যবহার করার আগে এই শর্তগুলো ভালো করে পড়ুন। {siteName} ব্যবহার করার মাধ্যমে আপনি এই শর্তগুলো মেনে নিচ্ছেন বলে ধরে নেওয়া হবে।
               </p>
 
               {legalContent?.effectiveDate && (
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
                   <Sparkles className="w-4 h-4 text-emerald-400" />
                   <span className="text-sm font-medium text-emerald-300">
-                    Effective: {new Date(legalContent.effectiveDate).toLocaleDateString('en-US', {
+                    কার্যকর: {new Date(legalContent.effectiveDate).toLocaleDateString('bn-BD', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric',
@@ -98,9 +98,9 @@ export default async function TermsPage() {
                     <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-neutral-800 border border-white/10 shadow-lg">
                       <FileText className="h-10 w-10 text-neutral-600" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Content Not Available</h3>
-                    <p className="text-neutral-400 mb-2">Terms of Service content is not available at this time.</p>
-                    <p className="text-sm text-neutral-500">Please check back later or contact support for more information.</p>
+                    <h3 className="text-2xl font-bold text-white mb-3">এখনো কিছু নেই</h3>
+                    <p className="text-neutral-400 mb-2">ব্যবহারের শর্তাবলী এখনো আপলোড করা হয়নি।</p>
+                    <p className="text-sm text-neutral-500">পরে আবার দেখুন বা সাপোর্ট টিমের সাথে যোগাযোগ করুন।</p>
                   </div>
                 )}
               </div>
@@ -112,9 +112,9 @@ export default async function TermsPage() {
                       <Sparkles className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white mb-2">Important Notice</h4>
+                      <h4 className="font-semibold text-white mb-2">গুরুত্বপূর্ণ নোটিশ</h4>
                       <p className="text-neutral-300 leading-relaxed">
-                        By continuing to use {siteName}, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree with these terms, please discontinue use of our platform.
+                        {siteName} ব্যবহার করা চালিয়ে রাখলে আপনি এই শর্তাবলী পড়েছেন, বুঝেছেন এবং মেনে নিয়েছেন বলে গণ্য করা হবে। যদি আপনি এই শর্তগুলোর সাথে একমত না হন, তাহলে প্ল্যাটফর্মটি ব্যবহার করবেন না।
                       </p>
                     </div>
                   </div>
@@ -124,11 +124,11 @@ export default async function TermsPage() {
               {legalContent?.lastUpdatedBy && (
                 <div className="mt-6 text-center">
                   <p className="text-sm text-neutral-500">
-                    Last updated: {new Date(legalContent.updatedAt).toLocaleDateString('en-US', {
+                    সর্বশেষ আপডেট: {new Date(legalContent.updatedAt).toLocaleDateString('bn-BD', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric',
-                    })} by {legalContent.lastUpdatedBy.firstName} {legalContent.lastUpdatedBy.lastName}
+                    })} | {legalContent.lastUpdatedBy.firstName} {legalContent.lastUpdatedBy.lastName} দ্বারা
                   </p>
                 </div>
               )}

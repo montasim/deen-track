@@ -55,34 +55,34 @@ interface UserTicket extends SupportTicket {
 }
 
 const FAQ_CATEGORIES = {
-  pricing: 'Pricing & Plans',
-  account: 'Account & Settings',
-  reading: 'Reading & Library',
-  technical: 'Technical Support',
-  general: 'General',
+  pricing: 'দাম ও প্ল্যান',
+  account: 'অ্যাকাউন্ট ও সেটিংস',
+  reading: 'পড়াশোনা ও লাইব্রেরি',
+  technical: 'টেকনিক্যাল সাপোর্ট',
+  general: 'সাধারণ',
 } as const
 
 const TICKET_CATEGORIES = {
-  technical: 'Technical Issue',
-  billing: 'Billing & Payment',
-  feature: 'Feature Request',
-  bug: 'Bug Report',
-  other: 'Other',
+  technical: 'টেকনিক্যাল সমস্যা',
+  billing: 'পেমেন্ট ও বিলিং',
+  feature: 'নতুন ফিচার অনুরোধ',
+  bug: 'বাগ রিপোর্ট',
+  other: 'অন্যান্য',
 } as const
 
 const PRIORITY_LABELS: Record<TicketPriority, string> = {
-  LOW: 'Low',
-  MEDIUM: 'Medium',
-  HIGH: 'High',
-  URGENT: 'Urgent',
+  LOW: 'কম',
+  MEDIUM: 'মাঝারি',
+  HIGH: 'জরুরি',
+  URGENT: 'অত্যন্ত জরুরি',
 }
 
 const STATUS_LABELS: Record<TicketStatus, string> = {
-  OPEN: 'Open',
-  IN_PROGRESS: 'In Progress',
-  WAITING_FOR_USER: 'Waiting for You',
-  RESOLVED: 'Resolved',
-  CLOSED: 'Closed',
+  OPEN: 'খোলা আছে',
+  IN_PROGRESS: 'চলমান',
+  WAITING_FOR_USER: 'আপনার জবাবের অপেক্ষায়',
+  RESOLVED: 'সমাধান হয়েছে',
+  CLOSED: 'বন্ধ হয়েছে',
 }
 
 const STATUS_COLORS: Record<TicketStatus, string> = {
@@ -196,8 +196,8 @@ function HelpCenterPageContent() {
           )
         )
         toast({
-          title: 'Thank you!',
-          description: helpful ? 'Glad this was helpful!' : "We'll work on improving this answer.",
+          title: 'ধন্যবাদ! 🙏',
+          description: helpful ? 'ভালো লাগলে জেনেছি!' : 'আমরা উত্তরটা আরও ভালো করার চেষ্টা করবো।',
         })
       }
     } catch (error) {
@@ -208,8 +208,8 @@ function HelpCenterPageContent() {
   const handleSubmitTicket = async () => {
     if (!newTicket.subject.trim() || !newTicket.description.trim()) {
       toast({
-        title: 'Validation Error',
-        description: 'Please fill in all required fields.',
+        title: 'সমস্যা হয়েছে',
+        description: 'সব ঘর পূরণ করুন।',
         variant: 'destructive',
       })
       return
@@ -227,8 +227,8 @@ function HelpCenterPageContent() {
 
       if (result.success) {
         toast({
-          title: 'Ticket Created',
-          description: "Your support ticket has been submitted. We'll get back to you soon.",
+          title: 'টিকেট তৈরি হয়েছে! ✅',
+          description: "আপনার সাপোর্ট টিকেট জমা হয়েছে। আমরা শীঘ্রই যোগাযোগ করবো।",
         })
         setNewTicket({ subject: '', description: '', category: 'technical', priority: 'MEDIUM' })
         router.push(`${ROUTES.helpCenter.href}?tab=tickets`)
@@ -239,15 +239,15 @@ function HelpCenterPageContent() {
         }
       } else {
         toast({
-          title: 'Error',
-          description: result.message || 'Failed to create ticket.',
+          title: 'সমস্যা হয়েছে',
+          description: result.message || 'টিকেট তৈরি করতে সমস্যা হয়েছে।',
           variant: 'destructive',
         })
       }
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to create ticket. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন।',
         variant: 'destructive',
       })
     } finally {
@@ -260,10 +260,10 @@ function HelpCenterPageContent() {
       <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-50 to-violet-50 shadow-lg">
         <LifeBuoy className="h-8 w-8 text-blue-500" />
       </div>
-      <h3 className="text-xl font-bold text-slate-900 mb-2">Sign In Required</h3>
-      <p className="text-slate-600 mb-6">Please sign in to access this feature.</p>
+      <h3 className="text-xl font-bold text-slate-900 mb-2">লগইন করতে হবে</h3>
+      <p className="text-slate-600 mb-6">এই ফিচার ব্যবহার করতে আগে লগইন করুন।</p>
       <Button asChild className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700">
-        <a href={ROUTES.signIn.href}>Sign In</a>
+        <a href={ROUTES.signIn.href}>লগইন করুন</a>
       </Button>
     </div>
   )
@@ -288,17 +288,17 @@ function HelpCenterPageContent() {
             <div className="max-w-4xl mx-auto text-center">
               <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <LifeBuoy className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300">Support</span>
+                <span className="text-sm font-medium text-cyan-300">সাহায্য কেন্দ্র</span>
               </div>
 
               <h1 className={`text-5xl font-bold tracking-tight mb-8 transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                <span className="text-white">How Can We</span>
+                <span className="text-white">আমরা কিভাবে</span>
                 <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">Help You?</span>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">সাহায্য করতে পারি?</span>
               </h1>
 
               <p className={`text-lg text-neutral-400 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                {user ? 'Find answers or get personalized support from our team.' : 'Browse our FAQs or sign in to get personalized support.'}
+                {user ? 'উত্তর খুঁজুন বা আমাদের টিম থেকে ব্যক্তিগত সাহায্য নিন!' : 'FAQ দেখুন বা লগইন করে ব্যক্তিগত সাহায্য নিন!'}
               </p>
             </div>
           </div>
@@ -312,11 +312,11 @@ function HelpCenterPageContent() {
                 <div className="flex flex-col md:flex-row md:justify-between gap-4 items-stretch">
                   <TabsList className="bg-neutral-900/40 backdrop-blur-xl border border-white/10 p-1">
                     <Link href={`${ROUTES.helpCenter.href}?tab=faq`}>
-                      <TabsTrigger value="faq" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-violet-600 data-[state=active]:text-white">FAQ</TabsTrigger>
+                      <TabsTrigger value="faq" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-violet-600 data-[state=active]:text-white">❓ সাধারণ প্রশ্ন</TabsTrigger>
                     </Link>
                     <Link href={`${ROUTES.helpCenter.href}?tab=tickets`}>
                       <TabsTrigger value="tickets" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-violet-600 data-[state=active]:text-white">
-                        My Tickets
+                        আমার টিকেট
                         {tickets.some((t) => t.status === 'OPEN' || t.status === 'IN_PROGRESS' || t.status === 'WAITING_FOR_USER') && (
                           <Badge variant="destructive" className="ml-2 h-5 px-1.5 text-xs">
                             {tickets.filter((t) => t.status === 'OPEN' || t.status === 'IN_PROGRESS' || t.status === 'WAITING_FOR_USER').length}
@@ -326,7 +326,7 @@ function HelpCenterPageContent() {
                     </Link>
                     {user && (
                       <Link href={`${ROUTES.helpCenter.href}?tab=new`}>
-                        <TabsTrigger value="new" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-violet-600 data-[state=active]:text-white">New Ticket</TabsTrigger>
+                        <TabsTrigger value="new" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-violet-600 data-[state=active]:text-white">➕ নতুন টিকেট</TabsTrigger>
                       </Link>
                     )}
                   </TabsList>
@@ -334,21 +334,21 @@ function HelpCenterPageContent() {
                   <div className="flex items-center gap-2">
                     {user && activeTab !== 'new' && (
                       <Button onClick={() => router.push(`${ROUTES.helpCenter.href}?tab=new`)} className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white shadow-lg shadow-blue-500/25">
-                        <Plus className="h-4 w-4 mr-2" />Create Ticket
+                        <Plus className="h-4 w-4 mr-2" />টিকেট তৈরি করুন
                       </Button>
                     )}
                     {activeTab === 'faq' && (
                       <div className="flex items-center gap-2">
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input placeholder="Search FAQs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 w-64 border-white/10 bg-neutral-900/60 backdrop-blur-xl" />
+                          <Input placeholder="FAQ খুঁজুন..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 w-64 border-white/10 bg-neutral-900/60 backdrop-blur-xl" />
                         </div>
                         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                           <SelectTrigger className="w-48 border-white/10 bg-neutral-900/60 backdrop-blur-xl">
-                            <SelectValue placeholder="Category" />
+                            <SelectValue placeholder="বিষয়" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="all">All Categories</SelectItem>
+                            <SelectItem value="all">সব বিষয়</SelectItem>
                             {Object.entries(FAQ_CATEGORIES).map(([key, label]) => (
                               <SelectItem key={key} value={key}>{label}</SelectItem>
                             ))}
@@ -372,8 +372,8 @@ function HelpCenterPageContent() {
                           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-800 border border-white/10 shadow-lg">
                             <Search className="h-8 w-8 text-slate-400" />
                           </div>
-                          <h3 className="text-xl font-bold text-white mb-2">No FAQs Found</h3>
-                          <p className="text-neutral-400">Try adjusting your search or filter to find what you&apos;re looking for.</p>
+                          <h3 className="text-xl font-bold text-white mb-2">কোনো FAQ পাওয়া যায়নি</h3>
+                          <p className="text-neutral-400">অন্য কিওয়ার্ড দিয়ে চেষ্টা করুন!</p>
                         </div>
                       ) : (
                         Object.entries(groupedFaqs).map(([category, categoryFaqs]) => (
@@ -390,12 +390,12 @@ function HelpCenterPageContent() {
                                     <div className="p-4 pt-0 border-t border-white/10">
                                       <p className="text-neutral-400 mb-4 leading-relaxed">{faq.answer}</p>
                                       <div className="flex items-center gap-4 text-sm">
-                                        <span className="text-neutral-500">Was this helpful?</span>
+                                        <span className="text-neutral-500">কি ভালো লাগলো?</span>
                                         <Button variant="ghost" size="sm" onClick={() => handleFaqFeedback(faq.id, true)} className="h-8 hover:text-emerald-600 hover:bg-emerald-50">
-                                          <CheckCircle2 className="h-4 w-4 mr-1" />Yes ({faq.helpfulCount})
+                                          <CheckCircle2 className="h-4 w-4 mr-1" />হ্যাঁ ({faq.helpfulCount})
                                         </Button>
                                         <Button variant="ghost" size="sm" onClick={() => handleFaqFeedback(faq.id, false)} className="h-8 hover:text-red-600 hover:bg-red-50">
-                                          <XCircle className="h-4 w-4 mr-1" />No ({faq.notHelpfulCount})
+                                          <XCircle className="h-4 w-4 mr-1" />না ({faq.notHelpfulCount})
                                         </Button>
                                       </div>
                                     </div>
@@ -423,10 +423,10 @@ function HelpCenterPageContent() {
                           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-800 border border-white/10 shadow-lg">
                             <MessageSquare className="h-8 w-8 text-slate-400" />
                           </div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-2">No Support Tickets</h3>
-                          <p className="text-slate-600 mb-6">You haven&apos;t created any support tickets yet.</p>
+                          <h3 className="text-xl font-bold text-slate-900 mb-2">কোনো টিকেট নেই</h3>
+                          <p className="text-slate-600 mb-6">আপনি এখনো কোনো টিকেট খোলেননি।</p>
                           <Button onClick={() => router.push(`${ROUTES.helpCenter.href}?tab=new`)} className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white shadow-lg shadow-blue-500/25">
-                            <Plus className="h-4 w-4 mr-2" />Create Your First Ticket
+                            <Plus className="h-4 w-4 mr-2" />প্রথম টিকেট খুলুন
                           </Button>
                         </div>
                       ) : (
@@ -442,7 +442,7 @@ function HelpCenterPageContent() {
                             <div className="flex items-center gap-2 text-sm text-neutral-500 mb-4">
                               <span className="px-2 py-1 rounded-md bg-neutral-800 border border-white/10">{TICKET_CATEGORIES[ticket.category as keyof typeof TICKET_CATEGORIES]}</span>
                               <span>•</span>
-                              <span>{PRIORITY_LABELS[ticket.priority]} Priority</span>
+                              <span>{PRIORITY_LABELS[ticket.priority]} জরুরিতা</span>
                               <span>•</span>
                               <span>{new Date(ticket.createdAt).toLocaleDateString()}</span>
                             </div>
@@ -477,15 +477,15 @@ function HelpCenterPageContent() {
                           <Plus className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <h2 className="text-2xl font-bold text-white">Create Support Ticket</h2>
-                          <p className="text-neutral-400">Fill out the form below and we&apos;ll get back to you soon.</p>
+                          <h2 className="text-2xl font-bold text-white">সাপোর্ট টিকেট খুলুন</h2>
+                          <p className="text-neutral-400">ফর্মটি পূরণ করুন, আমরা শীঘ্রই উত্তর দেব</p>
                         </div>
                       </div>
 
                       <div className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-neutral-300">Category</label>
+                            <label className="text-sm font-medium text-neutral-300">বিষয়</label>
                             <Select value={newTicket.category} onValueChange={(value) => setNewTicket({ ...newTicket, category: value as keyof typeof TICKET_CATEGORIES })}>
                               <SelectTrigger className="border-white/10 bg-neutral-900/60"><SelectValue /></SelectTrigger>
                               <SelectContent>{Object.entries(TICKET_CATEGORIES).map(([key, label]) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectContent>
@@ -493,7 +493,7 @@ function HelpCenterPageContent() {
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-neutral-300">Priority</label>
+                            <label className="text-sm font-medium text-neutral-300">জরুরিতা</label>
                             <Select value={newTicket.priority} onValueChange={(value) => setNewTicket({ ...newTicket, priority: value as TicketPriority })}>
                               <SelectTrigger className="border-white/10 bg-neutral-900/60"><SelectValue /></SelectTrigger>
                               <SelectContent>
@@ -507,17 +507,17 @@ function HelpCenterPageContent() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-neutral-300">Subject *</label>
-                          <Input placeholder="Brief description of your issue" value={newTicket.subject} onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })} className="border-white/10 bg-neutral-900/60" />
+                          <label className="text-sm font-medium text-neutral-300">বিষয় *</label>
+                          <Input placeholder="সংক্ষেপে বলুন সমস্যা কি..." value={newTicket.subject} onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })} className="border-white/10 bg-neutral-900/60" />
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-neutral-300">Description *</label>
-                          <Textarea placeholder="Please provide as much detail as possible about your issue..." rows={6} value={newTicket.description} onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })} className="border-white/10 bg-neutral-900/60" />
+                          <label className="text-sm font-medium text-neutral-300">বিস্তারিত *</label>
+                          <Textarea placeholder="সমস্যা সম্পর্কে বিস্তারিত লিখুন..." rows={6} value={newTicket.description} onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })} className="border-white/10 bg-neutral-900/60" />
                         </div>
 
                         <Button onClick={handleSubmitTicket} disabled={submittingTicket} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25">
-                          {submittingTicket ? (<><Clock className="h-4 w-4 mr-2 animate-spin" />Submitting...</>) : (<><Send className="h-4 w-4 mr-2" />Submit Ticket</>)}
+                          {submittingTicket ? (<><Clock className="h-4 w-4 mr-2 animate-spin" />জমা হচ্ছে...</>) : (<><Send className="h-4 w-4 mr-2" />📨 টিকেট পাঠান</>)}
                         </Button>
                       </div>
                     </div>
