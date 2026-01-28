@@ -55,14 +55,14 @@ export function AuthPrompt({
     children,
 }: AuthPromptProps) {
     return (
-        <>
+        <div className="relative">
             {/* Background Content - Blurred */}
             <div className="blur-sm pointer-events-none select-none">
                 {children}
             </div>
 
             {/* Overlay */}
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-neutral-950/60 backdrop-blur-sm">
+            <div className="absolute inset-0 z-40 flex items-center justify-center p-6 bg-neutral-950/60 backdrop-blur-sm">
                 {/* Animated Background */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/10 to-violet-600/20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
@@ -125,6 +125,6 @@ export function AuthPrompt({
                     </CardContent>
                 </Card>
             </div>
-        </>
+        </div>
     )
 }

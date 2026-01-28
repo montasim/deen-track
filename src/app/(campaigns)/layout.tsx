@@ -68,7 +68,7 @@ export default function CampaignsLayout({
       <CampaignsTopbar siteName={siteName} />
 
       {/* Main Content */}
-      <main className="relative">{children}</main>
+      <main className="relative overflow-hidden">{children}</main>
 
       {/* Footer */}
       <footer className="relative py-16 border-t border-white/5 bg-neutral-900/30">
