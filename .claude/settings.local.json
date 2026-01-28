@@ -6,8 +6,6 @@
       "Bash(npx prisma:*)",
       "Bash(tail:*)",
       "Bash(npx tsc:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
       "Bash(find:*)"
     ]
   }

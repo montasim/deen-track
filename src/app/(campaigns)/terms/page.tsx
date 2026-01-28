@@ -6,6 +6,7 @@ import { LegalContentType } from '@prisma/client'
 import { getSiteName } from '@/lib/utils/site-settings'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteName = await getSiteName()
@@ -52,10 +53,7 @@ export default async function TermsPage() {
         {/* Hero Section */}
         <section className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
           {/* Animated Background */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
-            <div className="absolute w-[600px] h-[600px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 bottom-0 right-0 animate-pulse delay-1000" />
-          </div>
+          <AnimatedHeroBackground />
 
           <div className="relative container mx-auto max-w-7xl px-6 py-24">
             <div className="max-w-4xl mx-auto text-center">
