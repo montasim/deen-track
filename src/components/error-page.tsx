@@ -173,7 +173,7 @@ export function ErrorPage({ config }: ErrorPageProps) {
                 size="default"
                 onClick={secondaryButton.onClick}
               >
-                {secondaryButton.label === 'Go Back' && <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
+                {(secondaryButton.label === 'Go Back' || secondaryButton.label === 'পিছনে যান') && <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
                 {secondaryButton.label}
               </Button>
             )}
@@ -182,10 +182,10 @@ export function ErrorPage({ config }: ErrorPageProps) {
               size="default"
               onClick={primaryButton.onClick}
             >
-              {primaryButton.label === 'Back to Home' && <Home className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
-              {primaryButton.label === 'Try Again' && <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
+              {(primaryButton.label === 'Back to Home' || primaryButton.label === 'হোমে ফিরে যান') && <Home className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
+              {(primaryButton.label === 'Try Again' || primaryButton.label === 'আবার চেষ্টা করুন') && <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
               {primaryButton.label}
-              {primaryButton.label === 'Back to Home' && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />}
+              {(primaryButton.label === 'Back to Home' || primaryButton.label === 'হোমে ফিরে যান') && <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />}
             </Button>
           </div>
 
@@ -197,17 +197,17 @@ export function ErrorPage({ config }: ErrorPageProps) {
           >
             <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-4 sm:mb-6">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-400" />
-              <span className="text-xs sm:text-sm font-medium text-cyan-300">What you can do</span>
+              <span className="text-xs sm:text-sm font-medium text-cyan-300">আপনি যা করতে পারেন</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mx-auto">
               <div className="p-3 sm:p-4 rounded-xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all">
-                <p className="text-xs sm:text-sm text-neutral-400">Check the URL for typos</p>
+                <p className="text-xs sm:text-sm text-neutral-400">URL এর বানান পরীক্ষা করুন</p>
               </div>
               <div className="p-3 sm:p-4 rounded-xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all">
-                <p className="text-xs sm:text-sm text-neutral-400">Go back to the previous page</p>
+                <p className="text-xs sm:text-sm text-neutral-400">আগের পৃষ্ঠায় ফিরে যান</p>
               </div>
               <div className="p-3 sm:p-4 rounded-xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all">
-                <p className="text-xs sm:text-sm text-neutral-400">Return to the homepage</p>
+                <p className="text-xs sm:text-sm text-neutral-400">হোমপেজে ফিরে যান</p>
               </div>
             </div>
           </div>
@@ -218,7 +218,7 @@ export function ErrorPage({ config }: ErrorPageProps) {
       <footer className="relative py-8 border-t border-white/5 bg-neutral-900/30">
         <div className="container mx-auto px-6 text-center">
           <p className="text-sm text-neutral-500">
-            Need help? <Link href="/contact" className="text-cyan-400 hover:text-cyan-300 transition-colors">Contact Support</Link>
+            সাহায্য প্রয়োজন? <Link href="/contact" className="text-cyan-400 hover:text-cyan-300 transition-colors">সহায়তার সাথে যোগাযোগ করুন</Link>
           </p>
         </div>
       </footer>

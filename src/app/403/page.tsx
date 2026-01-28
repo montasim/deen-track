@@ -10,19 +10,19 @@ export default function Forbidden() {
     <ErrorPage
       config={{
         code: '403',
-        title: 'Access Denied',
+        title: 'অ্যাক্সেস অস্বীকার করা হয়েছে',
         description: (
           <>
-            You don&apos;t have permission to access this page. <br />
-            This area is restricted to authorized users only.
+            এই পৃষ্ঠায় অ্যাক্সেস করার অনুমতি নেই। <br />
+            এই এলাকাটি শুধুমাত্র অনুমোদিত ব্যবহারকারীদের জন্য সীমাবদ্ধ।
           </>
         ),
         secondaryButton: {
-          label: 'Go Back',
+          label: 'পিছনে যান',
           onClick: () => router.back(),
         },
         primaryButton: {
-          label: 'Go to Dashboard',
+          label: 'ড্যাশবোর্ডে যান',
           onClick: () => router.push('/dashboard'),
         },
       }}

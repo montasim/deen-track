@@ -10,19 +10,19 @@ export default function Unauthorized() {
     <ErrorPage
       config={{
         code: '401',
-        title: 'Authentication Required',
+        title: 'প্রমাণীকরণ প্রয়োজন',
         description: (
           <>
-            You need to sign in to access this page. <br />
-            Please log in with your account to continue.
+            এই পৃষ্ঠায় অ্যাক্সেস করতে আপনাকে সাইন ইন করতে হবে। <br />
+            চালিয়ে যেতে আপনার অ্যাকাউন্টে লগ ইন করুন।
           </>
         ),
         secondaryButton: {
-          label: 'Go Back',
+          label: 'পিছনে যান',
           onClick: () => router.back(),
         },
         primaryButton: {
-          label: 'Sign In',
+          label: 'সাইন ইন করুন',
           onClick: () => router.push('/auth/sign-in'),
         },
       }}

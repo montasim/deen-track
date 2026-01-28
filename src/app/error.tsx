@@ -15,19 +15,19 @@ export default function Error({
     <ErrorPage
       config={{
         code: '500',
-        title: 'Something Went Wrong',
+        title: 'কিছু ভুল হয়েছে',
         description: (
           <>
-            We encountered an unexpected error. <br />
-            Please try again or contact support if the problem persists.
+            আমরা একটি অপ্রত্যাশিত ত্রুটির সম্মুখীন হয়েছি। <br />
+            অনুগ্রহ করে আবার চেষ্টা করুন অথবা সমস্যা চালু থাকলে সহায়তার সাথে যোগাযোগ করুন।
           </>
         ),
         secondaryButton: {
-          label: 'Go Back',
+          label: 'পিছনে যান',
           onClick: () => router.back(),
         },
         primaryButton: {
-          label: 'Try Again',
+          label: 'আবার চেষ্টা করুন',
           onClick: reset,
         },
       }}

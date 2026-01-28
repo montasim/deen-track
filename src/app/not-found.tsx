@@ -10,19 +10,19 @@ export default function NotFound() {
     <ErrorPage
       config={{
         code: '404',
-        title: 'Oops! Page Not Found',
+        title: 'ওহ! পৃষ্ঠা পাওয়া যায়নি',
         description: (
           <>
-            The page you&apos;re looking for doesn&apos;t exist <br />
-            or might have been moved to a new location.
+            আপনি যে পৃষ্ঠাটি খুঁজছেন তা বিদ্যমান নয় <br />
+            অথবা নতুন অবস্থানে সরানো হয়েছে।
           </>
         ),
         secondaryButton: {
-          label: 'Go Back',
+          label: 'পিছনে যান',
           onClick: () => router.back(),
         },
         primaryButton: {
-          label: 'Back to Home',
+          label: 'হোমে ফিরে যান',
           onClick: () => router.push('/'),
         },
       }}
