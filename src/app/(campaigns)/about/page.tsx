@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
 import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
+import { PageBackground } from '@/components/layout/page-background'
 import {
   Trophy,
   Heart,
@@ -136,6 +137,7 @@ export default function AboutPage() {
 
   return (
     <>
+      <PageBackground />
       {/* Hero Section */}
       <PageHeader
         badgeIcon={Sparkles}
@@ -146,7 +148,7 @@ export default function AboutPage() {
             <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
               চ্যালেঞ্জ থেকে
             </span>
-            <br />
+              {" "}
             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
               সাফল্যের পথে
             </span>

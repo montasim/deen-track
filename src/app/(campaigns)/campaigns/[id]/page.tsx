@@ -33,6 +33,7 @@ import { getGamifiedCampaign, joinCampaign } from "@/app/dashboard/gamified-camp
 import { ProofSubmissionSheet } from './components/proof-submission-sheet'
 import { RewardsDisplay } from '@/components/gamified-campaigns/rewards-display'
 import { PageHeader } from '@/components/layout/page-header'
+import { PageBackground } from '@/components/layout/page-background'
 
 const difficultyConfig = {
   BEGINNER: {
@@ -228,11 +229,7 @@ export default function PublicCampaignDetailPage() {
 
   return (
     <>
-      {/* Animated Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2" />
-        <div className={`absolute w-[600px] h-[600px] bg-gradient-to-br ${config.color} opacity-10 rounded-full blur-[80px] bottom-0 right-0`} />
-      </div>
+      <PageBackground />
 
       {/* Header Section */}
       <PageHeader
@@ -241,51 +238,6 @@ export default function PublicCampaignDetailPage() {
         badgeColor="emerald"
         title={campaign.name}
         description={campaign.description}
-        actions={
-          <div className="flex flex-col sm:flex-row gap-4">
-            {user ? (
-              isJoined ? (
-                <Button
-                  asChild
-                  className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold"
-                >
-                  <Link href="/dashboard/campaigns/gamified" className="gap-2">
-                    <CheckCircle2 className="w-5 h-5" />
-                    চ্যালেঞ্জ চালিয়ে যান
-                  </Link>
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleJoinCampaign}
-                  disabled={joining}
-                  className={`bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg ${config.glow} transition-all hover:scale-105`}
-                >
-                  {joining ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-transparent rounded-full animate-spin" />
-                      যোগ হচ্ছে...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5" />
-                      চ্যালেঞ্জ শুরু করুন
-                    </>
-                  )}
-                </Button>
-              )
-            ) : (
-              <Button
-                asChild
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
-              >
-                <Link href="/auth/sign-in" className="gap-2">
-                  সাইন-ইন করে শুরু করুন
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
-            )}
-          </div>
-        }
         extraContent={
           <div className="flex flex-wrap items-center gap-3">
             <Badge className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
+import { PageBackground } from '@/components/layout/page-background'
 
 // Featured Platinum Sponsors
 const platinumSponsors = [
@@ -107,6 +108,7 @@ export default function SponsorsPage() {
 
   return (
     <>
+      <PageBackground />
       {/* Hero Section */}
       <PageHeader
         badgeIcon={Heart}

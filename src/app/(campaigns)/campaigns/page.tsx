@@ -21,6 +21,7 @@ import {
 import { CampaignCard } from '@/components/gamified-campaigns'
 import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
+import { PageBackground } from '@/components/layout/page-background'
 
 // Difficulty colors
 const difficultyConfig = {
@@ -108,6 +109,7 @@ export default function PublicCampaignsPage() {
 
   return (
     <>
+      <PageBackground />
       {/* Header */}
       <PageHeader
         badgeIcon={Trophy}
