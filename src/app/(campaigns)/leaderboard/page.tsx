@@ -26,8 +26,7 @@ import { useAuth } from '@/context/auth-context'
 import { AuthPrompt } from '@/components/auth/auth-prompt'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageBackground } from '@/components/layout/page-background'
-
-// Skeleton Components
+import { LeaderboardSkeleton } from '@/components/campaigns/leaderboard-skeleton'
 const CampaignSelectorSkeleton = () => (
     <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
         {[1, 2, 3].map((i) => (
@@ -339,7 +338,7 @@ export default function PublicLeaderboardPage() {
     }, [leaderboard])
 
     if (loading) {
-        return <LeaderboardPageSkeleton />
+        return <LeaderboardSkeleton />
     }
 
     if (campaigns.length === 0) {
