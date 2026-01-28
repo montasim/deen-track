@@ -23,6 +23,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { CampaignsTopbar } from '@/components/layout/campaigns-topbar'
 import { CallToAction } from '@/components/marketing/call-to-action'
 import { PageBackground } from '@/components/layout/page-background'
+import { useAuth } from '@/context/auth-context'
 
 type Campaign = {
   id: string
@@ -116,18 +117,13 @@ const features = [
 ]
 
 export default function LandingPage() {
+  const { user } = useAuth()
   const [mounted, setMounted] = useState(false)
   const [scrollY, setScrollY] = useState(0)
   const [siteName, setSiteName] = useState('CampaignHub')
   const [featuredCampaigns, setFeaturedCampaigns] = useState<any[]>([])
   const [campaignsLoading, setCampaignsLoading] = useState(true)
-  const [stats, setStats] = useState([
-    { value: '১০হাজার+', label: 'সক্রিয় ব্যবহারকারী' },
-    { value: '৫০০+', label: 'ক্যাম্পেইন' },
-    { value: '১মিলিয়ন+', label: 'টাস্ক সম্পন্ন হয়েছে' },
-    { value: '৫০মিলিয়ন+', label: 'পয়েন্ট অর্জিত হয়েছে' },
-  ])
-
+  const [stats, setStats] = useState([])
   // Convert English numbers to Bangla
   const toBanglaNumber = (num: number): string => {
     const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
@@ -251,14 +247,16 @@ export default function LandingPage() {
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="border-white/20 text-white hover:bg-white/5 hover:border-white/30 text-base px-8 py-6 h-auto backdrop-blur-sm"
-                >
-                  <Link href="/sign-up">ফ্রি অ্যাকাউন্ট খুলুন</Link>
-                </Button>
+                {!user && !campaignsLoading && (
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="border-white/20 text-white hover:bg-white/5 hover:border-white/30 text-base px-8 py-6 h-auto backdrop-blur-sm"
+                  >
+                    <Link href="/sign-up">ফ্রি অ্যাকাউন্ট খুলুন</Link>
+                  </Button>
+                )}
               </div>
 
               {/* Stats */}
@@ -507,9 +505,9 @@ export default function LandingPage() {
         badgeText="চলুন শুরু করি!"
         title="আজই আমল শুরু করুন"
         description="হাজার হাজার মানুষের সাথে যোগ দিন আর নেক আমলকে মজার খেলায় পরিণত করুন!"
-        primaryButtonHref="/sign-up"
-        primaryButtonText="ফ্রি অ্যাকাউন্ট খুলুন"
-        primaryButtonIcon={ArrowRight}
+        primaryButtonHref={!user ? "/sign-up" : undefined}
+        primaryButtonText={!user ? "ফ্রি অ্যাকাউন্ট খুলুন" : undefined}
+        primaryButtonIcon={!user ? ArrowRight : undefined}
         secondaryButtonHref="/campaigns"
         secondaryButtonText="চ্যালেঞ্জ দেখুন"
         extraContent={

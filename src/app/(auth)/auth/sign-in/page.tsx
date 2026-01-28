@@ -1,14 +1,25 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { UserAuthForm } from '../components/user-auth-form'
 import { ROUTES } from '@/lib/routes/client-routes'
 import { PageBackground } from '@/components/layout/page-background'
+import { useAuth } from '@/context/auth-context'
 
 function SignInContent() {
+  const { user } = useAuth()
+  const router = useRouter()
   const [authStep, setAuthStep] = useState<'email' | 'password'>('email')
   const [userEmail, setUserEmail] = useState('')
+
+  // Redirect authenticated users to campaigns page
+  useEffect(() => {
+    if (user) {
+      router.push('/campaigns')
+    }
+  }, [user, router])
 
   const handleStepChange = (step: 'email' | 'password', email?: string) => {
     setAuthStep(step)

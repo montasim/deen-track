@@ -1,15 +1,25 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { BookOpen } from 'lucide-react'
 import { ROUTES } from '@/lib/routes/client-routes'
 import SignUpForm from './components/sign-up-form'
-import { useEffect } from 'react'
 import { PageBackground } from '@/components/layout/page-background'
+import { useAuth } from '@/context/auth-context'
 
 function SignUpContent() {
+  const { user } = useAuth()
+  const router = useRouter()
   const [siteName, setSiteName] = useState('CampaignHub')
+
+  // Redirect authenticated users to campaigns page
+  useEffect(() => {
+    if (user) {
+      router.push('/campaigns')
+    }
+  }, [user, router])
 
   useEffect(() => {
     fetch('/api/public/site/settings')

@@ -27,6 +27,16 @@ import {
   Eye,
   AlertCircle,
 } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { useAuth } from '@/context/auth-context'
 import { toast } from '@/hooks/use-toast'
 import { getGamifiedCampaign, joinCampaign } from "@/app/dashboard/gamified-campaigns/actions";
@@ -81,6 +91,7 @@ export default function PublicCampaignDetailPage() {
   const [selectedTask, setSelectedTask] = useState<any>(null)
   const [proofSheetOpen, setProofSheetOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [showJoinConfirm, setShowJoinConfirm] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -378,25 +389,6 @@ export default function PublicCampaignDetailPage() {
                               </div>
 
                               <div className="flex items-center justify-between gap-4">
-                                <div className="flex items-center gap-3">
-                                  {isJoined ? (
-                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                      <Unlock className="w-3.5 h-3.5" />
-                                      শুরু করুন!
-                                    </Badge>
-                                  ) : (
-                                    <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                      <Lock className="w-3.5 h-3.5" />
-                                      যোগ দিয়ে আনলক করুন
-                                    </Badge>
-                                  )}
-                                  {user && !isJoined && (
-                                    <span className="text-xs text-neutral-500">
-                                      প্রথমে লগইন করুন
-                                    </span>
-                                  )}
-                                </div>
-
                                 {isJoined && !submission && (
                                   <Button
                                     size="sm"
@@ -515,6 +507,34 @@ export default function PublicCampaignDetailPage() {
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
+              {/* Join Campaign CTA for Authenticated Users */}
+              {user && !isJoined && (
+                  <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-500/10 via-teal-600/5 to-cyan-500/10 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-500/50 transition-all duration-500">
+                      {/* Background Pattern */}
+                      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+                      {/* Animated Glow */}
+                      <div className="absolute w-[200px] h-[200px] bg-gradient-to-br from-emerald-500/20 via-teal-600/15 to-cyan-500/20 rounded-full blur-[40px] -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" />
+
+                      <CardContent className="relative p-6 text-center">
+                          <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 mb-4">
+                              <Sparkles className="w-8 h-8 text-white" />
+                          </div>
+                          <h3 className="text-xl font-bold text-white mb-2">যোগ দিন! 🚀</h3>
+                          <p className="text-neutral-300 text-sm mb-6">
+                              এই চ্যালেঞ্জে অংশ নিন, পয়েন্ট জিনুন, পুরস্কার জেতার সুযোগ পান!
+                          </p>
+                          <Button
+                              onClick={() => setShowJoinConfirm(true)}
+                              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/25 gap-2"
+                          >
+                              <TrendingUp className="w-4 h-4" />
+                              এখনই যোগ দিন
+                          </Button>
+                      </CardContent>
+                  </Card>
+              )}
+
             {/* Campaign Summary Card - For All Users */}
             <Card className="relative overflow-hidden bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10 backdrop-blur-xl border border-cyan-500/20">
               {/* Animated Background Pattern */}
@@ -724,6 +744,32 @@ export default function PublicCampaignDetailPage() {
           onSubmit={handleProofSubmit}
         />
       )}
+
+      {/* Join Confirmation Dialog */}
+      <AlertDialog open={showJoinConfirm} onOpenChange={setShowJoinConfirm}>
+        <AlertDialogContent className="bg-neutral-900 border-white/10 text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white text-xl">
+              আপনি কি এই চ্যালেঞ্জে যোগ দিতে চান? 🚀
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-neutral-400">
+              এই চ্যালেঞ্জে যোগ দেওয়ার মাধ্যমে আপনি সব চ্যালেঞ্জ সম্পন্ন করে পয়েন্ট অর্জন করতে পারবেন এবং পুরস্কার জেতার সুযোগ পাবেন!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-neutral-800 border-white/20 text-white hover:bg-neutral-700 hover:text-white">
+              বাতিল
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleJoinCampaign}
+              disabled={joining}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/25"
+            >
+              {joining ? 'যোগ দিচ্ছে...' : 'হ্যাঁ, যোগ দিন'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

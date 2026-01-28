@@ -29,11 +29,11 @@ export interface CallToActionProps {
   /**
    * Primary button href
    */
-  primaryButtonHref: string
+  primaryButtonHref?: string
   /**
    * Primary button text
    */
-  primaryButtonText: string
+  primaryButtonText?: string
   /**
    * Optional icon for primary button
    */
@@ -148,16 +148,18 @@ export function CallToAction({
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-              <Button
-                asChild
-                size="default"
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
-              >
-                <Link href={primaryButtonHref} className="gap-2">
-                  {primaryButtonText}
-                  {PrimaryButtonIcon && <PrimaryButtonIcon className="w-4 h-4" />}
-                </Link>
-              </Button>
+              {primaryButtonHref && primaryButtonText && (
+                <Button
+                  asChild
+                  size="default"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
+                >
+                  <Link href={primaryButtonHref} className="gap-2">
+                    {primaryButtonText}
+                    {PrimaryButtonIcon && <PrimaryButtonIcon className="w-4 h-4" />}
+                  </Link>
+                </Button>
+              )}
 
               {secondaryButtonHref && secondaryButtonText && (
                 <Button

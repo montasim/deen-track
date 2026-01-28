@@ -23,6 +23,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
 import { PageBackground } from '@/components/layout/page-background'
 import { CampaignCardGridSkeleton } from '@/components/campaigns/campaign-card-skeleton'
+import { useAuth } from '@/context/auth-context'
 
 // Difficulty colors
 const difficultyConfig = {
@@ -53,6 +54,7 @@ const difficultyConfig = {
 }
 
 export default function PublicCampaignsPage() {
+  const { user } = useAuth()
   const [campaigns, setCampaigns] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -302,8 +304,9 @@ export default function PublicCampaignsPage() {
         )}
       </div>
 
-      {/* CTA Section */}
-      <CallToAction
+      {/* CTA Section - Only show for non-logged-in users */}
+      {!user && (
+        <CallToAction
         icon={Zap}
         title="এখনই শুরু করুন, পুরস্কার জিনুন!"
         description="হাজার খেলোয়াড়ের সাথে জয়োগ দিন, মজার চ্যালেঞ্জ করুন, পয়েন্ট জিনুন - সবই ফ্রি!"
@@ -313,6 +316,7 @@ export default function PublicCampaignsPage() {
         secondaryButtonHref="/leaderboard"
         secondaryButtonText="লিডারবোর্ড দেখুন"
       />
+      )}
     </>
   )
 }
