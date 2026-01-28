@@ -18,7 +18,7 @@ import {
 import { useToast } from '@/hooks/use-toast'
 import { Mail, MessageSquare, Send, Loader2, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
+import { PageHeader } from '@/components/layout/page-header'
 
 const contactFormSchema = z.object({
   name: z.string().min(1, 'নাম লিখুন').max(100, 'নাম অনেক বড় হয়ে গেছে'),
@@ -93,29 +93,19 @@ export default function ContactPage() {
 
       <div className="relative">
         {/* Hero Section */}
-        <section className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
-          {/* Animated Background */}
-          <AnimatedHeroBackground />
-
-          <div className="relative container mx-auto max-w-7xl px-6 py-16">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <Mail className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300">যোগাযোগ করুন</span>
-              </div>
-
-              <h1 className={`text-5xl font-bold tracking-tight mb-8 transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                <span className="text-white">আমাদের সাথে</span>
-                <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">কথা বলুন!</span>
-              </h1>
-
-              <p className={`text-lg text-neutral-400 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                কোনো প্রশ্ন আছে? মতামত দিতে চান? নাকি সাধারণ হ্যালো বলতে চান? আমরা শুনতে পছন্দ করবো! নিচের ফর্মটি পূরণ করুন আর আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHeader
+          badgeIcon={Mail}
+          badgeText="যোগাযোগ করুন"
+          badgeColor="cyan"
+          title={
+            <>
+              <span className="text-white">আমাদের সাথে</span>
+              <br />
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">কথা বলুন!</span>
+            </>
+          }
+          description="কোনো প্রশ্ন আছে? মতামত দিতে চান? নাকি সাধারণ হ্যালো বলতে চান? আমরা শুনতে পছন্দ করবো! নিচের ফর্মটি পূরণ করুন আর আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।"
+        />
 
       {/* Contact Section - NO white overlay, let gradient show through */}
       <section className="relative pb-12">

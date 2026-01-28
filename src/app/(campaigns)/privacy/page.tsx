@@ -6,7 +6,7 @@ import { LegalContentType } from '@prisma/client'
 import { getSiteName } from '@/lib/utils/site-settings'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
+import { PageHeader } from '@/components/layout/page-header'
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteName = await getSiteName()
@@ -51,41 +51,33 @@ export default async function PrivacyPage() {
 
       <div className="relative">
         {/* Hero Section */}
-        <section className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden py-24 lg:py-32">
-          {/* Animated Background */}
-          <AnimatedHeroBackground />
-
-          <div className="relative container mx-auto max-w-7xl px-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-8">
-                <Shield className="w-4 h-4 text-emerald-400" />
-                <span className="text-sm font-medium text-emerald-300">গোপনীয়তা</span>
+        <PageHeader
+          badgeIcon={Shield}
+          badgeText="গোপনীয়তা"
+          badgeColor="emerald"
+          title={
+            <>
+              <span className="text-white">আপনার</span>{' '}
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">গোপনীয়তা</span>
+            </>
+          }
+          description={`আপনার গোপনীয়তা আমাদের কাছে খুবই গুরুত্বপূর্ণ। এই নীতিতে বলা হয়েছে ${siteName} ব্যবহার করার সময় আমরা কিভাবে আপনার তথ্য সংগ্রহ করি, ব্যবহার করি এবং সুরক্ষিত রাখি তা জানুন।`}
+          padding="py-24"
+          extraContent={
+            legalContent?.effectiveDate ? (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span className="text-sm font-medium text-emerald-300">
+                  কার্যকর: {new Date(legalContent.effectiveDate).toLocaleDateString('bn-BD', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </span>
               </div>
-
-              <h1 className="flex items-center justify-center gap-1 text-5xl font-bold tracking-tight mb-8">
-                <span className="text-white">আপনার</span>
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">গোপনীয়তা</span>
-              </h1>
-
-              <p className="text-lg text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                আপনার গোপনীয়তা আমাদের কাছে খুবই গুরুত্বপূর্ণ। এই নীতিতে বলা হয়েছে {siteName} ব্যবহার করার সময় আমরা কিভাবে আপনার তথ্য সংগ্রহ করি, ব্যবহার করি এবং সুরক্ষিত রাখি তা জানুন।
-              </p>
-
-              {legalContent?.effectiveDate && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-                  <Sparkles className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-medium text-emerald-300">
-                    কার্যকর: {new Date(legalContent.effectiveDate).toLocaleDateString('bn-BD', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-      </section>
+            ) : null
+          }
+        />
 
       {/* Content Section */}
       <section className="relative pb-12">

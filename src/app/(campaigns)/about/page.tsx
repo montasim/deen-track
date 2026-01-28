@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
+import { PageHeader } from '@/components/layout/page-header'
 import {
   Trophy,
   Heart,
@@ -135,66 +136,45 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
-        {/* Animated Background */}
-        <AnimatedHeroBackground />
-
-        <div className="relative container mx-auto max-w-7xl px-6 py-24">
-          <div className="text-center max-w-4xl mx-auto">
-            <Badge
-              className={`mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md ${isVisible ? 'animate-fade-in' : 'opacity-0'
-                }`}
+      <PageHeader
+        badgeIcon={Sparkles}
+        badgeText="আমাদের কথা"
+        badgeColor="cyan"
+        title={
+          <>
+            <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+              চ্যালেঞ্জ থেকে
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+              সাফল্যের পথে
+            </span>
+          </>
+        }
+        description="আমাদের লক্ষ্য - আপনার ব্যক্তিগত উন্নয়নকে আনন্দদায়ক আর পুরস্কারপূর্ণ করা! গেমের মতা চ্যালেঞ্জ আর বন্ধুত্বপূর্ণ প্রতিযোগিতার মাধ্যমে আমরা লক্ষ লক্ষ মানুষকে তাদের স্বপ্ন পূরণে সাহায্য করছি।"
+        actions={
+          <>
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
             >
-              <Sparkles className="w-3.5 h-3.5 mr-2 text-cyan-400" />
-              আমাদের কথা
-            </Badge>
-
-            <h1
-              className={`text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-8 transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                }`}
+              <Link href="/campaigns" className="gap-2">
+                🎯 চ্যালেঞ্জ দেখুন
+                <ArrowUpRight className="w-5 h-5" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/5"
             >
-              <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
-                চ্যালেঞ্জ থেকে
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                সাফল্যের পথে
-              </span>
-            </h1>
-
-            <p
-              className={`text-xl text-neutral-400 leading-relaxed mb-8 transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                }`}
-            >
-              আমাদের লক্ষ্য - আপনার ব্যক্তিগত উন্নয়নকে আনন্দদায়ক আর পুরস্কারপূর্ণ করা! গেমের মতা চ্যালেঞ্জ আর বন্ধুত্বপূর্ণ প্রতিযোগিতার মাধ্যমে আমরা লক্ষ লক্ষ মানুষকে তাদের স্বপ্ন পূরণে সাহায্য করছি।
-            </p>
-
-            <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                }`}
-            >
-              <Button
-                asChild
-                size="lg"
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
-              >
-                <Link href="/campaigns" className="gap-2">
-                  🎯 চ্যালেঞ্জ দেখুন
-                  <ArrowUpRight className="w-5 h-5" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white/20 text-white hover:bg-white/5"
-              >
-                <Link href="/sign-up">👋 কমিউনিটিতে যোগ দিন</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+              <Link href="/sign-up">👋 কমিউনিটিতে যোগ দিন</Link>
+            </Button>
+          </>
+        }
+      />
 
       {/* Stats Section */}
       <div className="container mx-auto max-w-7xl px-6 py-20">

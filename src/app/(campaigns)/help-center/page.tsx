@@ -29,7 +29,7 @@ import {
 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { ROUTES } from '@/lib/routes/client-routes'
-import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
+import { PageHeader } from '@/components/layout/page-header'
 
 interface FAQ {
   id: string
@@ -284,29 +284,19 @@ function HelpCenterPageContent() {
 
       <div className="relative">
         {/* Hero Section */}
-        <section className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
-          {/* Animated Background */}
-          <AnimatedHeroBackground />
-
-          <div className="relative container mx-auto max-w-7xl px-6 py-24">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                <LifeBuoy className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300">সাহায্য কেন্দ্র</span>
-              </div>
-
-              <h1 className={`text-5xl font-bold tracking-tight mb-8 transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                <span className="text-white">আমরা কিভাবে</span>
-                <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">সাহায্য করতে পারি?</span>
-              </h1>
-
-              <p className={`text-lg text-neutral-400 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                {user ? 'উত্তর খুঁজুন বা আমাদের টিম থেকে ব্যক্তিগত সাহায্য নিন!' : 'FAQ দেখুন বা লগইন করে ব্যক্তিগত সাহায্য নিন!'}
-              </p>
-            </div>
-          </div>
-      </section>
+        <PageHeader
+          badgeIcon={LifeBuoy}
+          badgeText="সাহায্য কেন্দ্র"
+          badgeColor="cyan"
+          title={
+            <>
+              <span className="text-white">আমরা কিভাবে</span>
+              <br />
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">সাহায্য করতে পারি?</span>
+            </>
+          }
+          description={user ? 'উত্তর খুঁজুন বা আমাদের টিম থেকে ব্যক্তিগত সাহায্য নিন!' : 'FAQ দেখুন বা লগইন করে ব্যক্তিগত সাহায্য নিন!'}
+        />
 
       {/* Content Section - NO white overlay */}
       <section className="relative pb-24">

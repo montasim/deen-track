@@ -6,7 +6,7 @@ import { LegalContentType } from '@prisma/client'
 import { getSiteName } from '@/lib/utils/site-settings'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
+import { PageHeader } from '@/components/layout/page-header'
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteName = await getSiteName()
@@ -51,42 +51,33 @@ export default async function TermsPage() {
 
       <div className="relative">
         {/* Hero Section */}
-        <section className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
-          {/* Animated Background */}
-          <AnimatedHeroBackground />
-
-          <div className="relative container mx-auto max-w-7xl px-6 py-24">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
-                <FileText className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300">আইনি</span>
+        <PageHeader
+          badgeIcon={FileText}
+          badgeText="আইনি"
+          badgeColor="cyan"
+          title={
+            <>
+              <span className="text-white">ব্যবহারের</span>
+              <br />
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
+            </>
+          }
+          description={`আমাদের প্ল্যাটফর্ম ব্যবহার করার আগে এই শর্তগুলো ভালো করে পড়ুন। ${siteName} ব্যবহার করার মাধ্যমে আপনি এই শর্তগুলো মেনে নিচ্ছেন বলে ধরে নেওয়া হবে।`}
+          extraContent={
+            legalContent?.effectiveDate ? (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span className="text-sm font-medium text-emerald-300">
+                  কার্যকর: {new Date(legalContent.effectiveDate).toLocaleDateString('bn-BD', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </span>
               </div>
-
-              <h1 className="flex items-center justify-center gap-1 text-5xl font-bold tracking-tight mb-8">
-                <span className="text-white">ব্যবহারের</span>
-                <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
-              </h1>
-
-              <p className="text-lg text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                আমাদের প্ল্যাটফর্ম ব্যবহার করার আগে এই শর্তগুলো ভালো করে পড়ুন। {siteName} ব্যবহার করার মাধ্যমে আপনি এই শর্তগুলো মেনে নিচ্ছেন বলে ধরে নেওয়া হবে।
-              </p>
-
-              {legalContent?.effectiveDate && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-                  <Sparkles className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-medium text-emerald-300">
-                    কার্যকর: {new Date(legalContent.effectiveDate).toLocaleDateString('bn-BD', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-      </section>
+            ) : null
+          }
+        />
 
       {/* Content Section - NO white overlay */}
       <section className="relative pb-12">
