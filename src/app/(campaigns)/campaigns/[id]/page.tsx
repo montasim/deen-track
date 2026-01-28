@@ -22,10 +22,13 @@ import {
   TrendingUp,
   ArrowRight,
   Gamepad2,
+  Send,
 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { toast } from '@/hooks/use-toast'
 import { getGamifiedCampaign, joinCampaign } from "@/app/dashboard/gamified-campaigns/actions";
+import { ProofSubmissionSheet } from './components/proof-submission-sheet'
+import { RewardsDisplay } from '@/components/gamified-campaigns/rewards-display'
 
 const difficultyConfig = {
   BEGINNER: {
@@ -70,6 +73,9 @@ export default function PublicCampaignDetailPage() {
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [selectedTask, setSelectedTask] = useState<any>(null)
+  const [proofSheetOpen, setProofSheetOpen] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -129,6 +135,31 @@ export default function PublicCampaignDetailPage() {
     } finally {
       setJoining(false)
     }
+  }
+
+  const handleProofSubmit = async (data: any) => {
+    setSubmitting(true)
+    try {
+      // This is a placeholder - you'll need to implement the actual API call
+      // For now, we'll simulate a successful submission
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      // Refresh campaign data after submission
+      const campaignData = await getGamifiedCampaign(id as string)
+      setCampaign(campaignData)
+
+      return { success: true }
+    } catch (error: any) {
+      console.error('Error submitting proof:', error)
+      return { success: false, message: error.message || 'Failed to submit proof' }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const openProofSheet = (task: any) => {
+    setSelectedTask(task.task)
+    setProofSheetOpen(true)
   }
 
   if (loading) {
@@ -399,22 +430,35 @@ export default function PublicCampaignDetailPage() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-4">
-                                {isJoined ? (
-                                  <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                    <Unlock className="w-3.5 h-3.5" />
-                                    আনলকড
-                                  </Badge>
-                                ) : (
-                                  <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
-                                    <Lock className="w-3.5 h-3.5" />
-                                    আনলক করতে যোগ দিন
-                                  </Badge>
-                                )}
-                                {user && !isJoined && (
-                                  <span className="text-xs text-neutral-500">
-                                    অংশ নিতে লগইন করুন
-                                  </span>
+                              <div className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                  {isJoined ? (
+                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                      <Unlock className="w-3.5 h-3.5" />
+                                      আনলকড
+                                    </Badge>
+                                  ) : (
+                                    <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                      <Lock className="w-3.5 h-3.5" />
+                                      আনলক করতে যোগ দিন
+                                    </Badge>
+                                  )}
+                                  {user && !isJoined && (
+                                    <span className="text-xs text-neutral-500">
+                                      অংশ নিতে লগইন করুন
+                                    </span>
+                                  )}
+                                </div>
+
+                                {isJoined && (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => openProofSheet(ct)}
+                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 gap-2"
+                                  >
+                                    <Send className="w-3.5 h-3.5" />
+                                    প্রমাণ জমা দিন
+                                  </Button>
                                 )}
                               </div>
                             </div>
@@ -521,6 +565,15 @@ export default function PublicCampaignDetailPage() {
               </CardContent>
             </Card>
 
+            {/* Rewards & Prizes Section */}
+            {campaign.rewardsTemplate && campaign.rewardsTemplate.length > 0 && (
+              <RewardsDisplay
+                rewards={campaign.rewardsTemplate}
+                showAll={true}
+                className="animate-in fade-in slide-in-from-right-4 duration-700"
+              />
+            )}
+
             {/* Quick Info */}
             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
               <CardContent className="p-6">
@@ -585,6 +638,17 @@ export default function PublicCampaignDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Proof Submission Sheet */}
+      {selectedTask && (
+        <ProofSubmissionSheet
+          open={proofSheetOpen}
+          onOpenChange={setProofSheetOpen}
+          task={selectedTask}
+          campaignId={id as string}
+          onSubmit={handleProofSubmit}
+        />
+      )}
     </>
   )
 }

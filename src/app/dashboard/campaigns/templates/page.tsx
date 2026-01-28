@@ -71,6 +71,7 @@ export default function CampaignTemplatesPage() {
     startDate: Date
     endDate: Date
     maxParticipants?: number
+    rewards?: any
   }) => {
     return await createCampaignFromTemplate(selectedTemplate.id, data)
   }

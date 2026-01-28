@@ -808,6 +808,7 @@ export async function createCampaignFromTemplate(
     startDate: Date
     endDate: Date
     maxParticipants?: number
+    rewards?: any
   }
 ) {
   const session = await requireAuth()

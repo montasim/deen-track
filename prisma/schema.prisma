@@ -1370,6 +1370,7 @@ model GamifiedCampaign {
   maxParticipants         Int?
   rules                   String?             @db.Text
   disqualificationRules   String?             @db.Text
+  rewards                 Json?               @default("[]")
 
   // Metadata
   createdAt               DateTime            @default(now())
@@ -1557,6 +1558,7 @@ model CampaignTemplate {
   endDate                 DateTime?
   minPointsToQualify      Int?                  @default(0)
   sponsorId               String?
+  rewardsTemplate         Json?                 @default("[]")
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @updatedAt
   entryById               String

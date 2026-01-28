@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import {
   Sheet,
@@ -33,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Plus, Trash2, Calendar as CalendarIcon, Trophy } from 'lucide-react'
+import { Plus, Trash2, Calendar as CalendarIcon, Trophy, Gift, Sparkles } from 'lucide-react'
 import { createCampaignTemplate, updateCampaignTemplate } from '../../../gamified-campaigns/actions'
 import { Loader2 } from 'lucide-react'
 import { createTemplateSchema } from '@/lib/gamified-campaign/validation'

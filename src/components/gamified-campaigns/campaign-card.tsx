@@ -7,16 +7,19 @@ import { Badge } from '@/components/ui/badge'
 import { Calendar, Users, Trophy, Lock, Edit2, Clock } from 'lucide-react'
 import { GamifiedCampaign } from '@prisma/client'
 import { useAuth } from '@/context/auth-context'
+import { RewardsDisplay } from './rewards-display'
 
 interface CampaignCardProps {
   campaign: GamifiedCampaign & {
     tasks: any[]
     _count?: { participations: number }
+    rewards?: any[]
   }
   userProgress?: any
   onJoin?: () => void
   onEdit?: () => void
   showJoinButton?: boolean
+  showRewards?: boolean
 }
 
 export function CampaignCard({ campaign, userProgress, onJoin, onEdit }: CampaignCardProps) {
@@ -116,6 +119,18 @@ export function CampaignCard({ campaign, userProgress, onJoin, onEdit }: Campaig
             <span>{campaign._count?.participations || 0} Participants</span>
           </div>
         </div>
+
+        {/* Rewards Display - Compact Badges */}
+        {campaign.rewards && campaign.rewards.length > 0 && showRewards !== false && (
+          <div className="pt-2 border-t">
+            <RewardsDisplay
+              rewards={campaign.rewards}
+              variant="badges"
+              compact
+              className="flex-wrap"
+            />
+          </div>
+        )}
 
         {userProgress && (
           <div className="pt-2 border-t">

@@ -48,6 +48,7 @@ export async function createCampaignTemplate(data: {
       endDate: data.endDate,
       minPointsToQualify: data.minPointsToQualify ?? 0,
       sponsorId: data.sponsorId,
+      rewardsTemplate: [],
       entryById: data.entryById,
       templateTasks: {
         create: data.tasks,
@@ -235,6 +236,7 @@ export async function createCampaignFromTemplate(
     startDate: Date
     endDate: Date
     maxParticipants?: number
+    rewards?: any
     entryById: string
   }
 ) {
@@ -259,7 +261,7 @@ export async function createCampaignFromTemplate(
     )
   )
 
-  // Then create the campaign with the tasks
+  // Then create the campaign with the tasks and rewards
   return await prisma.gamifiedCampaign.create({
     data: {
       name: campaignData.name,
@@ -270,6 +272,7 @@ export async function createCampaignFromTemplate(
       endDate: campaignData.endDate,
       maxParticipants: campaignData.maxParticipants,
       isActive: true,
+      rewards: campaignData.rewards || template.rewardsTemplate || [],
       entryById: campaignData.entryById,
       tasks: {
         create: createdTasks.map((task, index) => ({
