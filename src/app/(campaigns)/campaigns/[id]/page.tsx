@@ -627,15 +627,74 @@ export default function PublicCampaignDetailPage() {
                 </div>
 
                 {user && isJoined && (
-                  <Button
-                    asChild
-                    className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
-                  >
-                    <Link href={`/dashboard/campaigns/my-progress`} className="gap-2">
-                      আমার অগ্রগতি দেখুন
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </Button>
+                  <div className="mt-6 space-y-4">
+                    {/* Detailed Progress Section */}
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 border border-emerald-500/30">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-emerald-400" />
+                          <span className="text-sm font-semibold text-emerald-300">আপনার অগ্রগতি</span>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs text-emerald-400">{progressPercentage}% সম্পন্ন হয়েছে</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Task Progress List */}
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                        <Target className="w-4 h-4 text-cyan-400" />
+                        টাস্কের অগ্রগতি
+                      </h4>
+                      {campaign.tasks?.map((ct: any, taskIndex: number) => {
+                        const submission = userProgress?.submissions?.find((s: any) => s.taskId === ct.taskId)
+                        const isSubmitted = !!submission
+
+                        return (
+                          <div
+                            key={ct.id}
+                            className="p-3 rounded-lg border border-white/10 bg-neutral-900/60 hover:border-white/20 transition-all"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white text-xs">
+                                {taskIndex + 1}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-2 mb-1">
+                                  <h5 className="text-sm font-medium text-white">{ct.task.name}</h5>
+                                  {isSubmitted ? (
+                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1">
+                                      <CheckCircle2 className="w-3 h-3" />
+                                      জমা আছে
+                                    </Badge>
+                                  ) : (
+                                    <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1">
+                                      <Clock className="w-3 h-3" />
+                                      অসম্পন্ন হয়নি
+                                    </Badge>
+                                  )}
+                                </div>
+                                {isSubmitted && (
+                                  <div className="text-xs text-neutral-400">
+                                    {submission.status === 'APPROVED' && (
+                                      <span className="text-emerald-400">অনুমোত</span>
+                                    )}
+                                    {submission.status === 'PENDING' && (
+                                      <span className="text-amber-400">পর্যালোধীন হচ্ছে</span>
+                                    )}
+                                    {submission.status === 'REJECTED' && (
+                                      <span className="text-red-400">বাতিল</span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
                 )}
               </CardContent>
             </Card>
