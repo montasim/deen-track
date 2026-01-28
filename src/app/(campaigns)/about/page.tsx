@@ -9,6 +9,7 @@ import { AnimatedHeroBackground } from '@/components/layout/animated-hero-backgr
 import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
 import { PageBackground } from '@/components/layout/page-background'
+import { AboutPageSkeleton } from '@/components/campaigns/about-skeleton'
 import {
   Trophy,
   Heart,
@@ -130,10 +131,21 @@ const team = [
 
 export default function AboutPage() {
   const [isVisible, setIsVisible] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setIsVisible(true)
+    // Simulate loading for demo - in real app, this would be data fetching
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 1200)
+
+    return () => clearTimeout(timer)
   }, [])
+
+  if (loading) {
+    return <AboutPageSkeleton />
+  }
 
   return (
     <>

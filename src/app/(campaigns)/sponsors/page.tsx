@@ -21,6 +21,7 @@ import {
 import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
 import { PageBackground } from '@/components/layout/page-background'
+import { SponsorsSkeleton } from '@/components/campaigns/sponsors-skeleton'
 
 // Featured Platinum Sponsors
 const platinumSponsors = [
@@ -101,10 +102,21 @@ const benefits = [
 
 export default function SponsorsPage() {
   const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setMounted(true)
+    // Simulate loading for demo - in real app, this would be data fetching
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 1500)
+
+    return () => clearTimeout(timer)
   }, [])
+
+  if (!mounted || loading) {
+    return <SponsorsSkeleton />
+  }
 
   return (
     <>
