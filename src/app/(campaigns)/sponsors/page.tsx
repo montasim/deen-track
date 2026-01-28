@@ -19,6 +19,7 @@ import {
   Crown,
 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
+import { CallToAction } from '@/components/marketing/call-to-action'
 
 // Featured Platinum Sponsors
 const platinumSponsors = [
@@ -125,7 +126,7 @@ export default function SponsorsPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <Diamond className="w-6 h-6 text-cyan-400" />
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">প্লাটিনাম পার্টনার</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">প্লাটিনাম পার্টনার</h2>
           </div>
           <p className="text-neutral-400">আমাদের সর্বোচ্চ পর্যায়ের অংশীদারিত্ব</p>
         </div>
@@ -185,7 +186,7 @@ export default function SponsorsPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 mb-4">
               <Award className="w-6 h-6 text-violet-400" />
-              <h2 className="text-3xl sm:text-4xl font-bold text-white">প্রিমিয়াম পার্টনার</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white">প্রিমিয়াম পার্টনার</h2>
             </div>
             <p className="text-neutral-400">কমিউনিটির বিশ্বস্ত সহযোগী</p>
           </div>
@@ -241,7 +242,7 @@ export default function SponsorsPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <Building2 className="w-6 h-6 text-blue-400" />
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">কমিউনিটি পার্টনার</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">কমিউনিটি পার্টনার</h2>
           </div>
           <p className="text-neutral-400">শুরু থেকেই আমাদের লক্ষ্য অর্জনে সহায়ক</p>
         </div>
@@ -282,68 +283,29 @@ export default function SponsorsPage() {
       </div>
 
       {/* Become a Sponsor CTA */}
-      <div className="border-t border-white/5 bg-neutral-900/20">
-        <div className="container mx-auto max-w-5xl px-6 py-24">
-          <Card className="relative overflow-hidden bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-
-            {/* Animated Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
-
-            <CardContent className="relative p-12 lg:p-16">
-              <div className="text-center">
-                <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-6">
-                  <Sparkles className="w-12 h-12 text-white" />
-                </div>
-
-                <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                  স্পন্সর করতে আগ্রহী?
-                </h2>
-
-                <p className="text-base text-neutral-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                  আমাদের সাথে যুক্ত হয়ে হাজার হাজার সক্রিয় ব্যবহারকারীর কাছে পৌঁছান। আমরা আপনাদের লক্ষ্যের সাথে মিল রেখে নমনীয় স্পন্সরশিপ প্যাকেজ অফার করি।
-                </p>
-
-                {/* Benefits Grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto">
-                  {benefits.map((benefit, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 text-left bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                      <span className="text-sm font-medium text-white">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Button
-                    asChild
-                    size="default"
-                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
-                  >
-                    <Link href="mailto:sponsors@deen-track.com" className="gap-2">
-                      <Mail className="w-4 h-4" />
-                      যোগাযোগ করুন
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="default"
-                    variant="outline"
-                    className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
-                  >
-                    <Link href="/about">আরও জানুন</Link>
-                  </Button>
-                </div>
+      <CallToAction
+        icon={Sparkles}
+        title="স্পন্সর করতে আগ্রহী?"
+        description="আমাদের সাথে যুক্ত হয়ে হাজার হাজার সক্রিয় ব্যবহারকারীর কাছে পৌঁছান। আমরা আপনাদের লক্ষ্যের সাথে মিল রেখে নমনীয় স্পন্সরশিপ প্যাকেজ অফার করি।"
+        primaryButtonHref="mailto:sponsors@deen-track.com"
+        primaryButtonText="যোগাযোগ করুন"
+        primaryButtonIcon={Mail}
+        secondaryButtonHref="/about"
+        secondaryButtonText="আরও জানুন"
+        extraContent={
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            {benefits.map((benefit, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 text-left bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10"
+              >
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <span className="text-sm font-medium text-white">{benefit}</span>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            ))}
+          </div>
+        }
+      />
     </>
   )
 }

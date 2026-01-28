@@ -21,6 +21,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { CampaignsTopbar } from '@/components/layout/campaigns-topbar'
+import { CallToAction } from '@/components/marketing/call-to-action'
 
 type Campaign = {
   id: string
@@ -531,66 +532,34 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-32 border-t border-white/5">
-        <div className="container mx-auto max-w-4xl px-6">
-          <div className="relative p-12 lg:p-16 rounded-3xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden">
-            {/* Background Pattern - like contact page */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-
-            {/* Animated Glow - similar to contact page */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
-
-            <div className="relative text-center">
-              <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
-                <Sparkles className="w-3 h-3 mr-2" />
-                চলুন শুরু করি!
-              </Badge>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
-                আজই আমল শুরু করুন
-              </h2>
-              <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">
-                হাজার হাজার মানুষের সাথে যোগ দিন আর নেক আমলকে মজার খেলায় পরিণত করুন!
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-                <Button
-                  asChild
-                  size="default"
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
-                >
-                  <Link href="/sign-up" className="gap-2">
-                    ফ্রি অ্যাকাউন্ট খুলুন
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="default"
-                  variant="outline"
-                  className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
-                >
-                  <Link href="/campaigns">চ্যালেঞ্জ দেখুন</Link>
-                </Button>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-neutral-400">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  <span>জয়েন করা একদম ফ্রি</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  <span>কোনো ক্রেডিট কার্ড লাগবে না</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  <span>জান্নাতের পথে এগিয়ে যান</span>
-                </div>
-              </div>
+      <CallToAction
+        badgeText="চলুন শুরু করি!"
+        title="আজই আমল শুরু করুন"
+        description="হাজার হাজার মানুষের সাথে যোগ দিন আর নেক আমলকে মজার খেলায় পরিণত করুন!"
+        primaryButtonHref="/sign-up"
+        primaryButtonText="ফ্রি অ্যাকাউন্ট খুলুন"
+        primaryButtonIcon={ArrowRight}
+        secondaryButtonHref="/campaigns"
+        secondaryButtonText="চ্যালেঞ্জ দেখুন"
+        extraContent={
+          <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-neutral-400">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span>জয়েন করা একদম ফ্রি</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span>কোনো ক্রেডিট কার্ড লাগবে না</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <span>জান্নাতের পথে এগিয়ে যান</span>
             </div>
           </div>
-        </div>
-      </section>
+        }
+        background="transparent"
+        className="py-32"
+      />
 
       {/* Footer */}
       <footer className="relative py-16 border-t border-white/5 bg-neutral-900/30">

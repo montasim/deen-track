@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { CampaignCard } from '@/components/gamified-campaigns'
 import { PageHeader } from '@/components/layout/page-header'
+import { CallToAction } from '@/components/marketing/call-to-action'
 
 // Difficulty colors
 const difficultyConfig = {
@@ -303,49 +304,16 @@ export default function PublicCampaignsPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="border-t border-white/5 bg-neutral-900/20">
-        <div className="container mx-auto max-w-4xl px-6 py-20">
-          <Card className="relative overflow-hidden bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-
-            {/* Animated Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
-
-            <CardContent className="relative p-12 lg:p-16 text-center">
-              <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-6">
-                <Zap className="w-12 h-12 text-white" />
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                এখনই শুরু করুন, পুরস্কার জিনুন!
-              </h2>
-              <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                হাজার খেলোয়াড়ের সাথে জয়োগ দিন, মজার চ্যালেঞ্জ করুন, পয়েন্ট জিনুন - সবই ফ্রি!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  asChild
-                  size="default"
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
-                >
-                  <Link href="/sign-up" className="gap-2">
-                    ফ্রিয়ে জয়োগ দিন
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="default"
-                  variant="outline"
-                  className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
-                >
-                  <Link href="/leaderboard">লিডারবোর্ড দেখুন</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <CallToAction
+        icon={Zap}
+        title="এখনই শুরু করুন, পুরস্কার জিনুন!"
+        description="হাজার খেলোয়াড়ের সাথে জয়োগ দিন, মজার চ্যালেঞ্জ করুন, পয়েন্ট জিনুন - সবই ফ্রি!"
+        primaryButtonHref="/sign-up"
+        primaryButtonText="ফ্রিয়ে জয়োগ দিন"
+        primaryButtonIcon={ArrowRight}
+        secondaryButtonHref="/leaderboard"
+        secondaryButtonText="লিডারবোর্ড দেখুন"
+      />
     </>
   )
 }

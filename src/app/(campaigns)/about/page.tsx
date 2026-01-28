@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AnimatedHeroBackground } from '@/components/layout/animated-hero-background'
 import { PageHeader } from '@/components/layout/page-header'
+import { CallToAction } from '@/components/marketing/call-to-action'
 import {
   Trophy,
   Heart,
@@ -383,49 +384,16 @@ export default function AboutPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="border-t border-white/5 bg-neutral-900/30">
-        <div className="container mx-auto max-w-4xl px-6 py-24">
-          <Card className="relative overflow-hidden bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-
-            {/* Animated Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10" />
-
-            <CardContent className="relative p-12 lg:p-16 text-center">
-              <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-6">
-                <Flame className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
-                আপনার যাত্রা শুরু করতে প্রস্তুত?
-              </h2>
-              <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">
-                আমাদের হাজার হাজার ব্যবহারকারীর সাথে যোগ দিন যারা ইতোমধ্যে নিজেদের চ্যালেঞ্জ করছেন এবং পুরস্কার পাচ্ছেন।
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button
-                  asChild
-                  size="default"
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
-                >
-                  <Link href="/sign-up" className="gap-2">
-                    ফ্রি অ্যাকাউন্ট তৈরি করুন
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="default"
-                  variant="outline"
-                  className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
-                >
-                  <Link href="/campaigns">ক্যাম্পেইনগুলো দেখুন</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <CallToAction
+        icon={Flame}
+        title="আপনার যাত্রা শুরু করতে প্রস্তুত?"
+        description="আমাদের হাজার হাজার ব্যবহারকারীর সাথে যোগ দিন যারা ইতোমধ্যে নিজেদের চ্যালেঞ্জ করছেন এবং পুরস্কার পাচ্ছেন।"
+        primaryButtonHref="/sign-up"
+        primaryButtonText="ফ্রি অ্যাকাউন্ট তৈরি করুন"
+        primaryButtonIcon={ArrowUpRight}
+        secondaryButtonHref="/campaigns"
+        secondaryButtonText="ক্যাম্পেইনগুলো দেখুন"
+      />
     </>
   )
 }
