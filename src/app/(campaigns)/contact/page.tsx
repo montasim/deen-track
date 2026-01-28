@@ -92,8 +92,14 @@ export default function ContactPage() {
 
       <div className="relative">
         {/* Hero Section */}
-        <section className="relative pt-20">
-          <div className="container mx-auto max-w-7xl px-6 py-16">
+        <section className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
+          {/* Animated Background */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
+            <div className="absolute w-[600px] h-[600px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 bottom-0 right-0 animate-pulse delay-1000" />
+          </div>
+
+          <div className="relative container mx-auto max-w-7xl px-6 py-24">
             <div className="max-w-4xl mx-auto text-center">
               <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                 <Mail className="w-4 h-4 text-cyan-400" />
@@ -113,8 +119,8 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Contact Section - NO white overlay, let gradient show through */}
-        <section className="relative pb-12">
+      {/* Contact Section - NO white overlay, let gradient show through */}
+      <section className="relative pb-12">
           <div className="container mx-auto max-w-7xl px-6">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-3 gap-8">
