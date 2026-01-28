@@ -563,11 +563,6 @@ export default function LandingPage() {
                     লিডারবোর্ড
                   </Link>
                 </li>
-                <li>
-                  <Link href="/teams" className="text-sm text-neutral-400 hover:text-white transition-colors">
-                    দলসমূহ
-                  </Link>
-                </li>
               </ul>
             </div>
 
