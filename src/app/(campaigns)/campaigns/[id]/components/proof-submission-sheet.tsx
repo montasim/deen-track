@@ -76,8 +76,8 @@ interface Props {
 const proofTypeConfig = {
   IMAGE: {
     icon: FileImage,
-    label: 'ছবি আপলোড',
-    description: 'স্ক্রিনশট বা ছবি আপলোড করুন',
+    label: 'ছবি দিন',
+    description: 'স্ক্রিনশট বা ছবি',
     color: 'from-pink-500 to-rose-600',
     bg: 'bg-pink-500/10',
     text: 'text-pink-300',
@@ -86,8 +86,8 @@ const proofTypeConfig = {
   },
   AUDIO: {
     icon: Mic,
-    label: 'অডিও আপলোড',
-    description: 'অডিও রেকর্ডিং আপলোড করুন',
+    label: 'অডিও দিন',
+    description: 'রেকর্ডিং আপলোড',
     color: 'from-violet-500 to-purple-600',
     bg: 'bg-violet-500/10',
     text: 'text-violet-300',
@@ -96,8 +96,8 @@ const proofTypeConfig = {
   },
   URL: {
     icon: Link2,
-    label: 'URL লিংক',
-    description: 'ভিডিও বা পোস্টের লিংক দিন',
+    label: 'লিংক দিন',
+    description: 'ভিডিও বা পোস্টের লিংক',
     color: 'from-cyan-500 to-blue-600',
     bg: 'bg-cyan-500/10',
     text: 'text-cyan-300',
@@ -106,8 +106,8 @@ const proofTypeConfig = {
   },
   TEXT: {
     icon: FileText,
-    label: 'বর্ণনা লিখুন',
-    description: 'কিভাবে সম্পন্ন করেছেন বর্ণনা করুন',
+    label: 'লিখে জানান',
+    description: 'কিভাবে করলেন লিখুন',
     color: 'from-emerald-500 to-teal-600',
     bg: 'bg-emerald-500/10',
     text: 'text-emerald-300',
@@ -168,8 +168,8 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
 
       if (result.success) {
         toast({
-          title: 'সফলভাবে জমা দেওয়া হয়েছে!',
-          description: 'আপনার টাস্ক রিভিউয়ের জন্য জমা দেওয়া হয়েছে।',
+          title: 'জমা হয়ে গেছে! 🎉',
+          description: 'এখন রিভিউ হবে, অপেক্ষা করুন!',
         })
         form.reset()
         setFile(null)
@@ -177,15 +177,15 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
       } else {
         toast({
           variant: 'destructive',
-          title: 'জমা দেওয়া ব্যর্থ হয়েছে',
-          description: result.message || 'টাস্ক জমা দিতে ব্যর্থ হয়েছে',
+          title: 'জমা দেওয়া যায়নি',
+          description: result.message || 'আবার চেষ্টা করুন',
         })
       }
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'জমা দেওয়া ব্যর্থ হয়েছে',
-        description: error.message || 'টাস্ক জমা দিতে ব্যর্থ হয়েছে',
+        title: 'জমা দেওয়া যায়নি',
+        description: error.message || 'আবার চেষ্টা করুন',
       })
     } finally {
       setLoading(false)
@@ -252,10 +252,10 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
               </div>
               <div className="flex-1">
                 <SheetTitle className="text-xl font-bold text-white mb-1">
-                  টাস্ক প্রমাণ জমা দিন
+                  চ্যালেঞ্জ জমা দিন
                 </SheetTitle>
                 <SheetDescription className="text-neutral-400 text-sm">
-                  টাস্ক: <span className="text-white font-medium">{task.name}</span>
+                  কাজ: <span className="text-white font-medium">{task.name}</span>
                 </SheetDescription>
               </div>
             </div>
@@ -268,7 +268,7 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
               {/* Proof Type Selection */}
               <div>
                 <label className="text-sm font-semibold text-white mb-3 block">
-                  আপনি কিভাবে প্রমাণ জমা দিতে চান?
+                  কিভাবে জমা দেবেন?
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {(Object.keys(proofTypeConfig) as Array<keyof typeof proofTypeConfig>).map((type) => {
@@ -321,7 +321,7 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-white flex items-center gap-2">
                     <Upload className="w-4 h-4" />
-                    ফাইল আপলোড করুন *
+                    ফাইল আপলোড *
                   </label>
                   <div className="relative">
                     <input
@@ -361,10 +361,10 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                         ) : (
                           <div>
                             <p className="text-sm text-white font-semibold mb-1">
-                              ক্লিক করুন বা ড্র্যাগ করুন
+                              ক্লিক করুন
                             </p>
                             <p className="text-xs text-neutral-500">
-                              {proofType === 'IMAGE' ? 'JPG, PNG, GIF সর্বোচ্চ 10MB' : 'MP3, WAV, M4A সর্বোচ্চ 20MB'}
+                              {proofType === 'IMAGE' ? 'JPG, PNG, GIF (সর্বোচ্চ 10MB)' : 'MP3, WAV, M4A (সর্বোচ্চ 20MB)'}
                             </p>
                           </div>
                         )}
@@ -395,7 +395,7 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                     <FormItem>
                       <FormLabel className="text-white font-semibold flex items-center gap-2">
                         <Link2 className="w-4 h-4" />
-                        URL লিংক *
+                        লিংক *
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -405,7 +405,7 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                         />
                       </FormControl>
                       <FormDescription className="text-neutral-500">
-                        আপনার প্রমাণের লিংক দিন (YouTube, ব্লগ পোস্ট, সোশ্যাল মিডিয়া ইত্যাদি)
+                        আপনার ভিডিও/পোস্টের লিংক দিন
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -426,14 +426,14 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="বিস্তারিতভাবে বর্ণনা করুন কিভাবে আপনি এই টাস্কটি সম্পন্ন করেছেন..."
+                          placeholder="লিখুন কিভাবে চ্যালেঞ্জটি সম্পন্ন করলেন..."
                           rows={6}
                           className="resize-none bg-neutral-900/60 border-white/20 text-white placeholder:text-neutral-500 focus:border-cyan-500/50"
                           {...field}
                         />
                       </FormControl>
                       <FormDescription className="text-neutral-500">
-                        বিস্তারিত বর্ণনা প্রদান করুন (ন্যূনতম ১০ অক্ষর)
+                        অন্তত ১০ অক্ষর লিখুন
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -447,17 +447,17 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-white font-semibold">অতিরিক্ত নোট</FormLabel>
+                    <FormLabel className="text-white font-semibold">আরো কিছু বলতে চান?</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="আপনি আর কিছু যোগ করতে চান..."
+                        placeholder="অতিরিক্ত কিছু থাকলে লিখুন..."
                         rows={3}
                         className="resize-none bg-neutral-900/60 border-white/20 text-white placeholder:text-neutral-500 focus:border-cyan-500/50"
                         {...field}
                       />
                     </FormControl>
                     <FormDescription className="text-neutral-500">
-                      ঐচ্ছিক: অতিরিক্ত তথ্য বা মন্তব্য যোগ করুন (সর্বোচ্চ ৫০০ অক্ষর)
+                      ঐচ্ছিক (সর্বোচ্চ ৫০০ অক্ষর)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -473,7 +473,7 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                   className="flex-1 border-white/20 text-white hover:bg-white/5"
                   disabled={loading}
                 >
-                  বাতিল
+                  বন্ধ করুন
                 </Button>
                 <Button
                   type="submit"
@@ -483,12 +483,12 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                   {loading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      জমা দিচ্ছে...
+                      জমা হচ্ছে...
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 mr-2" />
-                      জমা দিন
+                      জমা দিন ✅
                     </>
                   )}
                 </Button>

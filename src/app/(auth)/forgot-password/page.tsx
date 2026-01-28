@@ -32,21 +32,21 @@ function ForgotPasswordContent() {
         <Card className='m-4 p-4'>
           <div className='flex flex-col space-y-2 text-left mb-4'>
             <h1 className='text-xl font-semibold tracking-tight'>
-              Forgot your password?
+              পাসওয়ার্ড ভুলে গেছেন? 🤔
             </h1>
             <p className='text-sm text-muted-foreground'>
-              No worries! We'll send you reset instructions <br />
-              Enter your email and we'll send you a link
+              কোনো সমস্যা নেই! রিসেট লিংক পাঠাবো <br />
+              ইমেইল দিলেই হবে 😊
             </p>
           </div>
           <ForgotForm />
           <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
-            Remember your password?{' '}
+            পাসওয়ার্ড মনে আছে?{' '}
             <Link
               href={ROUTES.signIn.href}
               className='underline underline-offset-4 hover:text-primary'
             >
-              Sign in
+              লগইন করুন
             </Link>
           </p>
         </Card>

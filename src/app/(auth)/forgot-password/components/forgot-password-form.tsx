@@ -29,17 +29,17 @@ type ForgotFormProps = HTMLAttributes<HTMLDivElement>
 const emailSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
+    .min(1, { message: 'ইমেইল দিন' })
+    .email({ message: 'সঠিক ইমেইল ঠিকানা দিন' }),
 })
 
 // Step 2: OTP input
 const otpSchema = z.object({
   otp: z
     .string()
-    .min(6, { message: 'OTP must be 6 digits' })
-    .max(6, { message: 'OTP must be 6 digits' })
-    .regex(/^\d+$/, { message: 'OTP must contain only numbers' }),
+    .min(6, { message: 'OTP ৬ ডিজিটের হতে হবে' })
+    .max(6, { message: 'OTP ৬ ডিজিটের হতে হবে' })
+    .regex(/^\d+$/, { message: 'শুধুমাত্র সংখ্যা দিন' }),
 })
 
 // Step 3: New password
@@ -47,18 +47,18 @@ const passwordSchema = z
   .object({
     password: z
       .string()
-      .min(8, { message: 'Password must be at least 8 characters' })
-      .regex(/[A-Z]/, { message: 'Password must contain an uppercase letter' })
-      .regex(/[a-z]/, { message: 'Password must contain a lowercase letter' })
-      .regex(/[0-9]/, { message: 'Password must contain a number' })
+      .min(8, { message: 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে' })
+      .regex(/[A-Z]/, { message: 'বড় হাতের অক্ষর থাকতে হবে' })
+      .regex(/[a-z]/, { message: 'ছোট হাতের অক্ষর থাকতে হবে' })
+      .regex(/[0-9]/, { message: 'সংখ্যা থাকতে হবে' })
       .regex(
         /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
-        { message: 'Password must contain a special character' }
+        { message: 'বিশেষ অক্ষর থাকতে হবে' }
       ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
+    message: "পাসওয়ার্ড মিলছে না",
     path: ['confirmPassword'],
   })
 
@@ -117,8 +117,8 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: result.error || 'Failed to send reset code',
+          title: 'সমস্যা হয়েছে',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
@@ -127,15 +127,15 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       setStep('otp')
 
       toast({
-        title: 'Reset Code Sent',
-        description: result.message || 'Check your email for the reset code',
+        title: 'কোড পাঠানো হয়েছে 📧',
+        description: result.message || 'ইমেইল চেক করুন',
       })
     } catch (error) {
       console.error('Send reset OTP error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -158,22 +158,22 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: result.error || 'Failed to resend reset code',
+          title: 'সমস্যা হয়েছে',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
 
       toast({
-        title: 'Reset Code Resent',
-        description: result.message || 'Check your email for the new reset code',
+        title: 'আবার কোড পাঠানো হয়েছে 📧',
+        description: result.message || 'ইমেইল চেক করুন',
       })
     } catch (error) {
       console.error('Resend OTP error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsResending(false)
@@ -195,11 +195,11 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       const result = await response.json()
 
       if (!response.ok) {
-        setOtpError(result.error || 'Invalid OTP')
+        setOtpError(result.error || 'ভুল কোড')
         toast({
           variant: 'destructive',
-          title: 'Invalid Code',
-          description: result.error || 'Please check your code and try again',
+          title: 'ভুল কোড ❌',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
@@ -207,16 +207,16 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       setStep('password')
 
       toast({
-        title: 'Verified',
-        description: 'Please enter your new password',
+        title: 'সঠিক! ✅',
+        description: 'নতুন পাসওয়ার্ড দিন',
       })
     } catch (error) {
       console.error('Verify OTP error:', error)
-      setOtpError('An error occurred. Please try again.')
+      setOtpError('সমস্যা হয়েছে, আবার চেষ্টা করুন')
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsVerifyingOtp(false)
@@ -242,15 +242,15 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: result.error || 'Failed to reset password',
+          title: 'সমস্যা হয়েছে',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
 
       toast({
-        title: 'Success',
-        description: 'Password reset successfully. Please login with your new password.',
+        title: 'সফল! 🎉',
+        description: 'পাসওয়ার্ড রিসেট হয়েছে, নতুন পাসওয়ার্ড দিয়ে লগইন করুন',
       })
 
       router.push('/auth/sign-in')
@@ -258,8 +258,8 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       console.error('Reset password error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -278,9 +278,9 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='space-y-1'>
-                    <FormLabel className="text-neutral-300">Email</FormLabel>
+                    <FormLabel className="text-neutral-300">ইমেইল</FormLabel>
                     <FormControl>
-                      <Input placeholder='name@example.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
+                      <Input placeholder='your@email.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -294,22 +294,22 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
                     setTurnstileToken(null)
                     toast({
                       variant: 'destructive',
-                      title: 'CAPTCHA failed',
-                      description: 'Please complete the CAPTCHA verification',
+                      title: 'CAPTCHA ব্যর্থ হয়েছে',
+                      description: 'আবার চেষ্টা করুন',
                     })
                   }}
                   onExpire={() => {
                     setTurnstileToken(null)
                     toast({
                       variant: 'destructive',
-                      title: 'CAPTCHA expired',
-                      description: 'Please complete the CAPTCHA verification again',
+                      title: 'CAPTCHA মেয়াদ শেষ',
+                      description: 'আবার চেষ্টা করুন',
                     })
                   }}
                 />
               </div>
               <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading || !turnstileToken}>
-                {isLoading ? 'Sending...' : 'Send Reset Code'}
+                {isLoading ? 'পাঠানো হচ্ছে...' : 'রিসেট কোড পাঠান'}
               </Button>
             </div>
           </form>
@@ -324,7 +324,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       <div className={cn('grid gap-4', className)} {...props}>
         <div>
           <p className='text-sm text-neutral-400'>
-            We sent a 6-digit code to <span className="text-cyan-400 font-semibold">{email}</span>
+            আমরা একটি ৬ ডিজিটের কোড পাঠিয়েছি <span className="text-cyan-400 font-semibold">{email}</span> ঠিকানায় 📧
           </p>
         </div>
 
@@ -352,7 +352,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
             {isVerifyingOtp && (
               <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
                 <Loader2 className='h-4 w-4 animate-spin' />
-                Verifying code...
+                যাচাই হচ্ছে...
               </div>
             )}
           </CardContent>
@@ -364,7 +364,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
           onClick={() => setStep('email')}
           className='w-full text-neutral-400 hover:text-white hover:bg-white/5'
         >
-          Back to Email
+          ইমেইলে ফিরে যান
         </Button>
       </div>
     )
@@ -381,7 +381,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               name='password'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel className="text-neutral-300">New Password</FormLabel>
+                  <FormLabel className="text-neutral-300">নতুন পাসওয়ার্ড</FormLabel>
                   <FormControl>
                     <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
@@ -394,7 +394,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               name='confirmPassword'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel className="text-neutral-300">Confirm Password</FormLabel>
+                  <FormLabel className="text-neutral-300">পাসওয়ার্ড আবার দিন</FormLabel>
                   <FormControl>
                     <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
@@ -403,7 +403,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               )}
             />
             <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
-              {isLoading ? 'Resetting...' : 'Reset Password'}
+              {isLoading ? 'রিসেট হচ্ছে...' : 'পাসওয়ার্ড রিসেট করুন'}
             </Button>
           </div>
         </form>

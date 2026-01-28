@@ -31,30 +31,30 @@ function SignUpContent() {
         <Card className='m-4 p-4'>
           <div className='flex flex-col space-y-2 text-left mb-4'>
             <h1 className='text-xl font-semibold tracking-tight'>
-              Create your account
+              নতুন অ্যাকাউন্ট খুলুন 🎉
             </h1>
             <p className='text-sm text-muted-foreground'>
-              Enter your details to get started <br />
-              Join our community and start your journey
+              শুরু করতে তথ্য দিন <br />
+              আমাদের সাথে যুক্ত হোন, যাত্রা শুরু করুন! 🚀
             </p>
           </div>
           <SignUpForm />
           <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
-            By creating an account, you agree to our{' '}
+            অ্যাকাউন্ট খুললে আপনি আমাদের{' '}
             <a
               href={ROUTES.terms.href}
               className='underline underline-offset-4 hover:text-primary'
             >
-              Terms of Service
+              শর্তাবলী
             </a>{' '}
-            and{' '}
+            এবং{' '}
             <a
               href={ROUTES.privacy.href}
               className='underline underline-offset-4 hover:text-primary'
             >
-              Privacy Policy
+              গোপনীয়তা নীতি
             </a>
-            .
+            মেনে চলতে সম্মত হচ্ছেন।
           </p>
         </Card>
       </div>

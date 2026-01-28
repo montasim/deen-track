@@ -34,17 +34,17 @@ type SignUpFormProps = HTMLAttributes<HTMLDivElement>
 const emailSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
+    .min(1, { message: 'ইমেইল দিন' })
+    .email({ message: 'সঠিক ইমেইল ঠিকানা দিন' }),
 })
 
 // Step 2: OTP input
 const otpSchema = z.object({
   otp: z
     .string()
-    .min(6, { message: 'OTP must be 6 digits' })
-    .max(6, { message: 'OTP must be 6 digits' })
-    .regex(/^\d+$/, { message: 'OTP must contain only numbers' }),
+    .min(6, { message: 'OTP ৬ ডিজিটের হতে হবে' })
+    .max(6, { message: 'OTP ৬ ডিজিটের হতে হবে' })
+    .regex(/^\d+$/, { message: 'শুধুমাত্র সংখ্যা দিন' }),
 })
 
 // Step 3: Account details
@@ -52,22 +52,22 @@ const detailsSchema = z
   .object({
     name: z
       .string()
-      .min(1, { message: 'Please enter your name' })
-      .max(100, { message: 'Name must be less than 100 characters' }),
+      .min(1, { message: 'নাম দিন' })
+      .max(100, { message: 'নাম খুব বড় হয়ে গেছে' }),
     password: z
       .string()
-      .min(8, { message: 'Password must be at least 8 characters' })
-      .regex(/[A-Z]/, { message: 'Password must contain an uppercase letter' })
-      .regex(/[a-z]/, { message: 'Password must contain a lowercase letter' })
-      .regex(/[0-9]/, { message: 'Password must contain a number' })
+      .min(8, { message: 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে' })
+      .regex(/[A-Z]/, { message: 'বড় হাতের অক্ষর থাকতে হবে' })
+      .regex(/[a-z]/, { message: 'ছোট হাতের অক্ষর থাকতে হবে' })
+      .regex(/[0-9]/, { message: 'সংখ্যা থাকতে হবে' })
       .regex(
         /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
-        { message: 'Password must contain a special character' }
+        { message: 'বিশেষ অক্ষর থাকতে হবে' }
       ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
+    message: "পাসওয়ার্ড মিলছে না",
     path: ['confirmPassword'],
   })
 
@@ -131,14 +131,14 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           setShowResend(true)
           toast({
             variant: 'destructive',
-            title: 'Invitation Expired',
-            description: 'This invitation link has already been used or expired.',
+            title: 'আমন্ত্রণ মেয়াদ শেষ',
+            description: 'এই আমন্ত্রণ লিংকটি আর কাজ করে না',
           })
         } else if (result.error?.toLowerCase().includes('already exists')) {
           // Redirect to sign-in page if email already exists
           toast({
-            title: 'Account Already Exists',
-            description: 'An account with this email already exists. Redirecting you to sign in...',
+            title: 'অ্যাকাউন্ট আছে! 🤔',
+            description: 'এই ইমেইলে অ্যাকাউন্ট আছে, লগইনে নিচ্ছেন...',
           })
           setTimeout(() => {
             router.push(ROUTES.signIn.href)
@@ -146,8 +146,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         } else {
           toast({
             variant: 'destructive',
-            title: 'Error',
-            description: result.error || 'Failed to send OTP',
+            title: 'সমস্যা হয়েছে',
+            description: result.error || 'আবার চেষ্টা করুন',
           })
         }
         return
@@ -164,22 +164,22 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         })
         setStep('details')
         toast({
-          title: 'Verified',
-          description: 'Invitation accepted. Please complete your account details.',
+          title: 'ঠিক আছে! ✅',
+          description: 'এখন আপনার তথ্য দিন',
         })
       } else {
         setStep('otp')
         toast({
-          title: 'OTP Sent',
-          description: 'Check your email for the verification code',
+          title: 'OTP পাঠানো হয়েছে 📧',
+          description: 'ইমেইল চেক করুন',
         })
       }
     } catch (error) {
       console.error('Send OTP error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -211,11 +211,11 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       const result = await response.json()
 
       if (!response.ok) {
-        setOtpError(result.error || 'Invalid OTP')
+        setOtpError(result.error || 'OTP ভুল হয়েছে')
         toast({
           variant: 'destructive',
-          title: 'Invalid OTP',
-          description: result.error || 'Please check your code and try again',
+          title: 'ভুল OTP ❌',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
@@ -228,16 +228,16 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       setStep('details')
 
       toast({
-        title: 'Verified',
-        description: 'Please complete your account details',
+        title: 'সঠিক! ✅',
+        description: 'এখন আপনার তথ্য পূরণ করুন',
       })
     } catch (error) {
       console.error('Verify OTP error:', error)
-      setOtpError('An error occurred. Please try again.')
+      setOtpError('সমস্যা হয়েছে, আবার চেষ্টা করুন')
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsVerifyingOtp(false)
@@ -261,23 +261,23 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: result.error || 'Failed to send OTP',
+          title: 'সমস্যা হয়েছে',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
 
       setOtpExpiresAt(result.expiresAt)
       toast({
-        title: 'OTP Sent',
-        description: 'Check your email for the verification code',
+        title: 'OTP পাঠানো হয়েছে 📧',
+        description: 'ইমেইল চেক করুন',
       })
     } catch (error) {
       console.error('Send OTP error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsSendingOtp(false)
@@ -305,15 +305,15 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Registration failed',
-          description: result.error || 'Failed to create account',
+          title: 'অ্যাকাউন্ট বানানো যায়নি',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
 
       toast({
-        title: 'Success',
-        description: 'Account created successfully',
+        title: 'সফল! 🎉',
+        description: 'অ্যাকাউন্ট তৈরি হয়ে গেছে',
       })
 
       router.push(ROUTES.settings.href)
@@ -322,8 +322,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       console.error('Create account error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -338,19 +338,19 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         <div className={cn('grid gap-4', className)} {...props}>
           <div className='mb-2 flex flex-col space-y-2 text-left'>
             <h1 className='text-lg font-semibold tracking-tight'>
-              Invitation Sent
+              আমন্ত্রণ পাঠানো হয়েছে! 📧
             </h1>
             <p className='text-sm text-green-600'>
-              ✅ A new invitation link has been sent to your email address.
+              ✅ নতুন আমন্ত্রণ লিংক পাঠানো হয়েছে।
             </p>
             <p className='text-sm text-muted-foreground'>
-              Please check your email inbox (and spam folder) for further instructions to complete your registration.
-              The invitation link will be valid for 24 hours.
+              ইমেইল ইনবক্স (এবং স্প্যাম ফোল্ডার) চেক করুন।
+              লিংকটি ২৪ ঘণ্টার জন্য বৈধ থাকবে।
             </p>
           </div>
           <div className=''>
             <p className='text-xs text-muted-foreground mb-4'>
-              Didn&apos;t receive the email? Check your spam folder or try again later.
+              ইমেইল পাননি? স্প্যাম ফোল্ডার চেক করুন।
             </p>
             <Button
               variant="outline"
@@ -360,7 +360,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 setResendSuccessful(false)
               }}
             >
-              Back to Sign Up
+              সাইন-আপে ফিরে যান
             </Button>
           </div>
         </div>
@@ -372,11 +372,11 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       <div className={cn('grid gap-4', className)} {...props}>
         <div className='mb-2 flex flex-col space-y-2 text-left'>
           <h1 className='text-lg font-semibold tracking-tight'>
-            Create an account
+            অ্যাকাউন্ট বানান
           </h1>
-          <p className='text-sm text-destructive'>This invitation link has already been used or is expired.</p>
+          <p className='text-sm text-destructive'>এই আমন্ত্রণ লিংকটি আর কাজ করে না।</p>
           <p className='text-sm text-muted-foreground'>
-            Would you like to request a new invitation link?
+            নতুন আমন্ত্রণ চান?
           </p>
         </div>
         <Button
@@ -393,25 +393,25 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               if (res.ok) {
                 setResendSuccessful(true)
                 toast({
-                  title: 'Invitation Sent Successfully',
-                  description: 'Please check your email inbox (and spam folder) for further instructions to complete your registration.',
+                  title: 'আমন্ত্রণ পাঠানো হয়েছে! 📧',
+                  description: 'ইমেইল চেক করুন',
                 })
               } else {
                 toast({
                   variant: 'destructive',
-                  title: 'Error',
+                  title: 'সমস্যা হয়েছে',
                   description: data.error,
                 })
               }
             } catch (e) {
-              toast({ variant: 'destructive', title: 'Error', description: 'Failed to resend' })
+              toast({ variant: 'destructive', title: 'সমস্যা হয়েছে', description: 'আবার চেষ্টা করুন' })
             } finally {
               setIsLoading(false)
             }
           }}
           disabled={isLoading}
         >
-          {isLoading ? 'Sending...' : 'Resend Invitation'}
+          {isLoading ? 'পাঠানো হচ্ছে...' : 'আবার পাঠান'}
         </Button>
       </div>
     )
@@ -430,9 +430,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='space-y-1'>
-                    <FormLabel className="text-neutral-300">Email</FormLabel>
+                    <FormLabel className="text-neutral-300">ইমেইল</FormLabel>
                     <FormControl>
-                      <Input placeholder='name@example.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
+                      <Input placeholder='your@email.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -446,22 +446,22 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                     setTurnstileToken(null)
                     toast({
                       variant: 'destructive',
-                      title: 'CAPTCHA failed',
-                      description: 'Please complete the CAPTCHA verification',
+                      title: 'CAPTCHA ব্যর্থ হয়েছে',
+                      description: 'আবার চেষ্টা করুন',
                     })
                   }}
                   onExpire={() => {
                     setTurnstileToken(null)
                     toast({
                       variant: 'destructive',
-                      title: 'CAPTCHA expired',
-                      description: 'Please complete the CAPTCHA verification again',
+                      title: 'CAPTCHA মেয়াদ শেষ',
+                      description: 'আবার চেষ্টা করুন',
                     })
                   }}
                 />
               </div>
               <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading || !turnstileToken}>
-                {isLoading ? 'Sending...' : 'Continue'}
+                {isLoading ? 'পাঠানো হচ্ছে...' : 'এগিয়ে যান'}
               </Button>
             </div>
           </form>
@@ -477,7 +477,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         <Header />
         <div className='mb-4'>
           <p className='text-sm text-neutral-400'>
-            We sent a 6-digit code to <span className="text-cyan-400 font-semibold">{email}</span>
+            আমরা একটি ৬ ডিজিটের কোড পাঠিয়েছি <span className="text-cyan-400 font-semibold">{email}</span> ঠিকানায় 📧
           </p>
         </div>
 
@@ -505,7 +505,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             {isVerifyingOtp && (
               <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
                 <Loader2 className='h-4 w-4 animate-spin' />
-                Verifying code...
+                যাচাই হচ্ছে...
               </div>
             )}
           </CardContent>
@@ -517,7 +517,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           onClick={() => setStep('email')}
           className='w-full text-neutral-400 hover:text-white hover:bg-white/5'
         >
-          Back to Email
+          ইমেইলে ফিরে যান
         </Button>
       </div>
     )
@@ -535,10 +535,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name='name'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel className="text-neutral-300">Name</FormLabel>
+                  <FormLabel className="text-neutral-300">নাম</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='John Doe'
+                      placeholder='আপনার নাম'
                       autoComplete='name'
                       className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20"
                       {...field}
@@ -553,7 +553,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name='password'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel className="text-neutral-300">Password</FormLabel>
+                  <FormLabel className="text-neutral-300">পাসওয়ার্ড</FormLabel>
                   <FormControl>
                     <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
@@ -566,7 +566,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name='confirmPassword'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel className="text-neutral-300">Confirm Password</FormLabel>
+                  <FormLabel className="text-neutral-300">পাসওয়ার্ড আবার দিন</FormLabel>
                   <FormControl>
                     <PasswordInput placeholder='********' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
@@ -575,7 +575,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               )}
             />
             <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {isLoading ? 'তৈরি হচ্ছে...' : 'অ্যাকাউন্ট তৈরি করুন'}
             </Button>
           </div>
         </form>

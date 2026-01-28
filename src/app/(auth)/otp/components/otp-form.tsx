@@ -22,7 +22,7 @@ import { PinInput, PinInputField } from '@/components/pin-input'
 type OtpFormProps = HTMLAttributes<HTMLDivElement>
 
 const formSchema = z.object({
-  otp: z.string().min(1, { message: 'Please enter your otp code.' }),
+  otp: z.string().min(1, { message: 'OTP কোড দিন' }),
 })
 
 export function OtpForm({ className, ...props }: OtpFormProps) {
@@ -38,7 +38,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
     toast({
-      title: 'You submitted the following values:',
+      title: 'কোড জমা দেওয়া হয়েছে! ✅',
       description: (
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
@@ -90,7 +90,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
               )}
             />
             <Button className='mt-2' disabled={disabledBtn || isLoading}>
-              Verify
+              যাচাই করুন
             </Button>
           </div>
         </form>

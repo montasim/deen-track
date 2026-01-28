@@ -12,21 +12,20 @@ export default function Otp() {
       <Card className='m-4 p-4'>
         <div className='mb-2 flex flex-col space-y-2 text-left'>
           <h1 className='text-md font-semibold tracking-tight'>
-            Two-factor Authentication
+            দুই-ধাপের প্রমাণীকরণ 🔐
           </h1>
           <p className='text-sm text-muted-foreground'>
-            Please enter the authentication code. We have sent the
-            authentication code to your email.
+            প্রমাণীকরণ কোডটি দিন। আমরা আপনার ইমেইলে কোড পাঠিয়েছি 📧
           </p>
         </div>
         <OtpForm />
         <p className='mt-4 text-center text-sm text-muted-foreground'>
-          Haven&apos;t received it?{' '}
+          কোড পাননি?{' '}
           <Link
             href={ROUTES.login.href}
             className='underline underline-offset-4 hover:text-primary'
           >
-            Resend a new code.
+            নতুন কোড চান
           </Link>
         </p>
       </Card>

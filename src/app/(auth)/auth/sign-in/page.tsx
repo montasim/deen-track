@@ -18,39 +18,39 @@ function SignInContent() {
         <Card className='m-4 p-4'>
             <div className='flex flex-col space-y-2 text-left mb-4'>
                 <h1 className='text-xl font-semibold tracking-tight'>
-                    {authStep === 'email' ? 'Sign in or create an account' : 'Welcome back'}
+                    {authStep === 'email' ? 'স্বাগতম! 👋' : 'আবার দেখা হলো!'}
                 </h1>
                 <p className='text-sm text-muted-foreground'>
                     {authStep === 'email' ? (
                         <>
-                            Enter your email to continue <br />
-                            We&apos;ll check if you have an account or help you create one
+                            ইমেইল দিন শুরু করতে <br />
+                            আপনার অ্যাকাউন্ট আছে কিনা আমরা দেখে নেবো 😊
                         </>
                     ) : (
                         <>
-                            Enter your password to continue <br />
-                            Welcome back, <strong>{userEmail}</strong>
+                            পাসওয়ার্ড দিন এগিয়ে যেতে <br />
+                            স্বাগতম, <strong>{userEmail}</strong> 🎉
                         </>
                     )}
                 </p>
             </div>
             <UserAuthForm onStepChange={handleStepChange} />
             <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
-                By clicking login, you agree to our{' '}
+                লগইন করলে আপনি আমাদের{' '}
                 <a
                     href={ROUTES.terms.href}
                     className='underline underline-offset-4 hover:text-primary'
                 >
-                    Terms of Service
+                    শর্তাবলী
                 </a>{' '}
-                and{' '}
+                এবং{' '}
                 <a
                     href={ROUTES.privacy.href}
                     className='underline underline-offset-4 hover:text-primary'
                 >
-                    Privacy Policy
+                    গোপনীয়তা নীতি
                 </a>
-                .
+                মেনে চলতে সম্মত হচ্ছেন।
             </p>
         </Card>
     )

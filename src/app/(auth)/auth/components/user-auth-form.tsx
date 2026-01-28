@@ -31,8 +31,8 @@ type UserAuthFormProps = HTMLAttributes<HTMLDivElement> & {
 const emailSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
+    .min(1, { message: 'ইমেইল দিন' })
+    .email({ message: 'সঠিক ইমেইল ঠিকানা দিন' }),
 })
 
 // Step 2: Password validation schema
@@ -40,7 +40,7 @@ const passwordSchema = z.object({
   password: z
     .string()
     .min(1, {
-      message: 'Please enter your password',
+      message: 'পাসওয়ার্ড দিন',
     }),
 })
 
@@ -82,8 +82,8 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: result.error || 'Failed to check email',
+          title: 'সমস্যা হয়েছে',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
@@ -94,14 +94,14 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
         setStep('password')
         onStepChange?.('password', data.email)
         toast({
-          title: 'Account found',
-          description: 'Please enter your password to sign in',
+          title: 'অ্যাকাউন্ট পাওয়া গেছে! ✅',
+          description: 'পাসওয়ার্ড দিন লগইন করতে',
         })
       } else {
         // Email doesn't exist - redirect to sign-up with pre-filled email
         toast({
-          title: 'New account',
-          description: 'No account found. Redirecting to create your account...',
+          title: 'নতুন অ্যাকাউন্ট! 🎉',
+          description: 'অ্যাকাউন্ট নেই, নতুন বানাতে নিচ্ছেন...',
         })
         // Redirect to sign-up with email as query parameter
         router.push(`/sign-up?email=${encodeURIComponent(data.email)}`)
@@ -110,8 +110,8 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
       console.error('Check email error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -140,16 +140,16 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'Login failed',
-          description: result.error || 'Invalid password',
+          title: 'লগইন হয়নি',
+          description: result.error || 'পাসওয়ার্ড ভুল হয়েছে',
         })
         return
       }
 
       // Success - show success message and redirect based on role
       toast({
-        title: 'Success',
-        description: 'Logged in successfully',
+        title: 'স্বাগতম! 🎉',
+        description: 'লগইন সফল হয়েছে',
       })
 
       // Refresh user context to get the latest user data
@@ -168,8 +168,8 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
       console.error('Login error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -203,8 +203,8 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
       if (!response.ok) {
         toast({
           variant: 'destructive',
-          title: 'OAuth Error',
-          description: result.error || 'Failed to initiate OAuth flow',
+          title: 'OAuth সমস্যা',
+          description: result.error || 'আবার চেষ্টা করুন',
         })
         return
       }
@@ -215,8 +215,8 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
       console.error('OAuth error:', error)
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'An error occurred. Please try again.',
+        title: 'সমস্যা হয়েছে',
+        description: 'আবার চেষ্টা করুন',
       })
     } finally {
       setIsLoading(false)
@@ -245,16 +245,16 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 name='email'
                 render={({ field }) => (
                   <FormItem className='space-y-1'>
-                    <FormLabel className="text-neutral-300">Email</FormLabel>
+                    <FormLabel className="text-neutral-300">ইমেইল</FormLabel>
                     <FormControl>
-                      <Input placeholder='name@example.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
+                      <Input placeholder='your@email.com' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading}>
-                {isLoading ? 'Checking...' : 'Continue'}
+                {isLoading ? 'চেক হচ্ছে...' : 'এগিয়ে যান'}
               </Button>
 
               <div className='relative my-4'>
@@ -263,7 +263,7 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                 </div>
                 <div className='relative flex justify-center text-xs uppercase'>
                   <span className='bg-neutral-900 px-2 text-neutral-500'>
-                    Or continue with
+                    অথবা চালু করুন
                   </span>
                 </div>
               </div>
@@ -312,16 +312,16 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
               render={({ field }) => (
                 <FormItem className='space-y-1'>
                   <div className='flex items-center justify-between'>
-                    <FormLabel className="text-neutral-300">Password</FormLabel>
+                    <FormLabel className="text-neutral-300">পাসওয়ার্ড</FormLabel>
                     <Link
                       href={`/forgot-password?email=${encodeURIComponent(email)}`}
                       className='text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors'
                     >
-                      Forgot password?
+                      পাসওয়ার্ড ভুলে গেছেন?
                     </Link>
                   </div>
                   <FormControl>
-                    <PasswordInput placeholder='Enter your password' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
+                    <PasswordInput placeholder='আপনার পাসওয়ার্ড দিন' className="border-white/10 bg-neutral-900/60 focus:border-cyan-500/50 focus:ring-cyan-500/20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -335,22 +335,22 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
                   setTurnstileToken(null)
                   toast({
                     variant: 'destructive',
-                    title: 'CAPTCHA failed',
-                    description: 'Please complete the CAPTCHA verification',
+                    title: 'CAPTCHA ব্যর্থ হয়েছে',
+                    description: 'আবার চেষ্টা করুন',
                   })
                 }}
                 onExpire={() => {
                   setTurnstileToken(null)
                   toast({
                     variant: 'destructive',
-                    title: 'CAPTCHA expired',
-                    description: 'Please complete the CAPTCHA verification again',
+                    title: 'CAPTCHA মেয়াদ শেষ',
+                    description: 'আবার চেষ্টা করুন',
                   })
                 }}
               />
             </div>
             <Button className='mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25' disabled={isLoading || !turnstileToken}>
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? 'লগইন হচ্ছে...' : 'লগইন করুন'}
             </Button>
             <Button
               type='button'
@@ -358,7 +358,7 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
               onClick={goBackToEmail}
               className='mt-3 w-full text-neutral-400 hover:text-white hover:bg-white/5'
             >
-              Back to email
+              ইমেইলে ফিরে যান
             </Button>
           </div>
         </form>

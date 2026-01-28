@@ -117,19 +117,19 @@ export default function PublicCampaignsPage() {
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
               <Trophy className="w-3.5 h-3.5 mr-2 text-cyan-400" />
-              সক্রিয় ক্যাম্পেইন
+              চলমান চ্যালেঞ্জ
             </Badge>
             <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
               <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
-                আপনার পরবর্তী
+                পুরস্কার জিততে
               </span>
               <br />
               <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                চ্যালেঞ্জ খুঁজে নিন
+                আজই শুরু করুন!
               </span>
             </h1>
             <p className="text-lg text-neutral-400">
-              আমাদের সক্রিয় ক্যাম্পেইনগুলো দেখুন এবং আজই পুরস্কার জেতা শুরু করুন
+              সহজ চ্যালেঞ্জ করে পয়েন্ট জিনুন, লিডারবোর্ডে আগুয়ে যান - সবই ফ্রি!
             </p>
           </div>
 
@@ -140,7 +140,7 @@ export default function PublicCampaignsPage() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
               <Input
                 type="text"
-                placeholder="ক্যাম্পেইন খুঁজুন..."
+                placeholder="পছন্দের চ্যালেঞ্জ খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-6 bg-neutral-900/60 backdrop-blur-xl border-white/10 rounded-xl text-white placeholder:text-neutral-500 focus:border-cyan-500/50 focus:ring-cyan-500/20 text-lg"
@@ -175,10 +175,10 @@ export default function PublicCampaignsPage() {
             {/* Results Count */}
             <div className="text-center text-sm text-neutral-500">
               {loading ? (
-                'ক্যাম্পেইনগুলো লোড হচ্ছে...'
+                'চ্যালেঞ্জ লোড হচ্ছে...'
               ) : (
                 <>
-                  মোট {filteredCampaigns.length} টি ক্যাম্পেইন দেখানো হচ্ছে
+                  {filteredCampaigns.length} টি চ্যালেঞ্জ পাওয়া গেছে
                 </>
               )}
             </div>
@@ -199,11 +199,11 @@ export default function PublicCampaignsPage() {
             <div className="inline-flex p-6 rounded-full bg-neutral-900/60 border border-white/10 mb-6">
               <Trophy className="w-12 h-12 text-neutral-700" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">কোনো ক্যাম্পেইন পাওয়া যায়নি</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">কোনো চ্যালেঞ্জ পাওয়া যায়নি 😔</h3>
             <p className="text-neutral-400 mb-8">
               {searchQuery || selectedDifficulty !== 'ALL'
-                ? 'আরও ফলাফল দেখতে আপনার ফিল্টারগুলো পরিবর্তন করে দেখুন'
-                : 'নতুন এবং রোমাঞ্চকর ক্যাম্পেইনের জন্য পরে আবার দেখুন!'}
+                ? 'অন্য কিওয়ার্ড দিয়ে চেষ্টা করে দেখুন, না হলে ফিল্টার সরিয়ে সব চ্যালেঞ্জ দেখুন!'
+                : 'শীঘ্রই নতুন চ্যালেঞ্জ আসছে - আবার দেখুন! 🎮'}
             </p>
             {(searchQuery || selectedDifficulty !== 'ALL') && (
               <Button
@@ -214,7 +214,7 @@ export default function PublicCampaignsPage() {
                 variant="outline"
                 className="border-white/20 text-white hover:bg-white/5"
               >
-                ফিল্টার মুছে ফেলুন
+                ফিল্টার সরান
               </Button>
             )}
           </div>
@@ -258,7 +258,7 @@ export default function PublicCampaignsPage() {
                       <div className="flex items-center gap-4 text-sm">
                         <div className="flex items-center gap-2 text-neutral-400">
                           <Users className="w-4 h-4" />
-                          <span>{campaign._count?.participations || campaign.participations?.length || 0} জন অংশগ্রহণকারী</span>
+                          <span>{campaign._count?.participations || campaign.participations?.length || 0} জন খেলছে</span>
                         </div>
                         {campaign.estimatedDuration && (
                           <div className="flex items-center gap-2 text-neutral-400">
@@ -272,7 +272,7 @@ export default function PublicCampaignsPage() {
                         <div className="flex items-center gap-2 text-sm">
                           <Sparkles className="w-4 h-4 text-amber-400" />
                           <span className="text-neutral-400">
-                            {campaign.tasks.length} টি চ্যালেঞ্জ উপলব্ধ
+                            {campaign.tasks.length} টি মজার চ্যালেঞ্জ
                           </span>
                         </div>
                       )}
@@ -281,7 +281,7 @@ export default function PublicCampaignsPage() {
                         <div className="flex items-center gap-2 text-sm">
                           <Star className="w-4 h-4 text-yellow-400" />
                           <span className="text-neutral-400">
-                            ন্যূনতম {campaign.minPointsToQualify} পয়েন্ট প্রয়োজন
+                            পুরস্কারের জন্য {campaign.minPointsToQualify}+ পয়েন্ট চাই
                           </span>
                         </div>
                       )}
@@ -294,7 +294,7 @@ export default function PublicCampaignsPage() {
                         className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                       >
                         <Link href={`/campaigns/${campaign.id}`} className="gap-2">
-                          বিস্তারিত দেখুন
+                          চ্যালেঞ্জ দেখুন
                           <ArrowRight className="w-4 h-4" />
                         </Link>
                       </Button>
@@ -322,10 +322,10 @@ export default function PublicCampaignsPage() {
                 <Zap className="w-12 h-12 text-white" />
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                পুরস্কার জেতা শুরু করতে প্রস্তুত?
+                এখনই শুরু করুন, পুরস্কার জিনুন!
               </h2>
               <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                হাজার হাজার ব্যবহারকারীর সাথে যোগ দিন এবং রোমাঞ্চকর ক্যাম্পেইনে অংশ নিয়ে জিতে নিন চমৎকার সব পুরস্কার।
+                হাজার খেলোয়াড়ের সাথে জয়োগ দিন, মজার চ্যালেঞ্জ করুন, পয়েন্ট জিনুন - সবই ফ্রি!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
@@ -334,7 +334,7 @@ export default function PublicCampaignsPage() {
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm px-6 py-5 h-auto font-semibold shadow-lg shadow-cyan-500/25"
                 >
                   <Link href="/sign-up" className="gap-2">
-                    ফ্রি অ্যাকাউন্ট তৈরি করুন
+                    ফ্রিয়ে জয়োগ দিন
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
