@@ -245,7 +245,7 @@ export default function LandingPage() {
               </div>
 
               <h1
-                className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.15] transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                className={`text-4xl sm:text-4xl font-black leading-[1.15] transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                   }`}
               >
                 <span className="block text-white">ছোট ছোট ভালো কাজে</span>
@@ -370,7 +370,7 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
               জনপ্রিয় চ্যালেঞ্জ
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-4">
               আমল চ্যালেঞ্জগুলো দেখুন
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
@@ -453,7 +453,7 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-gradient-to-r from-violet-500/20 to-purple-600/20 text-violet-300 border-violet-500/30">
               ধাপসমূহ
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-4">
               এভাবেই শুরু করুন
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
@@ -479,7 +479,7 @@ export default function LandingPage() {
                       <Icon className="w-8 h-8 text-white" />
                     </div>
 
-                    <h3 className="text-2xl font-bold text-white mb-3">{step.title}</h3>
+                    <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
                     <p className="text-neutral-400 leading-relaxed">{step.description}</p>
                   </div>
                 </div>
@@ -496,7 +496,7 @@ export default function LandingPage() {
             <Badge className="mb-4 bg-gradient-to-r from-emerald-500/20 to-teal-600/20 text-emerald-300 border-emerald-500/30">
               বৈশিষ্ট্য
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-4">
               কেন আমাদের সাথে?
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
@@ -545,7 +545,7 @@ export default function LandingPage() {
                 <Sparkles className="w-3 h-3 mr-2" />
                 চলুন শুরু করি!
               </Badge>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
                 আজই আমল শুরু করুন
               </h2>
               <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">

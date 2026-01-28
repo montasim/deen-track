@@ -195,7 +195,7 @@ export default function AboutPage() {
                   >
                     <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <div className="text-3xl font-black text-white mb-2">{stat.value}</div>
+                  <div className="text-xl font-black text-white mb-2">{stat.value}</div>
                   <div className="text-neutral-400 font-medium">{stat.label}</div>
                 </CardContent>
               </Card>
@@ -212,7 +212,7 @@ export default function AboutPage() {
               <Calendar className="w-3.5 h-3.5 mr-2 text-violet-400" />
               আমাদের পথচলা
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
               <span className="bg-gradient-to-r from-violet-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 ব্যতিক্রমী কিছু
               </span>
@@ -262,7 +262,7 @@ export default function AboutPage() {
             <Star className="w-3.5 h-3.5 mr-2 text-emerald-400" />
             আমাদের বিশ্বাস
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-black mb-4">
+          <h2 className="text-2xl sm:text-3xl font-black mb-4">
             <span className="bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 bg-clip-text text-transparent">
               মূল আদর্শ
             </span>
@@ -313,7 +313,7 @@ export default function AboutPage() {
               <Users className="w-3.5 h-3.5 mr-2 text-amber-400" />
               আমাদের সদস্যবৃন্দ
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
               <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
                 নেপথ্যের কারিগরদের
               </span>
@@ -396,7 +396,7 @@ export default function AboutPage() {
               <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 mb-6">
                 <Flame className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-6">
                 আপনার যাত্রা শুরু করতে প্রস্তুত?
               </h2>
               <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">
