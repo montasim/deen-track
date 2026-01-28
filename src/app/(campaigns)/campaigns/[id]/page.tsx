@@ -23,6 +23,9 @@ import {
   ArrowRight,
   Gamepad2,
   Send,
+  FileCheck,
+  Eye,
+  AlertCircle,
 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { toast } from '@/hooks/use-toast'
@@ -400,6 +403,9 @@ export default function PublicCampaignDetailPage() {
                       const taskPoints = ct.task.achievements?.reduce((sum: number, a: any) => sum + a.points, 0) || 0
                       const taskConfig = difficultyConfig[ct.task.difficulty as keyof typeof difficultyConfig] || difficultyConfig.INTERMEDIATE
 
+                      // Check if user has submitted proof for this task
+                      const submission = userProgress?.submissions?.find((s: any) => s.taskId === ct.taskId)
+
                       return (
                         <div
                           key={ct.id}
@@ -450,7 +456,7 @@ export default function PublicCampaignDetailPage() {
                                   )}
                                 </div>
 
-                                {isJoined && (
+                                {isJoined && !submission && (
                                   <Button
                                     size="sm"
                                     onClick={() => openProofSheet(ct)}
@@ -461,6 +467,75 @@ export default function PublicCampaignDetailPage() {
                                   </Button>
                                 )}
                               </div>
+
+                              {/* Show submitted proof */}
+                              {submission && (
+                                <div className="mt-4 p-4 rounded-xl border border-white/10 bg-neutral-900/40">
+                                  <div className="flex items-start justify-between gap-3 mb-3">
+                                    <div className="flex items-center gap-2">
+                                      {submission.status === 'APPROVED' ? (
+                                        <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5">
+                                          <CheckCircle2 className="w-3.5 h-3.5" />
+                                          অনুমোত
+                                        </Badge>
+                                      ) : submission.status === 'REJECTED' ? (
+                                        <Badge className="bg-red-500/10 text-red-300 border-red-500/30 flex items-center gap-1.5">
+                                          <AlertCircle className="w-3.5 h-3.5" />
+                                          বাতিল
+                                        </Badge>
+                                      ) : (
+                                        <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/30 flex items-center gap-1.5">
+                                          <Clock className="w-3.5 h-3.5" />
+                                          পর্যালোধীন হচ্ছে
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="text-neutral-400 hover:text-white h-8 w-8 p-0"
+                                      onClick={() => {/* TODO: Show proof details */}}
+                                    >
+                                      <Eye className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+
+                                  {/* Proof Type */}
+                                  <div className="flex items-center gap-2 text-sm">
+                                    <span className="text-neutral-500">প্রমাণের ধরন:</span>
+                                    <span className="text-white font-medium">
+                                      {submission.proofType === 'IMAGE' && 'ছবি'}
+                                      {submission.proofType === 'AUDIO' && 'অডিও'}
+                                      {submission.proofType === 'URL' && 'URL লিংক'}
+                                      {submission.proofType === 'TEXT' && 'টেক্সট'}
+                                    </span>
+                                  </div>
+
+                                  {/* Proof Content Preview */}
+                                  {submission.proofType === 'TEXT' && submission.text && (
+                                    <div className="mt-2 text-sm text-neutral-300 bg-neutral-900/60 p-2 rounded">
+                                      {submission.text}
+                                    </div>
+                                  )}
+                                  {submission.proofType === 'URL' && submission.url && (
+                                    <div className="mt-2 text-sm text-cyan-400 truncate">
+                                      {submission.url}
+                                    </div>
+                                  )}
+                                  {submission.fileUrl && (
+                                    <div className="mt-2 text-sm text-neutral-400">
+                                      ফাইল সংযুক্ত আছে
+                                    </div>
+                                  )}
+
+                                  {/* Admin Feedback */}
+                                  {submission.feedback && (
+                                    <div className="mt-3 text-sm text-neutral-400 bg-white/5 p-2 rounded">
+                                      <span className="font-medium">মন্তব্য:</span> {submission.feedback}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
