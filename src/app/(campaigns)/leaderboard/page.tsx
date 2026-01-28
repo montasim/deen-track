@@ -22,6 +22,8 @@ import {
     Sparkles,
 } from 'lucide-react'
 import { getActiveGamifiedCampaigns, getCampaignLeaderboard } from '@/app/dashboard/gamified-campaigns/actions'
+import { useAuth } from '@/context/auth-context'
+import { AuthPrompt } from '@/components/auth/auth-prompt'
 
 // Skeleton Components
 const CampaignSelectorSkeleton = () => (
@@ -271,6 +273,7 @@ const getRankConfig = (rank: number) => {
 }
 
 export default function PublicLeaderboardPage() {
+    const { user } = useAuth()
     const [campaigns, setCampaigns] = useState<any[]>([])
     const [selectedCampaign, setSelectedCampaign] = useState<any>(null)
     const [leaderboard, setLeaderboard] = useState<any[]>([])
@@ -357,7 +360,8 @@ export default function PublicLeaderboardPage() {
         )
     }
 
-    return (
+    // Render page content
+    const pageContent = (
         <>
             {/* Hero Section with Animated Background */}
             <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-20 pb-16">
@@ -648,4 +652,14 @@ export default function PublicLeaderboardPage() {
             </div>
         </>
     )
+
+    // Wrap content in AuthPrompt if user is not authenticated
+    return !user ? (
+        <AuthPrompt
+            title="লিডারবোর্ড দেখতে লগইন করুন"
+            description="লিডারবোর্ড দেখার জন্য আপনাকে প্রথমে অ্যাকাউন্ট তৈরি করতে হবে অথবা লগইন করতে হবে। এটি ফ্রি!"
+        >
+            {pageContent}
+        </AuthPrompt>
+    ) : pageContent
 }

@@ -24,8 +24,10 @@ import {
     ArrowRight,
     Zap,
     RefreshCw,
+    Lock,
 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
+import { AuthPrompt } from '@/components/auth/auth-prompt'
 import {
     AreaChart,
     Area,
@@ -67,6 +69,15 @@ export default function MyProgressPage() {
         const fetchData = async () => {
             setLoading(true)
             try {
+                // If user is not authenticated, set empty state and continue
+                if (!user) {
+                    console.log('No user found, setting empty arrays')
+                    setProgressList([])
+                    setSubmissions([])
+                    setAchievements([])
+                    return
+                }
+
                 const [progressData, submissionsData] = await Promise.all([
                     getUserCampaignProgress(),
                     getUserSubmissions(),
@@ -80,14 +91,20 @@ export default function MyProgressPage() {
                     const achievementsData = await achievementsRes.json()
                     setAchievements(achievementsData.data || [])
                 }
-            } catch (error) {
+                console.log('Data loaded successfully, progressList length:', progressList?.length)
+            } catch (error: any) {
                 console.error('Error fetching progress:', error)
+                // Ensure empty arrays are set on error
+                setProgressList([])
+                setSubmissions([])
+                console.log('Set empty arrays due to error')
             } finally {
                 setLoading(false)
+                console.log('Loading set to false')
             }
         }
 
-        if (user) fetchData()
+        fetchData()
     }, [user])
 
     // Filter data based on selected campaign
@@ -167,24 +184,10 @@ export default function MyProgressPage() {
         return { campaignProgress, pointsByCampaign, statusDistribution }
     }, [filteredProgress, filteredSubmissions, progressList])
 
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
-                <Card className="max-w-md bg-neutral-900/40 backdrop-blur-xl border-white/10">
-                    <CardContent className="p-12 text-center">
-                        <Trophy className="w-16 h-16 text-neutral-700 mx-auto mb-6" />
-                        <h2 className="text-2xl font-bold text-white mb-3">সাইন ইন প্রয়োজন</h2>
-                        <p className="text-neutral-400 mb-6">আপনার অগ্রগতি দেখতে দয়া করে সাইন ইন করুন।</p>
-                        <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
-                            <Link href="/auth/sign-in">সাইন ইন</Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
+    // Authentication check moved to end to wrap content
 
     if (loading) {
+        // Show loading state directly (no blur needed)
         return (
             <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-6">
@@ -199,7 +202,7 @@ export default function MyProgressPage() {
     }
 
     if (progressList.length === 0) {
-        return (
+        const emptyStateContent = (
             <div className="min-h-screen bg-neutral-950">
                 {/* Hero Section */}
                 <div className="relative border-b border-white/5 bg-neutral-950 pt-20 pb-16">
@@ -251,9 +254,25 @@ export default function MyProgressPage() {
                 </div>
             </div>
         )
+
+        // Wrap empty state in AuthPrompt if user is not authenticated
+        return !user ? (
+            <AuthPrompt
+                title="আপনার অগ্রগতি দেখতে লগইন করুন"
+                description="আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করতে প্রথমে লগইন করুন। এটি ফ্রি!"
+                features={[
+                    { icon: Star, text: 'বিনামূল্যে শুরু করুন' },
+                    { icon: Trophy, text: 'পুরস্কার জিতুন' },
+                    { icon: TrendingUp, text: 'অগ্রগতি ট্র্যাক করুন' },
+                ]}
+            >
+                {emptyStateContent}
+            </AuthPrompt>
+        ) : emptyStateContent
     }
 
-    return (
+    // Main content for when user has campaigns
+    const mainContent = (
         <>
             {/* Hero Section */}
             <div className="relative border-b border-white/5 bg-neutral-950 pt-20 pb-16">
@@ -817,4 +836,19 @@ export default function MyProgressPage() {
             </div>
         </>
     )
+
+    // Wrap main content in AuthPrompt if user is not authenticated
+    return !user ? (
+        <AuthPrompt
+            title="আপনার অগ্রগতি দেখতে লগইন করুন"
+            description="আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করতে প্রথমে লগইন করুন। এটি ফ্রি!"
+            features={[
+                { icon: Star, text: 'বিনামূল্যে শুরু করুন' },
+                { icon: Trophy, text: 'পুরস্কার জিতুন' },
+                { icon: TrendingUp, text: 'অগ্রগতি ট্র্যাক করুন' },
+            ]}
+        >
+            {mainContent}
+        </AuthPrompt>
+    ) : mainContent
 }
