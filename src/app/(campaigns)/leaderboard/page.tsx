@@ -349,10 +349,10 @@ export default function PublicLeaderboardPage() {
                 <Card className="max-w-md bg-neutral-900/40 backdrop-blur-xl border-white/10">
                     <CardContent className="p-12 text-center">
                         <Trophy className="w-16 h-16 text-neutral-700 mx-auto mb-6" />
-                        <h2 className="text-2xl font-bold text-white mb-3">বর্তমানে কোনো সক্রিয় ক্যাম্পেইন নেই</h2>
-                        <p className="text-neutral-400 mb-6">নতুন কোনো রোমাঞ্চকর প্রতিযোগিতার জন্য আবার দেখুন!</p>
+                        <h2 className="text-2xl font-bold text-white mb-3">এখন কোনো চ্যালেঞ্জ নেই</h2>
+                        <p className="text-neutral-400 mb-6">পরে আবার দেখুন - নতুন চ্যালেঞ্জ আসছে শীঘ্রই!</p>
                         <Button asChild className="bg-gradient-to-r from-cyan-500 to-blue-600">
-                            <Link href="/campaigns">ক্যাম্পেইনগুলো দেখুন</Link>
+                            <Link href="/campaigns">🎮 চ্যালেঞ্জ দেখুন</Link>
                         </Button>
                     </CardContent>
                 </Card>
@@ -376,17 +376,17 @@ export default function PublicLeaderboardPage() {
                     <div className="text-center max-w-4xl mx-auto mb-12">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
                             <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${theme.gradient} animate-pulse`} />
-                            <span className="text-sm text-neutral-300 font-medium">চলমান র‍্যাঙ্কিং</span>
+                            <span className="text-sm text-neutral-300 font-medium">লাইভ র‍্যাঙ্কিং</span>
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
                             <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
-                                ক্যাম্পেইন লিডারবোর্ড
+                                চ্যালেঞ্জ লিডারবোর্ড
                             </span>
                         </h1>
 
                         <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                            প্রতিযোগিতায় অংশ নিন, লক্ষ্য অর্জন করুন এবং সক্রিয় ক্যাম্পেইনগুলোতে আপনার আধিপত্য বজায় রাখুন
+                            সবার সাথে প্রতিযোগিতা করুন, পয়েন্ট জমান আর লিডারবোর্ডে সেরা হন!
                         </p>
                     </div>
 

@@ -88,12 +88,12 @@ const silverSponsors = [
 ]
 
 const benefits = [
-  'সকল ক্যাম্পেইনে ব্র্যান্ডের প্রচারণা',
-  'সরাসরি সক্রিয় টেক কমিউনিটির সঙ্গে যুক্ত হওয়ার সুযোগ',
-  'কাস্টম ক্যাম্পেইন স্পন্সরশিপের সুবিধা',
-  'লিডারবোর্ড এবং সাফল্যে লোগো প্রদর্শন',
-  'সোশ্যাল মিডিয়া প্রচার এবং বিশেষ ফোকাস',
-  'অ্যানালিটিক্স এবং এনগেজমেন্ট রিপোর্ট',
+  'সব ক্যাম্পেইনে আপনার ব্র্যান্ড দেখানো হবে',
+  'সরাসরি হাজার হাজার সক্রিয় মানুষের সাথে যুক্ত হওয়ার সুযোগ',
+  'আপনার পছন্দমত ক্যাম্পেইন স্পন্সর করুন',
+  'লিডারবোর্ড আর সাফল্যে আপনার লোগো থাকবে',
+  'সোশ্যাল মিডিয়াতেও আপনার প্রচার',
+  'রেজাল্ট আর রিপোর্ট দেখুন সহজেই',
 ]
 
 export default function SponsorsPage() {
@@ -118,7 +118,7 @@ export default function SponsorsPage() {
           <div className="text-center max-w-3xl mx-auto">
             <Badge className="mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
               <Heart className="w-3.5 h-3.5 mr-2 text-cyan-400" />
-              নির্ভরযোগ্য সহযোগী
+              আমাদের সহযোগীরা
             </Badge>
 
             <h1
@@ -127,7 +127,7 @@ export default function SponsorsPage() {
             >
               <span className="block text-white">আমাদের</span>
               <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                স্পন্সরবৃন্দ
+                স্পন্সররা
               </span>
             </h1>
 
@@ -135,7 +135,7 @@ export default function SponsorsPage() {
               className={`text-lg text-neutral-400 leading-relaxed transition-all duration-1000 delay-200 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
                 }`}
             >
-              গেমিনিফিকেশন, উদ্ভাবন এবং কমিউনিটি গঠনে আমাদের লক্ষ্য পূরণে সহায়তাকারী শীর্ষস্থানীয় প্রতিষ্ঠানগুলোর সঙ্গে অংশীদার হতে পেরে আমরা গর্বিত। আমাদের স্পন্সরদের সহযোগিতায় আমরা চমৎকার সব ক্যাম্পেইন তৈরি করতে এবং আমাদের একনিষ্ঠ ব্যবহারকারীদের পুরস্কৃত করতে সক্ষম হই।
+              চমৎকার সব চ্যালেঞ্জ বানাতে আর আপনাদের পুরস্কার দিতে এই দুর্দান্ত কোম্পানিগুলো আমাদের সাহায্য করে! তাদের সাপোর্টে আমরা আপনাদের জন্য আরও সুন্দর অভিজ্ঞতা তৈরি করতে পারছি।
             </p>
           </div>
         </div>

@@ -68,20 +68,20 @@ const mapCampaignToUI = (campaign: Campaign, index: number) => {
 const steps = [
   {
     icon: Target,
-    title: 'ক্যাম্পেইন খুঁজুন',
-    description: 'আপনার আগ্রহ ও দক্ষতার সাথে মানানসই চ্যালেঞ্জগুলো বেছে নিন',
+    title: 'চ্যালেঞ্জ বেছে নিন',
+    description: 'আপনার পছন্দের চ্যালেঞ্জ খুঁজুন - সব সহজ এবং মজার!',
     color: 'from-cyan-400 to-blue-500',
   },
   {
     icon: Gamepad2,
-    title: 'টাস্ক সম্পন্ন করুন',
-    description: 'আপনার সফলতার প্রমাণ জমা দিন এবং অগ্রগতির হিসাব রাখুন',
+    title: 'খেলার মতা আমল করুন',
+    description: 'প্রমাণ আপলোড করুন আর রিয়েল-টাইমে দেখুন আপনার অগ্রগতি',
     color: 'from-violet-400 to-purple-500',
   },
   {
     icon: Crown,
-    title: 'পুরষ্কার জিতুন',
-    description: 'অ্যাচিভমেন্ট আনলক করুন, লিডারবোর্ডে এগিয়ে যান এবং পয়েন্ট অর্জন করুন',
+    title: 'পুরস্কার জিতুন',
+    description: 'লিডারবোর্ডে এগিয়ে যান, ব্যাজ আনলক করুন আর পয়েন্ট জমান!',
     color: 'from-amber-400 to-orange-500',
   },
 ]
@@ -89,26 +89,26 @@ const steps = [
 const features = [
   {
     icon: BarChart3,
-    title: 'রিয়েল-টাইম লিডারবোর্ড',
-    description: 'অন্যদের সাথে প্রতিযোগিতা করুন এবং আপনার র‍্যাঙ্কিং লাইভ আপডেট দেখুন',
+    title: 'লাইভ লিডারবোর্ড',
+    description: 'সবার সাথে প্রতিযোগিতা করুন আর আপনার র‍্যাঙ্কিং লাইভ দেখুন',
     gradient: 'from-cyan-500 to-blue-600',
   },
   {
     icon: Users,
-    title: 'দলগত প্রতিযোগিতা',
-    description: 'দল গঠন করুন এবং লক্ষ্য অর্জনে একে অপরকে সহযোগিতা করুন',
+    title: 'দল বানান',
+    description: 'বন্ধুদের সাথে দল গঠন করুন আর একসাথে পুরস্কার জিতুন',
     gradient: 'from-violet-500 to-purple-600',
   },
   {
     icon: Award,
-    title: 'অ্যাচিভমেন্ট ব্যাজ',
-    description: 'চ্যালেঞ্জ সম্পন্ন করে অনন্য সব ব্যাজ সংগ্রহ করুন',
+    title: 'ব্যাজ আনলক করুন',
+    description: 'চ্যালেঞ্জ শেষ করে দুর্দান্ত ব্যাজ সংগ্রহ করুন',
     gradient: 'from-amber-500 to-orange-600',
   },
   {
     icon: Shield,
-    title: 'যাচাইকৃত অগ্রগতি',
-    description: 'স্বচ্ছতা নিশ্চিত করতে প্রতিটি টাস্ক অ্যাডমিন দ্বারা যাচাই করা হয়',
+    title: '১০০% সঠিক যাচাই',
+    description: 'প্রতিটি আমল অ্যাডমিন দেখেন - কোনো ভুল নেই!',
     gradient: 'from-emerald-500 to-teal-600',
   },
 ]
@@ -248,14 +248,14 @@ export default function LandingPage() {
                 className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.15] transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                   }`}
               >
-                <span className="block text-white">নিয়মিত আমলই</span>
+                <span className="block text-white">ছোট ছোট ভালো কাজে</span>
                 <span className="block text-white">
                   <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                    আল্লাহর
+                    বড় পুরস্কার
                   </span>{' '}
-                  কাছে
+                  জিতুন
                 </span>
-                <span className="block text-white mt-2">সবচেয়ে প্রিয়</span>
+                <span className="block text-white mt-2">প্রতিদিন!</span>
               </h1>
 
               <p
@@ -275,7 +275,7 @@ export default function LandingPage() {
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-base px-8 py-6 h-auto font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
                 >
                   <Link href="/campaigns" className="gap-2">
-                    আমল শুরু করুন
+                    এখনই শুরু করুন
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
@@ -285,7 +285,7 @@ export default function LandingPage() {
                   variant="outline"
                   className="border-white/20 text-white hover:bg-white/5 hover:border-white/30 text-base px-8 py-6 h-auto backdrop-blur-sm"
                 >
-                  <Link href="/sign-up">অ্যাকাউন্ট তৈরি করুন</Link>
+                  <Link href="/sign-up">ফ্রি অ্যাকাউন্ট খুলুন</Link>
                 </Button>
               </div>
 
@@ -368,13 +368,13 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
             <Badge className="mb-4 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
-              সেরা ক্যাম্পেইন
+              জনপ্রিয় চ্যালেঞ্জ
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-              আমল চ্যালেঞ্জসমূহ
+              আমল চ্যালেঞ্জগুলো দেখুন
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-              হাজার হাজার ব্যবহারকারীর সাথে শুরু করুন নিয়মিত নেক আমলের ছোট ছোট পদক্ষেপ
+              আপনার পছন্দের চ্যালেঞ্জ বেছে নিন আর পয়েন্ট জমানো শুরু করুন - একদম ফ্রি!
             </p>
           </div>
 
@@ -454,10 +454,10 @@ export default function LandingPage() {
               ধাপসমূহ
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-              কিভাবে কাজ করে
+              এভাবেই শুরু করুন
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-              মাত্র তিনটি সহজ ধাপেই আপনার আমলনামা সমৃদ্ধ করুন
+              মাত্র ৩টি সহজ ধাপেই আমল শুরু করুন আর পুরস্কার জিতুন!
             </p>
           </div>
 
@@ -497,10 +497,10 @@ export default function LandingPage() {
               বৈশিষ্ট্য
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-              কেন আমাদের বেছে নেবেন?
+              কেন আমাদের সাথে?
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-              আপনার দ্বীনি জীবনকে আরও সুন্দর ও গোছানো করতে যা যা প্রয়োজন
+              আপনার আমলকে আরও সহজ আর মজার করতে আমরা সাহায্য করি!
             </p>
           </div>
 
@@ -543,13 +543,13 @@ export default function LandingPage() {
             <div className="relative text-center">
               <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
                 <Sparkles className="w-3 h-3 mr-2" />
-                এখনই যোগ দিন
+                চলুন শুরু করি!
               </Badge>
               <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
-                জীবনকে নেক আমলে ভরিয়ে দিতে প্রস্তুত?
+                আজই আমল শুরু করুন
               </h2>
               <p className="text-base text-neutral-400 mb-8 max-w-2xl mx-auto">
-                হাজার হাজার মুসলমানের সাথে প্রতিযোগিতার পরিবর্তে একে অপরকে ভালো কাজে উৎসাহিত করুন।
+                হাজার হাজার মানুষের সাথে যোগ দিন আর নেক আমলকে মজার খেলায় পরিণত করুন!
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
@@ -569,7 +569,7 @@ export default function LandingPage() {
                   variant="outline"
                   className="border-white/20 text-white hover:bg-white/5 text-sm px-6 py-5 h-auto backdrop-blur-sm"
                 >
-                  <Link href="/campaigns">আমলসমূহ দেখুন</Link>
+                  <Link href="/campaigns">চ্যালেঞ্জ দেখুন</Link>
                 </Button>
               </div>
 
@@ -605,7 +605,7 @@ export default function LandingPage() {
                 <span className="text-xl font-bold text-white">{siteName}</span>
               </Link>
               <p className="text-sm text-neutral-400">
-                ইমানের সাথে নেক আমল নিয়মিত করার মাধ্যমে আপনার দ্বীনি লক্ষ্য অর্জন করুন।
+                নিয়মিত নেক আমলের মাধ্যমে দ্বীনি লক্ষ্য অর্জন করুন আর পুরস্কার জিতুন!
               </p>
             </div>
 

@@ -223,7 +223,7 @@ export default function MyProgressPage() {
                         </h1>
 
                         <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                            আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করুন
+                            চ্যালেঞ্জ কতদূর এগিয়েছেন দেখুন আর পুরস্কার জিতুন!
                         </p>
                     </div>
                 </div>
@@ -235,9 +235,9 @@ export default function MyProgressPage() {
                             <div className="inline-flex p-6 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 mb-6">
                                 <Target className="w-16 h-16 text-cyan-400" />
                             </div>
-                            <h3 className="text-2xl font-bold text-white mb-3">এখনো কোনো ক্যাম্পেইন নেই</h3>
+                            <h3 className="text-2xl font-bold text-white mb-3">এখনো কোনো চ্যালেঞ্জ নেই</h3>
                             <p className="text-neutral-400 mb-8 max-w-md mx-auto">
-                                আপনি এখনো কোনো ক্যাম্পেইনে যোগ দেননি। উপলব্ধ ক্যাম্পেইনগুলো দেখুন এবং পুরস্কার অর্জন শুরু করুন!
+                                চিন্তা নেই! চ্যালেঞ্জগুলো দেখুন আর এখনই পয়েন্ট জমানো শুরু করুন!
                             </p>
                             <Button
                                 asChild
@@ -245,7 +245,7 @@ export default function MyProgressPage() {
                                 className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                             >
                                 <Link href="/campaigns" className="gap-2">
-                                    ক্যাম্পেইন দেখুন
+                                    🎯 চ্যালেঞ্জ দেখুন
                                     <ArrowRight className="w-5 h-5" />
                                 </Link>
                             </Button>
