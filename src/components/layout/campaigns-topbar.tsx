@@ -56,12 +56,14 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
             >
               ক্যাম্পেইন
             </Link>
-            <Link
-              href="/my-progress"
-              className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
-            >
-              আমার অগ্রগতি
-            </Link>
+            {user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN' && (
+              <Link
+                href="/my-progress"
+                className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+              >
+                আমার অগ্রগতি
+              </Link>
+            )}
             <Link
               href="/leaderboard"
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
@@ -73,12 +75,6 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
               className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
             >
               স্পন্সর
-            </Link>
-            <Link
-              href="/blog"
-              className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
-            >
-              ব্লগ
             </Link>
             <Link
               href="/about"
