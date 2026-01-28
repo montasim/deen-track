@@ -25,6 +25,7 @@ import {
   YAxis,
   CartesianGrid,
 } from 'recharts'
+import { MyProgressPageSkeleton } from '@/components/campaigns/my-progress-skeleton'
 
 export default function MyProgressPage() {
   const { user } = useAuth()
@@ -140,13 +141,7 @@ export default function MyProgressPage() {
       ]}
     >
       {loading ? (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="h-80 animate-pulse bg-muted rounded-lg" />
-            <div className="h-80 animate-pulse bg-muted rounded-lg" />
-            <div className="h-80 animate-pulse bg-muted rounded-lg" />
-          </div>
-        </div>
+        <MyProgressPageSkeleton />
       ) : progressList.length === 0 ? (
         <EmptyStateCard
           icon={Target}

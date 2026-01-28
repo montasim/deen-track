@@ -22,6 +22,7 @@ import { CampaignCard } from '@/components/gamified-campaigns'
 import { PageHeader } from '@/components/layout/page-header'
 import { CallToAction } from '@/components/marketing/call-to-action'
 import { PageBackground } from '@/components/layout/page-background'
+import { CampaignCardGridSkeleton } from '@/components/campaigns/campaign-card-skeleton'
 
 // Difficulty colors
 const difficultyConfig = {
@@ -187,11 +188,7 @@ export default function PublicCampaignsPage() {
       {/* Campaigns Grid */}
       <div className="container mx-auto max-w-7xl px-6 py-16">
         {loading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-80 bg-neutral-900/40 rounded-2xl animate-pulse" />
-            ))}
-          </div>
+          <CampaignCardGridSkeleton count={6} />
         ) : filteredCampaigns.length === 0 ? (
           <div className="text-center py-20">
             <div className="inline-flex p-6 rounded-full bg-neutral-900/60 border border-white/10 mb-6">

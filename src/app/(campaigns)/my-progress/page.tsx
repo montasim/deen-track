@@ -30,6 +30,7 @@ import { useAuth } from '@/context/auth-context'
 import { AuthPrompt } from '@/components/auth/auth-prompt'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageBackground } from '@/components/layout/page-background'
+import { PublicMyProgressSkeleton } from '@/components/campaigns/public-my-progress-skeleton'
 import {
     AreaChart,
     Area,
@@ -189,18 +190,7 @@ export default function MyProgressPage() {
     // Authentication check moved to end to wrap content
 
     if (loading) {
-        // Show loading state directly (no blur needed)
-        return (
-            <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-6">
-                    <div className="relative">
-                        <div className="w-20 h-20 border-4 border-white/10 rounded-full" />
-                        <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-cyan-500 rounded-full animate-spin" />
-                    </div>
-                    <p className="text-neutral-400 text-lg">আপনার অগ্রগতি লোড হচ্ছে...</p>
-                </div>
-            </div>
-        )
+        return <PublicMyProgressSkeleton />
     }
 
     if (progressList.length === 0) {
