@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { AuthPrompt } from '@/components/auth/auth-prompt'
+import { PageHeader } from '@/components/layout/page-header'
 import {
     AreaChart,
     Area,
@@ -205,28 +206,18 @@ export default function MyProgressPage() {
         const emptyStateContent = (
             <div className="min-h-screen bg-neutral-950">
                 {/* Hero Section */}
-                <div className="relative border-b border-white/5 bg-neutral-950 pt-20 pb-16">
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        <div className="absolute w-[1000px] h-[1000px] bg-gradient-to-br from-cyan-500/20 via-blue-600/10 to-violet-600/20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
-                    </div>
-
-                    <div className="relative container mx-auto max-w-4xl px-6 py-16 text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-                            <Sparkles className="w-4 h-4 text-cyan-400" />
-                            <span className="text-sm text-neutral-300 font-medium">আপনার যাত্রা</span>
-                        </div>
-
-                        <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black tracking-tight mb-6">
-                            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                                আমার অগ্রগতি
-                            </span>
-                        </h1>
-
-                        <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                            চ্যালেঞ্জ কতদূর এগিয়েছেন দেখুন আর পুরস্কার জিতুন!
-                        </p>
-                    </div>
-                </div>
+                <PageHeader
+                    badgeIcon={Sparkles}
+                    badgeText="আপনার যাত্রা"
+                    badgeColor="cyan"
+                    title={
+                        <>
+                            <span className="text-white">আমার</span>{' '}
+                            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">অগ্রগতি</span>
+                        </>
+                    }
+                    description="চ্যালেঞ্জ কতদূর এগিয়েছেন দেখুন আর পুরস্কার জিতুন!"
+                />
 
                 {/* Empty State */}
                 <div className="container mx-auto max-w-4xl px-6 py-16">
@@ -245,7 +236,7 @@ export default function MyProgressPage() {
                                 className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                             >
                                 <Link href="/campaigns" className="gap-2">
-                                    🎯 চ্যালেঞ্জ দেখুন
+                                    চ্যালেঞ্জ দেখুন
                                     <ArrowRight className="w-5 h-5" />
                                 </Link>
                             </Button>
@@ -275,108 +266,61 @@ export default function MyProgressPage() {
     const mainContent = (
         <>
             {/* Hero Section */}
-            <div className="relative border-b border-white/5 bg-neutral-950 pt-20 pb-16">
-                {/* Dynamic Background */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute w-[1000px] h-[1000px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-600/20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
-                    <div className="absolute w-[700px] h-[700px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[120px] translate-x-1/4 translate-y-1/4 bottom-0 right-0 animate-pulse delay-1000" />
-                </div>
+            <PageHeader
+                badgeIcon={Sparkles}
+                badgeText="আপনার যাত্রা"
+                badgeColor="cyan"
+                title={
+                    <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+                        আমার অগ্রগতি
+                    </span>
+                }
+                description="আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করুন"
+            />
 
-                <div className="relative container mx-auto max-w-7xl px-6 pt-16">
-                    <div className="flex items-center justify-between mb-12">
-                        <div className="max-w-2xl">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-                                <Sparkles className="w-4 h-4 text-cyan-400" />
-                                <span className="text-sm text-neutral-300 font-medium">আপনার যাত্রা</span>
-                            </div>
-
-                            <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black tracking-tight mb-4">
-                                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                                    আমার অগ্রগতি
-                                </span>
-                            </h1>
-
-                            <p className="text-xl text-neutral-400 leading-relaxed">
-                                আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করুন
-                            </p>
-                        </div>
-
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-white/20 text-white hover:bg-white/5 bg-neutral-900/40 backdrop-blur-sm"
-                            onClick={async () => {
-                                const [progressData, submissionsData] = await Promise.all([
-                                    getUserCampaignProgress(),
-                                    getUserSubmissions(),
-                                ])
-                                setProgressList((progressData || []) as any[])
-                                setSubmissions((submissionsData || []) as any[])
-
-                                // Fetch achievements from API
-                                const achievementsRes = await fetch('/api/user/achievements')
-                                if (achievementsRes.ok) {
-                                    const achievementsData = await achievementsRes.json()
-                                    setAchievements(achievementsData.data || [])
+            {/* Campaign Selector */}
+            {progressList.length > 0 && (
+                <div className="container mx-auto max-w-7xl px-6 my-6">
+                    <div className="flex flex-wrap gap-3">
+                        {/* All Campaigns Button */}
+                        <button
+                            onClick={() => setSelectedCampaignId(null)}
+                            className={`
+                                px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
+                                ${!selectedCampaignId
+                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25'
+                                    : 'bg-neutral-900/60 border border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
                                 }
-                            }}
+                            `}
                         >
-                            <RefreshCw className="w-5 h-5 mr-2" />
-                            রিফ্রেশ
-                        </Button>
-                    </div>
+                            সব ক্যাম্পেইন
+                        </button>
 
-                    {/* Campaign Selector */}
-                    {progressList.length > 0 && (
-                        <div className="mb-8">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Target className="w-5 h-5 text-cyan-400" />
-                                <h2 className="text-lg font-semibold text-white">
-                                    {selectedCampaignId ? 'ক্যাম্পেইন বিবরণ' : 'সব ক্যাম্পেইন'}
-                                </h2>
-                            </div>
-                            <div className="flex flex-wrap gap-3">
-                                {/* All Campaigns Button */}
+                        {/* Individual Campaign Buttons */}
+                        {progressList.map((progress, index) => {
+                            const campaign = progress.campaign
+                            const isSelected = selectedCampaignId === campaign.id
+                            const theme = gradientThemes[index % gradientThemes.length]
+
+                            return (
                                 <button
-                                    onClick={() => setSelectedCampaignId(null)}
+                                    key={campaign.id}
+                                    onClick={() => setSelectedCampaignId(campaign.id)}
                                     className={`
                                         px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
-                                        ${!selectedCampaignId
-                                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25'
+                                        ${isSelected
+                                            ? `bg-gradient-to-r from-${theme.from} to-${theme.to} text-white shadow-lg`
                                             : 'bg-neutral-900/60 border border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
                                         }
                                     `}
                                 >
-                                    সব ক্যাম্পেইন
+                                    {campaign.name.length > 20 ? campaign.name.substring(0, 20) + '...' : campaign.name}
                                 </button>
-
-                                {/* Individual Campaign Buttons */}
-                                {progressList.map((progress, index) => {
-                                    const campaign = progress.campaign
-                                    const isSelected = selectedCampaignId === campaign.id
-                                    const theme = gradientThemes[index % gradientThemes.length]
-
-                                    return (
-                                        <button
-                                            key={campaign.id}
-                                            onClick={() => setSelectedCampaignId(campaign.id)}
-                                            className={`
-                                                px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
-                                                ${isSelected
-                                                    ? `bg-gradient-to-r from-${theme.from} to-${theme.to} text-white shadow-lg`
-                                                    : 'bg-neutral-900/60 border border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
-                                                }
-                                            `}
-                                        >
-                                            {campaign.name.length > 20 ? campaign.name.substring(0, 20) + '...' : campaign.name}
-                                        </button>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    )}
+                            )
+                        })}
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Main Content */}
             <div className="min-h-screen bg-neutral-950">

@@ -19,6 +19,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { CampaignCard } from '@/components/gamified-campaigns'
+import { PageHeader } from '@/components/layout/page-header'
 
 // Difficulty colors
 const difficultyConfig = {
@@ -107,33 +108,27 @@ export default function PublicCampaignsPage() {
   return (
     <>
       {/* Header */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl pt-20">
-        {/* Background Effects */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[600px] h-[600px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2" />
-        </div>
+      <PageHeader
+        badgeIcon={Trophy}
+        badgeText="চলমান চ্যালেঞ্জ"
+        badgeColor="cyan"
+        title={
+          <>
+            <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+              পুরস্কার জিততে
+            </span>
+            {' '}
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+              আজই শুরু করুন!
+            </span>
+          </>
+        }
+        description="সহজ চ্যালেঞ্জ করে পয়েন্ট জিনুন, লিডারবোর্ডে আগুয়ে যান - সবই ফ্রি!"
+      />
 
-        <div className="relative container mx-auto max-w-7xl px-6 py-16">
-          <div className="text-center max-w-3xl mx-auto">
-            <Badge className="mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
-              <Trophy className="w-3.5 h-3.5 mr-2 text-cyan-400" />
-              চলমান চ্যালেঞ্জ
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
-              <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
-                পুরস্কার জিততে
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                আজই শুরু করুন!
-              </span>
-            </h1>
-            <p className="text-lg text-neutral-400">
-              সহজ চ্যালেঞ্জ করে পয়েন্ট জিনুন, লিডারবোর্ডে আগুয়ে যান - সবই ফ্রি!
-            </p>
-          </div>
-
-          {/* Search and Filters */}
+      {/* Search and Filters */}
+      <div className="container mx-auto max-w-7xl px-6 -mt-6 mb-8">
+        <div className="space-y-6">
           <div className="mt-12 space-y-6">
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto">

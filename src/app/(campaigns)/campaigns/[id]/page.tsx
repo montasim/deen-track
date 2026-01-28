@@ -32,6 +32,7 @@ import { toast } from '@/hooks/use-toast'
 import { getGamifiedCampaign, joinCampaign } from "@/app/dashboard/gamified-campaigns/actions";
 import { ProofSubmissionSheet } from './components/proof-submission-sheet'
 import { RewardsDisplay } from '@/components/gamified-campaigns/rewards-display'
+import { PageHeader } from '@/components/layout/page-header'
 
 const difficultyConfig = {
   BEGINNER: {
@@ -234,78 +235,66 @@ export default function PublicCampaignDetailPage() {
       </div>
 
       {/* Header Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl pt-20">
-        <div className="container mx-auto max-w-7xl px-6 py-8">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                {campaign.isActive && (
-                  <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30 flex items-center gap-2 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
-                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    চলছে 🔥
-                  </Badge>
-                )}
-                <Badge className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>
-                  <Target className="w-4 h-4" />
-                  {config.label}
-                </Badge>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-4xl font-black text-white mb-6 tracking-tight">
-                {campaign.name}
-              </h1>
-
-              <p className="text-xl text-neutral-400 max-w-3xl leading-relaxed">
-                {campaign.description}
-              </p>
-            </div>
-
-            <div className="flex lg:flex-col gap-4">
-              {user ? (
-                isJoined ? (
-                  <Button
-                    asChild
-                    className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold px-8 py-6"
-                  >
-                    <Link href="/dashboard/campaigns/gamified" className="gap-2">
-                      <CheckCircle2 className="w-5 h-5" />
-                      চ্যালেঞ্জ চালিয়ে যান
-                    </Link>
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={handleJoinCampaign}
-                    disabled={joining}
-                    className={`bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg ${config.glow} transition-all hover:scale-105 px-8 py-6`}
-                  >
-                    {joining ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-transparent rounded-full animate-spin" />
-                        যোগ হচ্ছে...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-5 h-5" />
-                        চ্যালেঞ্জ শুরু করুন
-                      </>
-                    )}
-                  </Button>
-                )
-              ) : (
+      <PageHeader
+        badgeText={campaign.isActive ? "চলছে" : undefined}
+        badgeIcon={campaign.isActive ? CheckCircle2 : undefined}
+        badgeColor="emerald"
+        title={campaign.name}
+        description={campaign.description}
+        actions={
+          <div className="flex flex-col sm:flex-row gap-4">
+            {user ? (
+              isJoined ? (
                 <Button
                   asChild
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 px-8 py-6"
+                  className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold"
                 >
-                  <Link href="/auth/sign-in" className="gap-2">
-                    সাইন-ইন করে শুরু করুন
-                    <ArrowRight className="w-5 h-5" />
+                  <Link href="/dashboard/campaigns/gamified" className="gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    চ্যালেঞ্জ চালিয়ে যান
                   </Link>
                 </Button>
-              )}
-            </div>
+              ) : (
+                <Button
+                  onClick={handleJoinCampaign}
+                  disabled={joining}
+                  className={`bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg ${config.glow} transition-all hover:scale-105`}
+                >
+                  {joining ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-transparent rounded-full animate-spin" />
+                      যোগ হচ্ছে...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5" />
+                      চ্যালেঞ্জ শুরু করুন
+                    </>
+                  )}
+                </Button>
+              )
+            ) : (
+              <Button
+                asChild
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
+              >
+                <Link href="/auth/sign-in" className="gap-2">
+                  সাইন-ইন করে শুরু করুন
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </Button>
+            )}
           </div>
-        </div>
-      </div>
+        }
+        extraContent={
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>
+              <Target className="w-4 h-4" />
+              {config.label}
+            </Badge>
+          </div>
+        }
+      />
 
       {/* Main Content */}
       <div className="relative container mx-auto max-w-7xl px-6 py-12">

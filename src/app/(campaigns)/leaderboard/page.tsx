@@ -24,6 +24,7 @@ import {
 import { getActiveGamifiedCampaigns, getCampaignLeaderboard } from '@/app/dashboard/gamified-campaigns/actions'
 import { useAuth } from '@/context/auth-context'
 import { AuthPrompt } from '@/components/auth/auth-prompt'
+import { PageHeader } from '@/components/layout/page-header'
 
 // Skeleton Components
 const CampaignSelectorSkeleton = () => (
@@ -364,76 +365,61 @@ export default function PublicLeaderboardPage() {
     const pageContent = (
         <>
             {/* Hero Section with Animated Background */}
-            <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-20 pb-16">
-                {/* Dynamic Background */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className={`absolute w-[1000px] h-[1000px] bg-gradient-to-br ${theme.gradient} opacity-20 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse`} />
-                    <div className={`absolute w-[700px] h-[700px] bg-gradient-to-tr ${theme.gradient} opacity-10 rounded-full blur-[120px] translate-x-1/4 translate-y-1/4 bottom-0 right-0 animate-pulse delay-1000`} />
-                </div>
+            <PageHeader
+                badgeText="লাইভ র‍্যাঙ্কিং"
+                badgeColor="cyan"
+                title={
+                    <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
+                        চ্যালেঞ্জ লিডারবোর্ড
+                    </span>
+                }
+                description="সবার সাথে প্রতিযোগিতা করুন, পয়েন্ট জমান আর লিডারবোর্ডে সেরা হন!"
+            />
 
-                <div className="relative container mx-auto max-w-7xl px-6 my-16">
-                    {/* Header */}
-                    <div className="text-center max-w-4xl mx-auto mb-12">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-                            <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${theme.gradient} animate-pulse`} />
-                            <span className="text-sm text-neutral-300 font-medium">লাইভ র‍্যাঙ্কিং</span>
-                        </div>
+            {/* Campaign Selector */}
+            <div className="container mx-auto max-w-7xl px-6 -mt-6 mb-8">
+                <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+                    {campaigns.map((campaign) => {
+                        const campaignTheme = campaignThemes[campaigns.indexOf(campaign) % campaignThemes.length]
+                        const isSelected = selectedCampaign?.id === campaign.id
+                        const Icon = campaignTheme.icon
 
-                        <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
-                            <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
-                                চ্যালেঞ্জ লিডারবোর্ড
-                            </span>
-                        </h1>
+                        return (
+                            <button
+                                key={campaign.id}
+                                onClick={() => setSelectedCampaign(campaign)}
+                                className={`
+                                    relative group px-6 py-4 rounded-2xl font-semibold text-base
+                                    transition-all duration-500 transform
+                                    ${isSelected ? 'scale-105' : 'hover:scale-102'}
+                                `}
+                                style={{
+                                    background: isSelected
+                                        ? `linear-gradient(135deg, ${campaignTheme.gradient.replace(/from-|via-|to-/g, '').split(' ').join(', ')})`
+                                        : 'rgba(255,255,255,0.03)',
+                                    border: isSelected ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                                }}
+                            >
+                                {isSelected && (
+                                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${campaignTheme.gradient} opacity-20 blur-xl`} />
+                                )}
 
-                        <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-                            সবার সাথে প্রতিযোগিতা করুন, পয়েন্ট জমান আর লিডারবোর্ডে সেরা হন!
-                        </p>
-                    </div>
-
-                    {/* Campaign Selector */}
-                    <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
-                        {campaigns.map((campaign) => {
-                            const campaignTheme = campaignThemes[campaigns.indexOf(campaign) % campaignThemes.length]
-                            const isSelected = selectedCampaign?.id === campaign.id
-                            const Icon = campaignTheme.icon
-
-                            return (
-                                <button
-                                    key={campaign.id}
-                                    onClick={() => setSelectedCampaign(campaign)}
-                                    className={`
-                                        relative group px-6 py-4 rounded-2xl font-semibold text-base
-                                        transition-all duration-500 transform
-                                        ${isSelected ? 'scale-105' : 'hover:scale-102'}
-                                    `}
-                                    style={{
-                                        background: isSelected
-                                            ? `linear-gradient(135deg, ${campaignTheme.gradient.replace(/from-|via-|to-/g, '').split(' ').join(', ')})`
-                                            : 'rgba(255,255,255,0.03)',
-                                        border: isSelected ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                                    }}
-                                >
-                                    {isSelected && (
-                                        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${campaignTheme.gradient} opacity-20 blur-xl`} />
-                                    )}
-
-                                    <div className="relative flex items-center gap-3">
-                                        <div className={`p-2 rounded-lg ${isSelected ? 'bg-white/20' : 'bg-white/5'} group-hover:bg-white/10 transition-colors`}>
-                                            <Icon className={`w-5 h-5 ${isSelected ? 'text-white' : 'text-neutral-400'}`} />
+                                <div className="relative flex items-center gap-3">
+                                    <div className={`p-2 rounded-lg ${isSelected ? 'bg-white/20' : 'bg-white/5'} group-hover:bg-white/10 transition-colors`}>
+                                        <Icon className={`w-5 h-5 ${isSelected ? 'text-white' : 'text-neutral-400'}`} />
+                                    </div>
+                                    <div className="text-left">
+                                        <div className={`${isSelected ? 'text-white' : 'text-neutral-300'} whitespace-nowrap`}>
+                                            {campaign.name}
                                         </div>
-                                        <div className="text-left">
-                                            <div className={`${isSelected ? 'text-white' : 'text-neutral-300'} whitespace-nowrap`}>
-                                                {campaign.name}
-                                            </div>
-                                            <div className={`text-xs ${isSelected ? 'text-white/70' : 'text-neutral-500'}`}>
-                                                {campaign._count?.participations || 0} জন অংশগ্রহণকারী
-                                            </div>
+                                        <div className={`text-xs ${isSelected ? 'text-white/70' : 'text-neutral-500'}`}>
+                                            {campaign._count?.participations || 0} জন অংশগ্রহণকারী
                                         </div>
                                     </div>
-                                </button>
-                            )
-                        })}
-                    </div>
+                                </div>
+                            </button>
+                        )
+                    })}
                 </div>
             </div>
 

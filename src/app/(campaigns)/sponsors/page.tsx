@@ -18,6 +18,7 @@ import {
   Award,
   Crown,
 } from 'lucide-react'
+import { PageHeader } from '@/components/layout/page-header'
 
 // Featured Platinum Sponsors
 const platinumSponsors = [
@@ -106,40 +107,18 @@ export default function SponsorsPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden pt-20">
-        {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
-          <div className="absolute w-[600px] h-[600px] bg-gradient-to-tr from-violet-500/15 via-purple-600/10 to-pink-500/15 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 bottom-0 right-0 animate-pulse delay-1000" />
-          <div className="absolute w-[500px] h-[500px] bg-gradient-to-bl from-blue-500/15 via-cyan-600/10 to-teal-500/15 rounded-full blur-[80px] -translate-x-1/4 -translate-y-1/4 bottom-1/4 left-1/4 animate-pulse delay-500" />
-        </div>
-
-        <div className="relative container mx-auto max-w-7xl px-6 py-24">
-          <div className="text-center max-w-3xl mx-auto">
-            <Badge className="mb-6 bg-cyan-500/15 text-cyan-400 border-cyan-500/30 px-4 py-1.5 h-auto text-sm font-bold backdrop-blur-md">
-              <Heart className="w-3.5 h-3.5 mr-2 text-cyan-400" />
-              আমাদের সহযোগীরা
-            </Badge>
-
-            <h1
-              className={`flex items-center justify-center gap-4 text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6 transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                }`}
-            >
-              <span className="block text-white">আমাদের</span>
-              <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                স্পন্সররা
-              </span>
-            </h1>
-
-            <p
-              className={`text-lg text-neutral-400 leading-relaxed transition-all duration-1000 delay-200 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                }`}
-            >
-              চমৎকার সব চ্যালেঞ্জ বানাতে আর আপনাদের পুরস্কার দিতে এই দুর্দান্ত কোম্পানিগুলো আমাদের সাহায্য করে! তাদের সাপোর্টে আমরা আপনাদের জন্য আরও সুন্দর অভিজ্ঞতা তৈরি করতে পারছি।
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        badgeIcon={Heart}
+        badgeText="আমাদের সহযোগীরা"
+        badgeColor="cyan"
+        title={
+            <>
+                <span className="text-white">আমাদের</span>{' '}
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">স্পন্সররা</span>
+            </>
+        }
+        description="চমৎকার সব চ্যালেঞ্জ বানাতে আর আপনাদের পুরস্কার দিতে এই দুর্দান্ত কোম্পানিগুলো আমাদের সাহায্য করে! তাদের সাপোর্টে আমরা আপনাদের জন্য আরও সুন্দর অভিজ্ঞতা তৈরি করতে পারছি।"
+      />
 
       {/* Platinum Sponsors Section */}
       <div className="container mx-auto max-w-7xl px-6 py-24">
