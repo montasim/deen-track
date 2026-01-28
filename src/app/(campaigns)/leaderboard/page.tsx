@@ -25,6 +25,7 @@ import { getActiveGamifiedCampaigns, getCampaignLeaderboard } from '@/app/dashbo
 import { useAuth } from '@/context/auth-context'
 import { AuthPrompt } from '@/components/auth/auth-prompt'
 import { PageHeader } from '@/components/layout/page-header'
+import { PageBackground } from '@/components/layout/page-background'
 
 // Skeleton Components
 const CampaignSelectorSkeleton = () => (
@@ -161,13 +162,10 @@ const CampaignInfoSkeleton = () => (
 )
 
 const LeaderboardPageSkeleton = () => (
-    <div className="min-h-screen bg-neutral-950">
+    <div className="min-h-screen bg-neutral-950 relative">
+        <PageBackground />
         {/* Hero Section */}
         <div className="relative border-b border-white/5 bg-neutral-950 overflow-hidden pt-20 pb-16">
-            {/* Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute w-[1000px] h-[1000px] bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2 animate-pulse" />
-            </div>
 
             <div className="relative container mx-auto max-w-7xl px-6 my-16">
                 {/* Header */}
@@ -424,8 +422,9 @@ export default function PublicLeaderboardPage() {
             </div>
 
             {/* Main Content */}
-            <div className="min-h-screen bg-neutral-950">
-                <div className="container mx-auto max-w-7xl px-6 py-12">
+            <div className="min-h-screen bg-neutral-950 relative">
+                <PageBackground />
+                <div className="relative container mx-auto max-w-7xl px-6 py-12">
                     {/* Stats Grid */}
                     <div className="grid gap-4 md:grid-cols-4 mb-12">
                         {stats.map((stat, index) => {

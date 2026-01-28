@@ -29,6 +29,7 @@ import {
 import { useAuth } from '@/context/auth-context'
 import { AuthPrompt } from '@/components/auth/auth-prompt'
 import { PageHeader } from '@/components/layout/page-header'
+import { PageBackground } from '@/components/layout/page-background'
 import {
     AreaChart,
     Area,
@@ -204,7 +205,8 @@ export default function MyProgressPage() {
 
     if (progressList.length === 0) {
         const emptyStateContent = (
-            <div className="min-h-screen bg-neutral-950">
+            <div className="min-h-screen bg-neutral-950 relative">
+                <PageBackground />
                 {/* Hero Section */}
                 <PageHeader
                     badgeIcon={Sparkles}
@@ -271,9 +273,10 @@ export default function MyProgressPage() {
                 badgeText="আপনার যাত্রা"
                 badgeColor="cyan"
                 title={
-                    <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
-                        আমার অগ্রগতি
-                    </span>
+                    <>
+                        <span className="text-white">আমার</span>{' '}
+                        <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">অগ্রগতি</span>
+                    </>
                 }
                 description="আপনার ক্যাম্পেইন অগ্রগতি এবং অর্জন ট্র্যাক করুন"
             />
@@ -323,8 +326,9 @@ export default function MyProgressPage() {
             )}
 
             {/* Main Content */}
-            <div className="min-h-screen bg-neutral-950">
-                <div className="container mx-auto max-w-7xl px-6 py-12">
+            <div className="min-h-screen bg-neutral-950 relative">
+                <PageBackground />
+                <div className="relative container mx-auto max-w-7xl px-6 py-12">
                     {/* Stats Grid */}
                     <div className="grid gap-4 md:grid-cols-4 mb-12">
                         {stats.map((stat, index) => {

@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, Upload, FileImage, Mic, Link2, FileText, Sparkles, CheckCircle2, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
+import { PageBackground } from '@/components/layout/page-background'
 
 const formSchema = z.object({
   proofType: z.enum(['IMAGE', 'AUDIO', 'URL', 'TEXT'], {
@@ -238,31 +239,33 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-2xl overflow-y-auto bg-neutral-900/95 backdrop-blur-xl border-white/10">
-        {/* Animated Header */}
-        <div className="relative overflow-hidden mb-6">
-          {/* Gradient Background */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${config.color} opacity-20 rounded-t-lg`} />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <SheetContent className="sm:max-w-2xl overflow-y-auto bg-neutral-900/95 backdrop-blur-xl border-white/10 p-0">
+        <PageBackground />
+        <div className="relative">
+          {/* Animated Header */}
+          <div className="relative overflow-hidden mb-6">
+            {/* Gradient Background */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${config.color} opacity-20 rounded-t-lg`} />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
 
-          <SheetHeader className="relative p-6 pb-4">
-            <div className="flex items-start gap-4">
-              <div className={`p-3 rounded-xl bg-gradient-to-br ${config.color} shadow-lg`}>
-                <Icon className="w-6 h-6 text-white" />
+            <SheetHeader className="relative p-6 pb-4">
+              <div className="flex items-start gap-4">
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${config.color} shadow-lg`}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <SheetTitle className="text-xl font-bold text-white mb-1">
+                    চ্যালেঞ্জ জমা দিন
+                  </SheetTitle>
+                  <SheetDescription className="text-neutral-400 text-sm">
+                    কাজ: <span className="text-white font-medium">{task.name}</span>
+                  </SheetDescription>
+                </div>
               </div>
-              <div className="flex-1">
-                <SheetTitle className="text-xl font-bold text-white mb-1">
-                  চ্যালেঞ্জ জমা দিন
-                </SheetTitle>
-                <SheetDescription className="text-neutral-400 text-sm">
-                  কাজ: <span className="text-white font-medium">{task.name}</span>
-                </SheetDescription>
-              </div>
-            </div>
-          </SheetHeader>
-        </div>
+            </SheetHeader>
+          </div>
 
-        <div className="px-6 pb-6">
+          <div className="px-6 pb-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
               {/* Proof Type Selection */}
@@ -488,13 +491,14 @@ export function ProofSubmissionSheet({ open, onOpenChange, task, campaignId, onS
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 mr-2" />
-                      জমা দিন ✅
+                      জমা দিন
                     </>
                   )}
                 </Button>
               </div>
             </form>
           </Form>
+        </div>
         </div>
       </SheetContent>
     </Sheet>
