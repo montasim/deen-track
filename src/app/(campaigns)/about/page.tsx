@@ -247,8 +247,8 @@ export default function AboutPage() {
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-3xl font-black text-white mb-3">{milestone.year}</div>
-                    <h3 className="text-xl font-bold text-white mb-3">{milestone.title}</h3>
+                    <div className="text-2xl font-black text-white mb-3">{milestone.year}</div>
+                    <h3 className="text-lg font-bold text-white mb-3">{milestone.title}</h3>
                     <p className="text-neutral-400 text-sm leading-relaxed">{milestone.description}</p>
                   </CardContent>
                 </Card>

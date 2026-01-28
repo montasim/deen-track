@@ -127,7 +127,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       setStep('otp')
 
       toast({
-        title: 'কোড পাঠানো হয়েছে 📧',
+        title: 'কোড পাঠানো হয়েছে',
         description: result.message || 'ইমেইল চেক করুন',
       })
     } catch (error) {
@@ -165,7 +165,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       }
 
       toast({
-        title: 'আবার কোড পাঠানো হয়েছে 📧',
+        title: 'আবার কোড পাঠানো হয়েছে',
         description: result.message || 'ইমেইল চেক করুন',
       })
     } catch (error) {
@@ -198,7 +198,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
         setOtpError(result.error || 'ভুল কোড')
         toast({
           variant: 'destructive',
-          title: 'ভুল কোড ❌',
+          title: 'ভুল কোড',
           description: result.error || 'আবার চেষ্টা করুন',
         })
         return
@@ -207,7 +207,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       setStep('password')
 
       toast({
-        title: 'সঠিক! ✅',
+        title: 'সঠিক!',
         description: 'নতুন পাসওয়ার্ড দিন',
       })
     } catch (error) {
@@ -249,7 +249,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       }
 
       toast({
-        title: 'সফল! 🎉',
+        title: 'সফল!',
         description: 'পাসওয়ার্ড রিসেট হয়েছে, নতুন পাসওয়ার্ড দিয়ে লগইন করুন',
       })
 
@@ -324,7 +324,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
       <div className={cn('grid gap-4', className)} {...props}>
         <div>
           <p className='text-sm text-neutral-400'>
-            আমরা একটি ৬ ডিজিটের কোড পাঠিয়েছি <span className="text-cyan-400 font-semibold">{email}</span> ঠিকানায় 📧
+            আমরা একটি ৬ ডিজিটের কোড পাঠিয়েছি <span className="text-cyan-400 font-semibold">{email}</span> ঠিকানায়
           </p>
         </div>
 

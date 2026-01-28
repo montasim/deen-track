@@ -94,13 +94,13 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
         setStep('password')
         onStepChange?.('password', data.email)
         toast({
-          title: 'অ্যাকাউন্ট পাওয়া গেছে! ✅',
+          title: 'অ্যাকাউন্ট পাওয়া গেছে!',
           description: 'পাসওয়ার্ড দিন লগইন করতে',
         })
       } else {
         // Email doesn't exist - redirect to sign-up with pre-filled email
         toast({
-          title: 'নতুন অ্যাকাউন্ট! 🎉',
+          title: 'নতুন অ্যাকাউন্ট!',
           description: 'অ্যাকাউন্ট নেই, নতুন বানাতে নিচ্ছেন...',
         })
         // Redirect to sign-up with email as query parameter
@@ -148,7 +148,7 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
 
       // Success - show success message and redirect based on role
       toast({
-        title: 'স্বাগতম! 🎉',
+        title: 'স্বাগতম!',
         description: 'লগইন সফল হয়েছে',
       })
 
@@ -157,7 +157,7 @@ export function UserAuthForm({ className, onStepChange }: UserAuthFormProps) {
 
       // Redirect based on user role
       if (result.user?.role === 'USER') {
-        router.push('/books') // Regular users go to books page
+        router.push('/campaigns') // Regular users go to campaigns page
       } else if (result.user?.role === 'ADMIN' || result.user?.role === 'SUPER_ADMIN') {
         router.push('/dashboard') // Admins go to dashboard
       } else {

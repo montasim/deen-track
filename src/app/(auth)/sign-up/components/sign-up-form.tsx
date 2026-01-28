@@ -137,7 +137,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         } else if (result.error?.toLowerCase().includes('already exists')) {
           // Redirect to sign-in page if email already exists
           toast({
-            title: 'অ্যাকাউন্ট আছে! 🤔',
+            title: 'অ্যাকাউন্ট আছে!',
             description: 'এই ইমেইলে অ্যাকাউন্ট আছে, লগইনে নিচ্ছেন...',
           })
           setTimeout(() => {
@@ -164,13 +164,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         })
         setStep('details')
         toast({
-          title: 'ঠিক আছে! ✅',
+          title: 'ঠিক আছে!',
           description: 'এখন আপনার তথ্য দিন',
         })
       } else {
         setStep('otp')
         toast({
-          title: 'OTP পাঠানো হয়েছে 📧',
+          title: 'OTP পাঠানো হয়েছে',
           description: 'ইমেইল চেক করুন',
         })
       }
@@ -214,7 +214,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         setOtpError(result.error || 'OTP ভুল হয়েছে')
         toast({
           variant: 'destructive',
-          title: 'ভুল OTP ❌',
+          title: 'ভুল OTP',
           description: result.error || 'আবার চেষ্টা করুন',
         })
         return
@@ -228,7 +228,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       setStep('details')
 
       toast({
-        title: 'সঠিক! ✅',
+        title: 'সঠিক!',
         description: 'এখন আপনার তথ্য পূরণ করুন',
       })
     } catch (error) {
@@ -269,7 +269,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
       setOtpExpiresAt(result.expiresAt)
       toast({
-        title: 'OTP পাঠানো হয়েছে 📧',
+        title: 'OTP পাঠানো হয়েছে',
         description: 'ইমেইল চেক করুন',
       })
     } catch (error) {
@@ -312,7 +312,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       }
 
       toast({
-        title: 'সফল! 🎉',
+        title: 'সফল!',
         description: 'অ্যাকাউন্ট তৈরি হয়ে গেছে',
       })
 
@@ -338,10 +338,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         <div className={cn('grid gap-4', className)} {...props}>
           <div className='mb-2 flex flex-col space-y-2 text-left'>
             <h1 className='text-lg font-semibold tracking-tight'>
-              আমন্ত্রণ পাঠানো হয়েছে! 📧
+              আমন্ত্রণ পাঠানো হয়েছে!
             </h1>
             <p className='text-sm text-green-600'>
-              ✅ নতুন আমন্ত্রণ লিংক পাঠানো হয়েছে।
+              নতুন আমন্ত্রণ লিংক পাঠানো হয়েছে।
             </p>
             <p className='text-sm text-muted-foreground'>
               ইমেইল ইনবক্স (এবং স্প্যাম ফোল্ডার) চেক করুন।
@@ -393,7 +393,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               if (res.ok) {
                 setResendSuccessful(true)
                 toast({
-                  title: 'আমন্ত্রণ পাঠানো হয়েছে! 📧',
+                  title: 'আমন্ত্রণ পাঠানো হয়েছে!',
                   description: 'ইমেইল চেক করুন',
                 })
               } else {
@@ -477,7 +477,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         <Header />
         <div className='mb-4'>
           <p className='text-sm text-neutral-400'>
-            আমরা একটি ৬ ডিজিটের কোড পাঠিয়েছি <span className="text-cyan-400 font-semibold">{email}</span> ঠিকানায় 📧
+            আমরা একটি ৬ ডিজিটের কোড পাঠিয়েছি <span className="text-cyan-400 font-semibold">{email}</span> ঠিকানায়
           </p>
         </div>
 

@@ -27,7 +27,7 @@ export default function Error({
           onClick: () => router.back(),
         },
         primaryButton: {
-          label: '🔄 আবার চেষ্টা করুন',
+          label: 'আবার চেষ্টা করুন',
           onClick: reset,
         },
       }}

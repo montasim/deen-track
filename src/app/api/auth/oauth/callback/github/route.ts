@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
         return new URL(stateData.redirect, request.url)
       }
       // Default redirect based on user role
-      return userRole === 'USER' ? new URL('/books', request.url) : new URL('/dashboard', request.url)
+      return userRole === 'USER' ? new URL('/campaigns', request.url) : new URL('/dashboard', request.url)
     }
 
     // Exchange code for access token

@@ -7,6 +7,7 @@ import { ROUTES } from '@/lib/routes/client-routes'
 import ForgotForm from './components/forgot-password-form'
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { PageBackground } from '@/components/layout/page-background'
 
 function ForgotPasswordContent() {
   const [siteName, setSiteName] = useState('CampaignHub')
@@ -23,28 +24,29 @@ function ForgotPasswordContent() {
   }, [])
 
   return (
-    <div className='container grid h-svh flex-col items-center justify-center bg-primary-foreground lg:max-w-none lg:px-0'>
-      <div className='mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[480px] lg:p-8'>
-        <div className='mb-4 flex items-center justify-center gap-2'>
-          <BookOpen />
-          <h1 className='text-xl font-medium'>{siteName}</h1>
-        </div>
-        <Card className='m-4 p-4'>
-          <div className='flex flex-col space-y-2 text-left mb-4'>
-            <h1 className='text-xl font-semibold tracking-tight'>
-              পাসওয়ার্ড ভুলে গেছেন? 🤔
+    <div className="min-h-screen bg-neutral-950 text-white relative">
+      <PageBackground />
+      <div className="relative container mx-auto max-w-7xl px-6 pt-12 pb-24 min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md mx-auto p-8 bg-neutral-900/40 backdrop-blur-xl border-white/10">
+          <div className='mb-4 flex items-center justify-center gap-2 mb-6'>
+            <BookOpen className="w-8 h-8 text-cyan-400" />
+            <h1 className='text-2xl font-bold text-white'>{siteName}</h1>
+          </div>
+          <div className='flex flex-col space-y-2 text-left mb-6'>
+            <h1 className='text-2xl font-bold tracking-tight text-white'>
+              পাসওযার্ড ভুলে গেছেন?
             </h1>
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-sm text-neutral-400'>
               কোনো সমস্যা নেই! রিসেট লিংক পাঠাবো <br />
-              ইমেইল দিলেই হবে 😊
+              ইমেইল দিলেই হবে
             </p>
           </div>
           <ForgotForm />
-          <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
-            পাসওয়ার্ড মনে আছে?{' '}
+          <p className='mt-6 px-8 text-center text-sm text-neutral-400'>
+            পাসওযার্ড মনে আছে?{' '}
             <Link
               href={ROUTES.signIn.href}
-              className='underline underline-offset-4 hover:text-primary'
+              className='text-cyan-400 hover:text-cyan-300 underline underline-offset-4 transition-colors'
             >
               লগইন করুন
             </Link>

@@ -22,7 +22,7 @@ export default function Forbidden() {
           onClick: () => router.back(),
         },
         primaryButton: {
-          label: '🏠 ড্যাশবোর্ডে যান',
+          label: 'ড্যাশবোর্ডে যান',
           onClick: () => router.push('/dashboard'),
         },
       }}
