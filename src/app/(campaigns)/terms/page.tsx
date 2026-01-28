@@ -56,11 +56,10 @@ export default async function TermsPage() {
           badgeText="আইনি"
           badgeColor="cyan"
           title={
-            <>
-              <span className="text-white">ব্যবহারের</span>
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
-            </>
+              <>
+                  <span className="text-white">ব্যবহারের</span>{' '}
+                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
+              </>
           }
           description={`আমাদের প্ল্যাটফর্ম ব্যবহার করার আগে এই শর্তগুলো ভালো করে পড়ুন। ${siteName} ব্যবহার করার মাধ্যমে আপনি এই শর্তগুলো মেনে নিচ্ছেন বলে ধরে নেওয়া হবে।`}
           extraContent={

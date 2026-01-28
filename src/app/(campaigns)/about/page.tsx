@@ -160,7 +160,7 @@ export default function AboutPage() {
               className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
             >
               <Link href="/campaigns" className="gap-2">
-                🎯 চ্যালেঞ্জ দেখুন
+                চ্যালেঞ্জ দেখুন
                 <ArrowUpRight className="w-5 h-5" />
               </Link>
             </Button>
@@ -170,7 +170,7 @@ export default function AboutPage() {
               variant="outline"
               className="border-white/20 text-white hover:bg-white/5"
             >
-              <Link href="/sign-up">👋 কমিউনিটিতে যোগ দিন</Link>
+              <Link href="/sign-up">কমিউনিটিতে যোগ দিন</Link>
             </Button>
           </>
         }

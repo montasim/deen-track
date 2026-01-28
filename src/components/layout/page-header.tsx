@@ -91,7 +91,7 @@ export function PageHeader({
   return (
     <section
       className={cn(
-        'relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden',
+        'relative border-b border-white/5 bg-neutral-900/30 backdrop-blur-xl overflow-hidden my-10 py-10',
         padding,
         className
       )}
@@ -100,17 +100,17 @@ export function PageHeader({
       <AnimatedHeroBackground />
 
       <div className="relative container mx-auto max-w-7xl px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center space-y-6">
           {/* Badge */}
           {badgeText && BadgeIcon && (
-            <div className={cn('inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8', colors.bg, colors.border)}>
+            <div className={cn('inline-flex items-center gap-2 px-4 py-2 rounded-full', colors.bg, colors.border)}>
               <BadgeIcon className={cn('w-4 h-4', colors.icon)} />
               <span className={cn('text-sm font-medium', colors.text)}>{badgeText}</span>
             </div>
           )}
 
           {/* Title */}
-          <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-normal">
             {title}
           </h1>
 

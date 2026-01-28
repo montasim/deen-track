@@ -62,7 +62,6 @@ export default async function PrivacyPage() {
             </>
           }
           description={`আপনার গোপনীয়তা আমাদের কাছে খুবই গুরুত্বপূর্ণ। এই নীতিতে বলা হয়েছে ${siteName} ব্যবহার করার সময় আমরা কিভাবে আপনার তথ্য সংগ্রহ করি, ব্যবহার করি এবং সুরক্ষিত রাখি তা জানুন।`}
-          padding="py-24"
           extraContent={
             legalContent?.effectiveDate ? (
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
