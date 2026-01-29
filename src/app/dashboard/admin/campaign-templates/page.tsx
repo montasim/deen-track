@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { getCampaignTemplates } from '../../gamified-campaigns/actions'
+import { getCampaignTemplates, createCampaignFromTemplate } from '../../gamified-campaigns/actions'
 import { DashboardPage } from '@/components/dashboard/dashboard-page'
 import { DashboardSummary } from '@/components/dashboard/dashboard-summary'
 import { DashboardSummarySkeleton } from '@/components/dashboard/dashboard-summary-skeleton'
@@ -10,12 +10,18 @@ import { TemplateCard } from '@/components/gamified-campaigns'
 import { Button } from '@/components/ui/button'
 import { Plus, Files, RefreshCw } from 'lucide-react'
 import { TemplatesMutateDrawer } from './components/templates-mutate-drawer'
+import { UseTemplateDrawer } from './components/use-template-drawer'
+import { useRouter } from 'next/navigation'
+import { toast } from '@/hooks/use-toast'
 
 export default function CampaignTemplatesPage() {
+  const router = useRouter()
   const [templates, setTemplates] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [useDrawerOpen, setUseDrawerOpen] = useState(false)
   const [editingTemplate, setEditingTemplate] = useState<any>(undefined)
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null)
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -37,6 +43,7 @@ export default function CampaignTemplatesPage() {
     const beginnerCount = templates.filter((t) => t.difficulty === 'BEGINNER').length
     const intermediateCount = templates.filter((t) => t.difficulty === 'INTERMEDIATE').length
     const advancedCount = templates.filter((t) => t.difficulty === 'ADVANCED').length
+    const expertCount = templates.filter((t) => t.difficulty === 'EXPERT').length
 
     return [
       {
@@ -59,12 +66,26 @@ export default function CampaignTemplatesPage() {
       },
       {
         title: 'Advanced',
-        value: advancedCount.toString(),
+        value: (advancedCount + expertCount).toString(),
         description: 'Hard difficulty',
         icon: Files,
       },
     ]
   }, [templates])
+
+  const handleUseTemplate = (template: any) => {
+    setSelectedTemplate(template)
+    setUseDrawerOpen(true)
+  }
+
+  const handleEditTemplate = (template: any) => {
+    setEditingTemplate(template)
+    setDrawerOpen(true)
+  }
+
+  const handleCreateCampaign = async (data: any) => {
+    return await createCampaignFromTemplate(selectedTemplate.id, data)
+  }
 
   return (
     <>
@@ -134,26 +155,13 @@ export default function CampaignTemplatesPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {templates.map((template: any) => (
-            <div key={template.id} className="flex flex-col gap-2">
-              <TemplateCard
-                template={template}
-                showActions={true}
-                onUse={async () => {
-                  // Navigate to user-facing templates page or open use dialog
-                  window.location.href = `/dashboard/campaigns/templates`
-                }}
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEditingTemplate(template)
-                  setDrawerOpen(true)
-                }}
-              >
-                Edit Template
-              </Button>
-            </div>
+            <TemplateCard
+              key={template.id}
+              template={template}
+              showActions={true}
+              onUse={() => handleUseTemplate(template)}
+              onEdit={() => handleEditTemplate(template)}
+            />
           ))}
         </div>
       )}
@@ -172,6 +180,16 @@ export default function CampaignTemplatesPage() {
           setTemplates(templatesData)
         })
       }}
+    />
+
+    <UseTemplateDrawer
+      open={useDrawerOpen}
+      onOpenChange={(open) => {
+        setUseDrawerOpen(open)
+        if (!open) setSelectedTemplate(null)
+      }}
+      template={selectedTemplate}
+      onSubmit={handleCreateCampaign}
     />
   </>
   )

@@ -229,11 +229,11 @@ export default function PublicCampaignsPage() {
 
                   <CardContent className="relative p-6">
                     {/* Campaign Header */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className={`p-4 rounded-2xl bg-gradient-to-br ${config.color} shadow-lg`}>
-                        <Flame className="w-8 h-8 text-white" />
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${config.color} shadow-lg`}>
+                        <Flame className="w-6 h-6 text-white" />
                       </div>
-                      <Badge className={`${config.bg} ${config.text} ${config.border} border`}>
+                      <Badge className={`${config.bg} ${config.text} ${config.border} border text-xs`}>
                         {campaign.difficulty === 'BEGINNER' ? 'সহজ' :
                           campaign.difficulty === 'INTERMEDIATE' ? 'মধ্যম' :
                             campaign.difficulty === 'ADVANCED' ? 'উন্নত' :
@@ -243,56 +243,106 @@ export default function PublicCampaignsPage() {
                     </div>
 
                     {/* Campaign Info */}
-                    <h3 className="text-2xl font-bold text-white mb-3 line-clamp-1">
+                    <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
                       {campaign.name}
                     </h3>
-                    <p className="text-neutral-400 text-sm mb-6 line-clamp-2">
+                    <p className="text-neutral-400 text-xs mb-4 line-clamp-2">
                       {campaign.description}
                     </p>
 
                     {/* Campaign Stats */}
-                    <div className="space-y-4 mb-6">
-                      <div className="flex items-center gap-4 text-sm">
-                        <div className="flex items-center gap-2 text-neutral-400">
-                          <Users className="w-4 h-4" />
-                          <span>{campaign._count?.participations || campaign.participations?.length || 0} জন খেলছে</span>
-                        </div>
-                        {campaign.estimatedDuration && (
-                          <div className="flex items-center gap-2 text-neutral-400">
-                            <Calendar className="w-4 h-4" />
-                            <span>{campaign.estimatedDuration} ঘণ্টা</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {campaign.tasks && campaign.tasks.length > 0 && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Sparkles className="w-4 h-4 text-amber-400" />
-                          <span className="text-neutral-400">
-                            {campaign.tasks.length} টি মজার চ্যালেঞ্জ
+                    <div className="space-y-3 mb-4">
+                      {/* Date Range */}
+                      {campaign.startDate && campaign.endDate && (
+                        <div className="flex items-center gap-2 text-xs text-neutral-400">
+                          <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate">
+                            {new Date(campaign.startDate).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                            {' — '}
+                            {new Date(campaign.endDate).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                            })}
                           </span>
                         </div>
                       )}
 
+                      <div className="flex items-center gap-4 text-xs">
+                        <div className="flex items-center gap-1.5 text-neutral-400">
+                          <Users className="w-3.5 h-3.5" />
+                          <span>{campaign._count?.participations || campaign.participations?.length || 0} জন</span>
+                        </div>
+
+                        {/* Calculate Total Points */}
+                        {campaign.tasks && campaign.tasks.length > 0 && (
+                          <div className="flex items-center gap-1.5 text-neutral-400">
+                            <Star className="w-3.5 h-3.5 text-yellow-400" />
+                            <span>
+                              {campaign.tasks.reduce((sum: number, ct: any) => {
+                                const taskPoints = ct.points || ct.task?.points || ct.task?.achievements?.reduce((s: number, a: any) => s + (a.points || 0), 0) || 0
+                                return sum + taskPoints
+                              }, 0)} পয়েন্ট
+                            </span>
+                          </div>
+                        )}
+
+                        {campaign.estimatedDuration && (
+                          <div className="flex items-center gap-1.5 text-neutral-400">
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>{campaign.estimatedDuration}ঘণ্টা</span>
+                          </div>
+                        )}
+                      </div>
+
                       {campaign.minPointsToQualify && campaign.minPointsToQualify > 0 && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Star className="w-4 h-4 text-yellow-400" />
+                        <div className="flex items-center gap-1.5 text-xs">
+                          <Zap className="w-3.5 h-3.5 text-amber-400" />
                           <span className="text-neutral-400">
-                            পুরস্কারের জন্য {campaign.minPointsToQualify}+ পয়েন্ট চাই
+                            যোগ্যতার জন্য {campaign.minPointsToQualify}+ পয়েন্ট
                           </span>
                         </div>
                       )}
                     </div>
 
+                    {/* Task Names List */}
+                    {campaign.tasks && campaign.tasks.length > 0 && (
+                      <div className="mb-4 p-3 rounded-lg bg-neutral-900/40 border border-white/5">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                          <span className="text-xs font-medium text-neutral-300">
+                            {campaign.tasks.length} টি চ্যালেঞ্জ
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          {campaign.tasks.slice(0, 4).map((ct: any, idx: number) => (
+                            <div key={idx} className="flex items-start gap-2 text-xs">
+                              <span className="text-neutral-600 flex-shrink-0">{idx + 1}.</span>
+                              <span className="text-neutral-400 line-clamp-1">
+                                {ct.task?.name || `Task ${idx + 1}`}
+                              </span>
+                            </div>
+                          ))}
+                          {campaign.tasks.length > 4 && (
+                            <div className="text-xs text-neutral-500 mt-1">
+                              +{campaign.tasks.length - 4} আরও চ্যালেঞ্জ...
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Action Button */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                    <div className="flex items-center gap-2 pt-3 border-t border-white/10">
                       <Button
                         asChild
-                        className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
+                        className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm font-semibold shadow-lg shadow-cyan-500/25 h-9"
                       >
                         <Link href={`/campaigns/${campaign.id}`} className="gap-2">
                           চ্যালেঞ্জ দেখুন
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
                       </Button>
                     </div>

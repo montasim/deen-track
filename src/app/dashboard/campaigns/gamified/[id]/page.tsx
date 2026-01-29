@@ -42,7 +42,7 @@ export default function CampaignDetailPage({
   // Redirect if not admin
   useEffect(() => {
     if (user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
-      router.push('/dashboard/campaigns/templates')
+      router.push('/dashboard/admin/campaign-templates')
     }
   }, [user, router])
 

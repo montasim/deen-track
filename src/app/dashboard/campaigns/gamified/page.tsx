@@ -37,7 +37,7 @@ export default function GamifiedCampaignsPage() {
   // Redirect if not admin
   useEffect(() => {
     if (user && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
-      router.push('/dashboard/campaigns/templates')
+      router.push('/dashboard/admin/campaign-templates')
     }
   }, [user, router])
 
@@ -215,7 +215,7 @@ export default function GamifiedCampaignsPage() {
           {
             label: 'Create from Template',
             icon: Plus,
-            href: '/dashboard/campaigns/templates',
+            href: '/dashboard/admin/campaign-templates',
           },
           {
             label: 'Refresh',
@@ -277,7 +277,7 @@ export default function GamifiedCampaignsPage() {
               filter === 'all'
                 ? {
                     label: 'Browse Templates',
-                    onClick: () => router.push('/dashboard/campaigns/templates'),
+                    onClick: () => router.push('/dashboard/admin/campaign-templates'),
                   }
                 : undefined
             }

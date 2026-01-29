@@ -300,9 +300,30 @@ export async function createCampaignFromTemplate(
   campaignData: {
     name: string
     description?: string
+    rules?: string
+    disqualificationRules?: string
+    termsOfService?: string
+    category?: string
+    difficulty?: string
+    estimatedDuration?: number
+    minPointsToQualify?: number
     startDate: Date
     endDate: Date
     maxParticipants?: number
+    tasks?: Array<{
+      name: string
+      description: string
+      rules: string
+      disqualificationRules?: string
+      points: number
+      achievements?: Array<{
+        name: string
+        description: string
+        points: number
+        icon?: string
+        howToAchieve?: string
+      }>
+    }>
     rewards?: any
     entryById: string
   }
@@ -310,19 +331,28 @@ export async function createCampaignFromTemplate(
   const template = await getTemplateById(templateId)
   if (!template) throw new Error('Template not found')
 
-  // First create the tasks from the template
+  // Create tasks from the provided data (which may be modified from template)
   const createdTasks = await Promise.all(
-    template.templateTasks.map((tt) =>
+    (campaignData.tasks || template.templateTasks).map((taskData: any) =>
       prisma.campaignTask.create({
         data: {
-          name: tt.name,
-          description: tt.description,
-          rules: tt.rules,
-          disqualificationRules: tt.disqualificationRules,
+          name: taskData.name,
+          description: taskData.description,
+          rules: taskData.rules,
+          disqualificationRules: taskData.disqualificationRules,
           startDate: campaignData.startDate,
           endDate: campaignData.endDate,
           validationType: 'MANUAL',
           entryById: campaignData.entryById,
+          achievements: {
+            create: (taskData.achievements || []).map((ach: any) => ({
+              name: ach.name,
+              description: ach.description,
+              points: ach.points,
+              icon: ach.icon,
+              howToAchieve: ach.howToAchieve || '',
+            })),
+          },
         },
       })
     )
@@ -333,8 +363,13 @@ export async function createCampaignFromTemplate(
     data: {
       name: campaignData.name,
       description: campaignData.description || template.description,
-      rules: template.rules,
-      disqualificationRules: template.disqualificationRules,
+      rules: campaignData.rules || template.rules,
+      disqualificationRules: campaignData.disqualificationRules || template.disqualificationRules,
+      termsOfService: campaignData.termsOfService || template.termsOfService,
+      category: campaignData.category || template.category,
+      difficulty: (campaignData.difficulty || template.difficulty) as any,
+      estimatedDuration: campaignData.estimatedDuration || template.estimatedDuration,
+      minPointsToQualify: campaignData.minPointsToQualify || template.minPointsToQualify,
       startDate: campaignData.startDate,
       endDate: campaignData.endDate,
       maxParticipants: campaignData.maxParticipants,

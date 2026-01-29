@@ -1364,12 +1364,17 @@ model GamifiedCampaign {
   description             String              @db.Text
   imageUrl                String?
   directImageUrl          String?
+  category                String?
+  difficulty              String?             @default("INTERMEDIATE")
+  estimatedDuration       Int?                // in hours
+  minPointsToQualify      Int?                @default(0)
   startDate               DateTime
   endDate                 DateTime
   isActive                Boolean             @default(true)
   maxParticipants         Int?
   rules                   String?             @db.Text
   disqualificationRules   String?             @db.Text
+  termsOfService          String?             @db.Text
   rewards                 Json?               @default("[]")
 
   // Metadata

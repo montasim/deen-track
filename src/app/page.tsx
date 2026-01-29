@@ -123,6 +123,7 @@ export default function LandingPage() {
   const [siteName, setSiteName] = useState('CampaignHub')
   const [featuredCampaigns, setFeaturedCampaigns] = useState<any[]>([])
   const [campaignsLoading, setCampaignsLoading] = useState(true)
+  const [totalCampaigns, setTotalCampaigns] = useState(0)
   const [stats, setStats] = useState([])
   // Convert English numbers to Bangla
   const toBanglaNumber = (num: number): string => {
@@ -160,6 +161,8 @@ export default function LandingPage() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
+          // Store total campaign count
+          setTotalCampaigns(data.length)
           // Map campaigns to UI format and take first 3 for featured section
           const mappedCampaigns = data.slice(0, 3).map((campaign: Campaign, index: number) =>
             mapCampaignToUI(campaign, index)
@@ -326,6 +329,23 @@ export default function LandingPage() {
                       </div>
                     )
                   })}
+
+                  {/* See More Button - Only show if more than 3 campaigns */}
+                  {!campaignsLoading && totalCampaigns > 3 && (
+                    <div className="pt-4">
+                      <Button
+                        asChild
+                        size="lg"
+                        variant="outline"
+                        className="w-full border-white/20 text-white hover:bg-white/5 hover:border-white/30 backdrop-blur-sm"
+                      >
+                        <Link href="/campaigns" className="gap-2">
+                          আরও দেখুন ({totalCampaigns - 3}+)
+                          <ArrowRight className="w-5 h-5" />
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

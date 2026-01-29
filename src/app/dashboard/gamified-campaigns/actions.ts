@@ -826,6 +826,13 @@ export async function createCampaignFromTemplate(
   campaignData: {
     name: string
     description?: string
+    rules?: string
+    disqualificationRules?: string
+    termsOfService?: string
+    category?: string
+    difficulty?: string
+    estimatedDuration?: number
+    minPointsToQualify?: number
     startDate: Date
     endDate: Date
     maxParticipants?: number

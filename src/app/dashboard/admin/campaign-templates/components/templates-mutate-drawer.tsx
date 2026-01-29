@@ -109,6 +109,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
 
   const form = useForm<TemplatesForm>({
     resolver: zodResolver(formSchema),
+    mode: 'all',
     defaultValues: {
       name: '',
       description: '',
@@ -134,8 +135,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
     name: 'tasks',
   })
 
-  const { formState: { isValid, dirtyFields } } = form
-  const hasChanges = Object.keys(dirtyFields).length > 0
+  const { formState: { isValid } } = form
 
   const addTask = () => {
     append({
@@ -225,16 +225,47 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
 
   // Populate form when editing
   useEffect(() => {
+    if (open && !template) {
+      // Clear form completely when opening for create
+      console.log('=== Clearing Form for Create ===')
+      setExpandedTasks(new Set())
+      setExpandedAchievements({})
+      form.reset({
+        name: '',
+        description: '',
+        rules: '',
+        disqualificationRules: '',
+        termsOfService: '',
+        category: '',
+        estimatedDuration: undefined,
+        difficulty: 'INTERMEDIATE',
+        minPointsToQualify: 0,
+        sponsorId: undefined,
+        totalPoints: 0,
+        tasks: [],
+      })
+    }
+
     if (template) {
+      console.log('=== Loading Template ===')
+      console.log('Template ID:', template.id)
+      console.log('Template tasks:', template.templateTasks)
+
       const taskData = template.templateTasks?.map((task: any) => ({
         name: task.name || '',
         description: task.description || '',
         rules: task.rules || '',
         disqualificationRules: task.disqualificationRules || '',
         points: task.points || 10,
-        startDate: task.startDate ? new Date(task.startDate).toISOString() : undefined,
-        endDate: task.endDate ? new Date(task.endDate).toISOString() : undefined,
-        achievements: task.achievementsTemplate || [],
+        startDate: task.startDate ? new Date(task.startDate) : new Date(),
+        endDate: task.endDate ? new Date(task.endDate) : new Date(),
+        achievements: (task.achievementsTemplate || []).map((ach: any) => ({
+          name: ach.name || 'New Achievement',
+          description: ach.description || 'Achievement description here',
+          points: ach.points || 10,
+          icon: ach.icon || '',
+          howToAchieve: ach.howToAchieve || undefined,
+        })),
       })) || []
 
       // Calculate dates from tasks BEFORE form reset
@@ -288,6 +319,24 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
         totalPoints: calculatedTotalPoints,
         tasks: taskData,
       })
+
+      console.log('=== Form Reset Complete ===')
+      console.log('Task data:', taskData)
+      console.log('Form values:', form.getValues())
+      console.log('Form errors:', form.formState.errors)
+      console.log('Is form valid:', form.formState.isValid)
+      console.log('=========================')
+
+      // Trigger validation after reset to ensure isValid updates
+      setTimeout(() => {
+        form.trigger().then((result) => {
+          console.log('=== Manual Validation Triggered ===')
+          console.log('Validation result:', result)
+          console.log('Is form valid after trigger:', form.formState.isValid)
+          console.log('Form errors after trigger:', form.formState.errors)
+          console.log('====================================')
+        })
+      }, 100)
     } else {
       form.reset({
         name: '',
@@ -306,7 +355,44 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
     }
   }, [template, form])
 
+  // Watch form state for debugging
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (name) {
+        console.log(`Form field changed: ${name} (${type})`)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [form])
+
+  // Watch form errors
+  useEffect(() => {
+    const errors = form.formState.errors
+    if (Object.keys(errors).length > 0) {
+      console.log('=== Form Errors ===')
+      console.log('Errors:', JSON.stringify(errors, null, 2))
+      console.log('==================')
+    }
+  }, [form.formState.errors])
+
+  // Log button state
+  useEffect(() => {
+    console.log('=== Button State ===')
+    console.log('isSubmitting:', isSubmitting)
+    console.log('fields.length:', fields.length)
+    console.log('isValid:', isValid)
+    console.log('Button disabled:', isSubmitting || fields.length === 0 || !isValid)
+    console.log('==================')
+  }, [isSubmitting, fields.length, isValid])
+
   async function onSubmit(values: TemplatesForm) {
+    console.log('=== Form Submit Values ===')
+    console.log('Is Editing:', !!template)
+    console.log('Template ID:', template?.id)
+    console.log('Form Values:', JSON.stringify(values, null, 2))
+    console.log('Tasks:', values.tasks)
+    console.log('========================')
+
     setIsSubmitting(true)
     try {
       const isEditing = !!template
@@ -363,6 +449,10 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
             })),
           })
 
+      console.log('=== API Result ===')
+      console.log('Result:', result)
+      console.log('==================')
+
       if (result.success) {
         toast({
           title: isEditing ? 'Template updated' : 'Template created',
@@ -370,7 +460,23 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
             ? 'Campaign template has been updated successfully.'
             : 'Campaign template has been created successfully.',
         })
-        form.reset()
+        // Clear all form state
+        setExpandedTasks(new Set())
+        setExpandedAchievements({})
+        form.reset({
+          name: '',
+          description: '',
+          rules: '',
+          disqualificationRules: '',
+          termsOfService: '',
+          category: '',
+          estimatedDuration: undefined,
+          difficulty: 'INTERMEDIATE',
+          minPointsToQualify: 0,
+          sponsorId: undefined,
+          totalPoints: 0,
+          tasks: [],
+        })
         onOpenChange(false)
         onSuccess?.()
       } else {
@@ -381,7 +487,11 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
         })
       }
     } catch (error) {
-      console.error(`Error ${template ? 'updating' : 'creating'} template:`, error)
+      console.error(`=== Error ${template ? 'updating' : 'creating'} template ===`)
+      console.error('Error:', error)
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error')
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+      console.error('============================================')
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -396,7 +506,14 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="flex flex-col gap-6 sm:max-w-3xl overflow-y-auto border-0 shadow-none">
         <SheetHeader>
-          <SheetTitle>{template ? 'Edit Campaign Template' : 'Create Campaign Template'}</SheetTitle>
+          <SheetTitle>
+            {template ? 'Edit Campaign Template' : 'Create Campaign Template'}
+            {template && (
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                (ID: {template.id})
+              </span>
+            )}
+          </SheetTitle>
           <SheetDescription>
             {template
               ? 'Update template information, tasks, rules, and achievement criteria.'
@@ -450,7 +567,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                           render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Sponsor</FormLabel>
-                                  <Select onValueChange={field.onChange} value={field.value || undefined}>
+                                  <Select onValueChange={field.onChange} value={field.value}>
                                       <FormControl>
                                           <SelectTrigger disabled={isLoadingSponsors}>
                                               <SelectValue placeholder={isLoadingSponsors ? "Loading sponsors..." : "Select sponsor"} />
@@ -476,14 +593,14 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                       placeholder="Describe what this template is for..."
                   />
 
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                       <FormField
                           control={form.control}
                           name="difficulty"
                           render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Difficulty <span className="text-destructive">*</span></FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <Select onValueChange={field.onChange} value={field.value}>
                                       <FormControl>
                                           <SelectTrigger>
                                               <SelectValue placeholder="Select" />
@@ -496,30 +613,6 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                           <SelectItem value="EXPERT">Expert</SelectItem>
                                       </SelectContent>
                                   </Select>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
-
-                      <FormField
-                          control={form.control}
-                          name="estimatedDuration"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Duration (hours)</FormLabel>
-                                  <FormControl>
-                                      <Input
-                                          type="number"
-                                          min="1"
-                                          placeholder="Auto-calculated"
-                                          {...field}
-                                          readOnly
-                                          className="bg-muted"
-                                      />
-                                  </FormControl>
-                                  <FormDescription>
-                                      Automatically calculated from start and end dates
-                                  </FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}
@@ -570,7 +663,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                       />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                       <FormField
                           control={form.control}
                           name="startDate"
@@ -670,6 +763,30 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                       </PopoverContent>
                                   </Popover>
                                   <FormDescription>Auto-calculated from latest task end date</FormDescription>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+
+                      <FormField
+                          control={form.control}
+                          name="estimatedDuration"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Duration (hours)</FormLabel>
+                                  <FormControl>
+                                      <Input
+                                          type="number"
+                                          min="1"
+                                          placeholder="Auto-calculated"
+                                          {...field}
+                                          readOnly
+                                          className="bg-muted"
+                                      />
+                                  </FormControl>
+                                  <FormDescription>
+                                      Automatically calculated from start and end dates
+                                  </FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}
@@ -946,7 +1063,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                     const currentAchievements = form.watch(`tasks.${index}.achievements`) || []
                                     form.setValue(`tasks.${index}.achievements`, [
                                       ...currentAchievements,
-                                      { name: '', description: '', points: 10, howToAchieve: '', icon: '' }
+                                      { name: 'New Achievement', description: 'Description here', points: 10, howToAchieve: 'Instructions here', icon: '🏆' }
                                     ])
                                   }}
                                 >
@@ -1085,12 +1202,21 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                 disabled={
                   isSubmitting ||
                   fields.length === 0 ||
-                  !isValid ||
-                  (template ? !hasChanges : false)
+                  !isValid
                 }
               >
                 {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {template ? 'Update Template' : 'Create Template'}
+                {!isSubmitting && fields.length > 0 && !isValid && (
+                  <span className="ml-2 text-xs opacity-70">
+                    (Fix validation errors)
+                  </span>
+                )}
+                {!isSubmitting && fields.length === 0 && (
+                  <span className="ml-2 text-xs opacity-70">
+                    (Add at least one task)
+                  </span>
+                )}
               </Button>
             </SheetFooter>
           </form>

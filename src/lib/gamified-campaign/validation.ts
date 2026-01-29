@@ -171,12 +171,6 @@ export const createTemplateSchema = z.object({
         endDate: z.coerce.date({
           required_error: "End date is required",
           invalid_type_error: "Invalid end date",
-        }).refine((data) => {
-          const startDate = new Date(data.startDate)
-          const endDate = new Date(data.endDate)
-          return endDate > startDate
-        }, {
-          message: "End date must be after start date",
         }),
         order: z.coerce.number().int().optional(),
         achievements: z.array(z.object({
@@ -184,9 +178,17 @@ export const createTemplateSchema = z.object({
           description: z.string().min(10, 'Description must be at least 10 characters'),
           points: z.coerce.number().int().positive('Points must be positive'),
           icon: z.string().optional(),
-          howToAchieve: z.string().min(10, 'Instructions must be at least 10 characters'),
+          howToAchieve: z.string().min(10, 'Instructions must be at least 10 characters').optional(),
         })).optional(),
-      })
+      }).refine((data) => {
+        // Ensure end date is after or equal to start date
+        if (data.startDate && data.endDate) {
+          return data.endDate.getTime() >= data.startDate.getTime()
+        }
+        return true
+      }, {
+        message: "End date must be on or after start date",
+      }),
     )
     .min(1, 'Add at least one task'),
 })

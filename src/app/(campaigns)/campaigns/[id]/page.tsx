@@ -13,19 +13,9 @@ import {
   Trophy,
   Target,
   Sparkles,
-  Star,
-  Zap,
   CheckCircle2,
-  Clock,
-  Lock,
-  Unlock,
-  TrendingUp,
-  ArrowRight,
   Gamepad2,
-  Send,
-  FileCheck,
-  Eye,
-  AlertCircle,
+  Zap,
 } from 'lucide-react'
 import {
   AlertDialog,
@@ -44,6 +34,9 @@ import { ProofSubmissionSheet } from './components/proof-submission-sheet'
 import { RewardsDisplay } from '@/components/gamified-campaigns/rewards-display'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageBackground } from '@/components/layout/page-background'
+import { QuickStatsBar } from '@/components/campaigns/quick-stats-bar'
+import { ProgressSection } from '@/components/campaigns/progress-section'
+import { TaskListItem } from '@/components/campaigns/task-list-item'
 
 const difficultyConfig = {
   BEGINNER: {
@@ -199,7 +192,7 @@ export default function PublicCampaignDetailPage() {
     return (
       <>
         <div className="container mx-auto max-w-7xl px-6 text-center pt-20 pb-12">
-          <div className={`transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className={`transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'}`}>
             <div className="inline-flex p-6 rounded-full bg-neutral-900/60 border border-white/10 mb-8">
               <Trophy className="w-16 h-16 text-neutral-700" />
             </div>
@@ -234,7 +227,6 @@ export default function PublicCampaignDetailPage() {
     0
   ) || 0
 
-  const completedTasks = userProgress?.submissions?.filter((s: any) => s.status === 'APPROVED').length || 0
   const earnedPoints = userProgress?.totalPoints || 0
   const progressPercentage = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0
 
@@ -250,11 +242,28 @@ export default function PublicCampaignDetailPage() {
         title={campaign.name}
         description={campaign.description}
         extraContent={
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-4">
             <Badge className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>
               <Target className="w-4 h-4" />
               {config.label}
             </Badge>
+            {campaign.startDate && campaign.endDate && (
+              <div className="flex items-center gap-2 text-neutral-300">
+                <Calendar className="w-4 h-4" />
+                <span className="text-sm">
+                  {new Date(campaign.startDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  })}{' '}
+                  —{' '}
+                  {new Date(campaign.endDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </span>
+              </div>
+            )}
           </div>
         }
       />
@@ -264,83 +273,19 @@ export default function PublicCampaignDetailPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Stats Overview */}
-            <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 transition-all hover:border-white/20`}>
-              <div className="group">
-                <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
-                  <Trophy className="w-4 h-4 text-amber-400" />
-                  <span>মোট পয়েন্ট</span>
-                </div>
-                <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
-                  {totalPoints.toLocaleString()}
-                </div>
-              </div>
-
-              <div className="group">
-                <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
-                  <Target className="w-4 h-4 text-cyan-400" />
-                  <span>মোট চ্যালেঞ্জ</span>
-                </div>
-                <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
-                  {campaign.tasks?.length || 0}
-                </div>
-              </div>
-
-              <div className="group">
-                <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
-                  <Users className="w-4 h-4 text-violet-400" />
-                  <span>খেলছে</span>
-                </div>
-                <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
-                  {campaign.participations?.length || campaign._count?.participations || 0}
-                </div>
-              </div>
-
-              {campaign.estimatedDuration && (
-                <div className="group">
-                  <div className="flex items-center gap-2 text-neutral-400 text-sm mb-2">
-                    <Clock className="w-4 h-4 text-blue-400" />
-                    <span>সময় লাগবে</span>
-                  </div>
-                  <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
-                    {campaign.estimatedDuration} ঘণ্টা
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Date Range */}
-            {campaign.startDate && campaign.endDate && (
-              <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <Calendar className="w-6 h-6 text-neutral-400" />
-                    <div>
-                      <p className="text-sm text-neutral-500 mb-1">চ্যালেঞ্জ চলবে</p>
-                      <p className="text-white font-semibold">
-                        {new Date(campaign.startDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}{' '}
-                        —{' '}
-                        {new Date(campaign.endDate).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* Quick Stats Bar */}
+            <QuickStatsBar
+              totalPoints={totalPoints}
+              totalTasks={campaign.tasks?.length || 0}
+              participants={campaign.participations?.length || campaign._count?.participations || 0}
+              estimatedDuration={campaign.estimatedDuration}
+            />
 
             {/* Tasks Section */}
             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-3">
                     <Gamepad2 className="w-6 h-6 text-cyan-400" />
                     চ্যালেঞ্জ তালিকা
                   </h2>
@@ -352,126 +297,24 @@ export default function PublicCampaignDetailPage() {
                 {campaign.tasks && campaign.tasks.length > 0 ? (
                   <div className="space-y-4">
                     {campaign.tasks.map((ct: any, index: number) => {
-                      const taskPoints = ct.task.achievements?.reduce((sum: number, a: any) => sum + a.points, 0) || 0
-                      const taskConfig = difficultyConfig[ct.task.difficulty as keyof typeof difficultyConfig] || difficultyConfig.INTERMEDIATE
+                      // Calculate task points - check multiple sources
+                      const taskPoints = ct.points || ct.task.points || ct.task.achievements?.reduce((sum: number, a: any) => sum + a.points, 0) || 0
 
                       // Check if user has submitted proof for this task
                       const submission = userProgress?.submissions?.find((s: any) => s.taskId === ct.taskId)
 
                       return (
-                        <div
+                        <TaskListItem
                           key={ct.id}
-                          className="group relative p-6 rounded-2xl bg-neutral-900/60 border border-white/10 hover:border-white/20 transition-all duration-500 hover:scale-[1.01]"
-                        >
-                          <div className={`absolute inset-0 bg-gradient-to-br ${taskConfig.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl`} />
-
-                          <div className="relative flex items-start gap-6">
-                            <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${taskConfig.color} flex items-center justify-center font-bold text-white shadow-lg`}>
-                              {index + 1}
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-4 mb-3">
-                                <div className="flex-1">
-                                  <h3 className="font-bold text-white text-lg mb-2">{ct.task.name}</h3>
-                                  <p className="text-sm text-neutral-400 line-clamp-2">
-                                    {ct.task.description}
-                                  </p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  {taskPoints > 0 && (
-                                    <Badge className="bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1">
-                                      <Star className="w-3 h-3" />
-                                      {taskPoints}
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between gap-4">
-                                {isJoined && !submission && (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => openProofSheet(ct)}
-                                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25 gap-2"
-                                  >
-                                    <Send className="w-3.5 h-3.5" />
-                                    জমা দিন
-                                  </Button>
-                                )}
-                              </div>
-
-                              {/* Show submitted proof */}
-                              {submission && (
-                                <div className="mt-4 p-4 rounded-xl border border-white/10 bg-neutral-900/40">
-                                  <div className="flex items-start justify-between gap-3 mb-3">
-                                    <div className="flex items-center gap-2">
-                                      {submission.status === 'APPROVED' ? (
-                                        <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5">
-                                          <CheckCircle2 className="w-3.5 h-3.5" />
-                                          মিলেছে! ✅
-                                        </Badge>
-                                      ) : submission.status === 'REJECTED' ? (
-                                        <Badge className="bg-red-500/10 text-red-300 border-red-500/30 flex items-center gap-1.5">
-                                          <AlertCircle className="w-3.5 h-3.5" />
-                                          মানা হয়েছে ❌
-                                        </Badge>
-                                      ) : (
-                                        <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/30 flex items-center gap-1.5">
-                                          <Clock className="w-3.5 h-3.5" />
-                                          যাচাই হচ্ছे... ⏳
-                                        </Badge>
-                                      )}
-                                    </div>
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      className="text-neutral-400 hover:text-white h-8 w-8 p-0"
-                                      onClick={() => {/* TODO: Show proof details */}}
-                                    >
-                                      <Eye className="w-4 h-4" />
-                                    </Button>
-                                  </div>
-
-                                  {/* Proof Type */}
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <span className="text-neutral-500">জমা দেওয়া হয়েছে:</span>
-                                    <span className="text-white font-medium">
-                                      {submission.proofType === 'IMAGE' && 'ছবি'}
-                                      {submission.proofType === 'AUDIO' && 'অডিও'}
-                                      {submission.proofType === 'URL' && 'লিংক'}
-                                      {submission.proofType === 'TEXT' && 'টেক্সট'}
-                                    </span>
-                                  </div>
-
-                                  {/* Proof Content Preview */}
-                                  {submission.proofType === 'TEXT' && submission.text && (
-                                    <div className="mt-2 text-sm text-neutral-300 bg-neutral-900/60 p-2 rounded">
-                                      {submission.text}
-                                    </div>
-                                  )}
-                                  {submission.proofType === 'URL' && submission.url && (
-                                    <div className="mt-2 text-sm text-cyan-400 truncate">
-                                      {submission.url}
-                                    </div>
-                                  )}
-                                  {submission.fileUrl && (
-                                    <div className="mt-2 text-sm text-neutral-400">
-                                      ফাইল সংযুক্ত আছে
-                                    </div>
-                                  )}
-
-                                  {/* Admin Feedback */}
-                                  {submission.feedback && (
-                                    <div className="mt-3 text-sm text-neutral-400 bg-white/5 p-2 rounded">
-                                      <span className="font-medium">মন্তব্য:</span> {submission.feedback}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
+                          task={ct.task}
+                          index={index}
+                          isJoined={isJoined}
+                          submission={submission}
+                          points={taskPoints}
+                          difficulty={ct.task.difficulty}
+                          onSubmit={() => openProofSheet(ct)}
+                          difficultyConfig={difficultyConfig}
+                        />
                       )
                     })}
                   </div>
@@ -488,177 +331,48 @@ export default function PublicCampaignDetailPage() {
                 )}
               </CardContent>
             </Card>
+          </div>
 
-            {/* Rules */}
-            {campaign.rules && (
-              <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-amber-400" />
-                    নিয়মাবলী
-                  </h2>
-                  <div className="prose prose-invert max-w-none text-neutral-300">
-                    <p className="whitespace-pre-wrap">{campaign.rules}</p>
+          {/* Right Column - Streamlined Sidebar */}
+          <div className="space-y-6">
+            {/* Progress Section (Conditional - Only for joined users) */}
+            {isJoined && (
+              <ProgressSection
+                earnedPoints={earnedPoints}
+                totalPoints={totalPoints}
+                progressPercentage={progressPercentage}
+                submissions={userProgress?.submissions || []}
+                totalTasks={campaign.tasks?.length || 0}
+                userProgress={userProgress}
+              />
+            )}
+
+            {/* Join Campaign CTA for Authenticated Users */}
+            {user && !isJoined && (
+              <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-500/10 via-teal-600/5 to-cyan-500/10 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-500/50 transition-all duration-500">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
+
+                {/* Animated Glow */}
+                <div className="absolute w-[200px] h-[200px] bg-gradient-to-br from-emerald-500/20 via-teal-600/15 to-cyan-500/20 rounded-full blur-[40px] -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" />
+
+                <CardContent className="relative p-6 text-center">
+                  <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 mb-4">
+                    <Sparkles className="w-8 h-8 text-white" />
                   </div>
+                  <h3 className="text-xl font-bold text-white mb-2">যোগ দিন! 🚀</h3>
+                  <p className="text-neutral-300 text-sm mb-6">
+                    এই চ্যালেঞ্জে অংশ নিন, পয়েন্ট জিনুন, পুরস্কার জেতার সুযোগ পান!
+                  </p>
+                  <Button
+                    onClick={() => setShowJoinConfirm(true)}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/25"
+                  >
+                    এখনই যোগ দিন
+                  </Button>
                 </CardContent>
               </Card>
             )}
-          </div>
-
-          {/* Right Column - Sidebar */}
-          <div className="space-y-6">
-              {/* Join Campaign CTA for Authenticated Users */}
-              {user && !isJoined && (
-                  <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-500/10 via-teal-600/5 to-cyan-500/10 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-500/50 transition-all duration-500">
-                      {/* Background Pattern */}
-                      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-
-                      {/* Animated Glow */}
-                      <div className="absolute w-[200px] h-[200px] bg-gradient-to-br from-emerald-500/20 via-teal-600/15 to-cyan-500/20 rounded-full blur-[40px] -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" />
-
-                      <CardContent className="relative p-6 text-center">
-                          <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 mb-4">
-                              <Sparkles className="w-8 h-8 text-white" />
-                          </div>
-                          <h3 className="text-xl font-bold text-white mb-2">যোগ দিন! 🚀</h3>
-                          <p className="text-neutral-300 text-sm mb-6">
-                              এই চ্যালেঞ্জে অংশ নিন, পয়েন্ট জিনুন, পুরস্কার জেতার সুযোগ পান!
-                          </p>
-                          <Button
-                              onClick={() => setShowJoinConfirm(true)}
-                              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/25 gap-2"
-                          >
-                              <TrendingUp className="w-4 h-4" />
-                              এখনই যোগ দিন
-                          </Button>
-                      </CardContent>
-                  </Card>
-              )}
-
-            {/* Campaign Summary Card - For All Users */}
-            <Card className="relative overflow-hidden bg-gradient-to-br from-cyan-500/10 via-blue-600/5 to-violet-500/10 backdrop-blur-xl border border-cyan-500/20">
-              {/* Animated Background Pattern */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:32px_32px]" />
-              <div className="absolute w-[300px] h-[300px] bg-gradient-to-br from-cyan-500/20 via-blue-600/15 to-violet-500/20 rounded-full blur-[60px] -translate-x-1/2 -translate-y-1/2 top-0 left-1/2" />
-
-              <CardContent className="relative p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25">
-                    <Trophy className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-white">পুরস্কার জেতার সুযোগ!</h2>
-                    <p className="text-sm text-neutral-400">চ্যালেঞ্জ করে পয়েন্ট জিনুন</p>
-                  </div>
-                </div>
-
-                {/* Points Display */}
-                <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-neutral-900/60 border border-white/10">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-neutral-400">মোট পয়েন্ট</span>
-                      <Sparkles className="w-4 h-4 text-amber-400" />
-                    </div>
-                    <div className="text-3xl font-black bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
-                      {totalPoints.toLocaleString()}
-                    </div>
-                  </div>
-
-                  {user && isJoined && (
-                    <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 border border-emerald-500/30">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-emerald-300">আপনার পয়েন্ট</span>
-                        <TrendingUp className="w-4 h-4 text-emerald-400" />
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold text-white">{earnedPoints}</span>
-                        <span className="text-sm text-neutral-400">/ {totalPoints}</span>
-                      </div>
-                      <div className="mt-3">
-                        <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-1000"
-                            style={{ width: `${progressPercentage}%` }}
-                          />
-                        </div>
-                        <div className="text-right text-xs text-emerald-300 mt-1">{progressPercentage}% হয়ে গেছে</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {user && isJoined && (
-                  <div className="mt-6 space-y-4">
-                    {/* Detailed Progress Section */}
-                    <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 border border-emerald-500/30">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <TrendingUp className="w-4 h-4 text-emerald-400" />
-                          <span className="text-sm font-semibold text-emerald-300">কেমন চলছে</span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xs text-emerald-400">{progressPercentage}% হয়েছে</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Task Progress List */}
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                        <Target className="w-4 h-4 text-cyan-400" />
-                        আপনার চ্যালেঞ্জ
-                      </h4>
-                      {campaign.tasks?.map((ct: any, taskIndex: number) => {
-                        const submission = userProgress?.submissions?.find((s: any) => s.taskId === ct.taskId)
-                        const isSubmitted = !!submission
-
-                        return (
-                          <div
-                            key={ct.id}
-                            className="p-3 rounded-lg border border-white/10 bg-neutral-900/60 hover:border-white/20 transition-all"
-                          >
-                            <div className="flex items-start gap-3">
-                              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white text-xs">
-                                {taskIndex + 1}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between gap-2 mb-1">
-                                  <h5 className="text-sm font-medium text-white">{ct.task.name}</h5>
-                                  {isSubmitted ? (
-                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1">
-                                      <CheckCircle2 className="w-3 h-3" />
-                                      হয়ে গেছে
-                                    </Badge>
-                                  ) : (
-                                    <Badge className="bg-neutral-500/10 text-neutral-400 border border-neutral-500/30 flex items-center gap-1">
-                                      <Clock className="w-3 h-3" />
-                                      বাকি আছে
-                                    </Badge>
-                                  )}
-                                </div>
-                                {isSubmitted && (
-                                  <div className="text-xs text-neutral-400">
-                                    {submission.status === 'APPROVED' && (
-                                      <span className="text-emerald-400">মিলেছে! ✅</span>
-                                    )}
-                                    {submission.status === 'PENDING' && (
-                                      <span className="text-amber-400">দেখা হচ্ছে... ⏳</span>
-                                    )}
-                                    {submission.status === 'REJECTED' && (
-                                      <span className="text-red-400">মানা হয়েছে ❌</span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
 
             {/* Rewards & Prizes Section */}
             {campaign.rewardsTemplate && campaign.rewardsTemplate.length > 0 && (
@@ -669,7 +383,22 @@ export default function PublicCampaignDetailPage() {
               />
             )}
 
-            {/* Quick Info */}
+              {/* Rules */}
+              {campaign.rules && (
+                  <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
+                      <CardContent className="p-6">
+                          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                              <Zap className="w-5 h-5 text-amber-400" />
+                              নিয়মাবলী
+                          </h2>
+                          <div className="prose prose-invert max-w-none text-neutral-300">
+                              <p className="whitespace-pre-wrap">{campaign.rules}</p>
+                          </div>
+                      </CardContent>
+                  </Card>
+              )}
+
+            {/* Quick Info - How to Play */}
             <Card className="bg-neutral-900/40 backdrop-blur-xl border border-white/10">
               <CardContent className="p-6">
                 <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -722,9 +451,8 @@ export default function PublicCampaignDetailPage() {
                     asChild
                     className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold shadow-lg shadow-cyan-500/25"
                   >
-                    <Link href="/sign-up" className="gap-2">
+                    <Link href="/sign-up">
                       ফ্রিয়ে শুরু করুন
-                      <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
                 </CardContent>
