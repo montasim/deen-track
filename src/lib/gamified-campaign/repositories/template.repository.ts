@@ -170,7 +170,10 @@ export async function updateTemplate(
 ) {
   return await prisma.campaignTemplate.update({
     where: { id },
-    data,
+    data: {
+      ...data,
+      difficulty: data.difficulty as any | undefined,
+    },
     include: {
       templateTasks: {
         orderBy: { order: 'asc' },
@@ -223,7 +226,10 @@ export async function updateTemplateWithTasks(
     // Update the template
     const template = await tx.campaignTemplate.update({
       where: { id },
-      data: templateData,
+      data: {
+        ...templateData,
+        difficulty: templateData.difficulty as any | undefined,
+      },
     })
 
     // Create new tasks
@@ -281,12 +287,12 @@ export async function duplicateTemplate(id: string, entryById: string) {
           description: tt.description,
           rules: tt.rules,
           disqualificationRules: tt.disqualificationRules,
-          points: tt.points,
-          startDate: tt.startDate,
-          endDate: tt.endDate,
-          order: tt.order,
+          points: tt.points || undefined,
+          startDate: tt.startDate || undefined,
+          endDate: tt.endDate || undefined,
+          order: tt.order || 0,
           achievementsTemplate: tt.achievementsTemplate,
-        })),
+        })) as any,
       },
     },
     include: {
@@ -362,11 +368,11 @@ export async function createCampaignFromTemplate(
   return await prisma.gamifiedCampaign.create({
     data: {
       name: campaignData.name,
-      description: campaignData.description || template.description,
-      rules: campaignData.rules || template.rules,
-      disqualificationRules: campaignData.disqualificationRules || template.disqualificationRules,
-      termsOfService: campaignData.termsOfService || template.termsOfService,
-      category: campaignData.category || template.category,
+      description: (campaignData.description || template.description) || '',
+      rules: campaignData.rules || template.rules || undefined,
+      disqualificationRules: campaignData.disqualificationRules || template.disqualificationRules || undefined,
+      termsOfService: campaignData.termsOfService || template.termsOfService || undefined,
+      category: campaignData.category || template.category || undefined,
       difficulty: (campaignData.difficulty || template.difficulty) as any,
       estimatedDuration: campaignData.estimatedDuration || template.estimatedDuration,
       minPointsToQualify: campaignData.minPointsToQualify || template.minPointsToQualify,

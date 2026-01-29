@@ -1,25 +1,39 @@
-export * from './campaign.repository'
+// Export task, proof, team, template first
 export * from './task.repository'
 export * from './proof.repository'
 export * from './team.repository'
 export * from './template.repository'
 
-// Export leaderboard first to avoid conflicts
+// Export leaderboard (has pagination support)
 export * from './leaderboard.repository'
 
-// Export only non-conflicting exports from submission.repository
+// Export campaign repository (excluding getUserCampaignProgress and getCampaignLeaderboard which conflict)
 export {
+  createGamifiedCampaign,
+  getActiveGamifiedCampaigns,
+  getAllGamifiedCampaigns,
+  getGamifiedCampaignById,
+  updateGamifiedCampaign,
+  deleteGamifiedCampaign,
+  getCampaignsByUserId,
+  addTaskToCampaign,
+  removeTaskFromCampaign,
+  reorderCampaignTasks,
+  getCampaignParticipantCount
+} from './campaign.repository'
+
+// Export submission repository functions
+export {
+  createTaskSubmission,
   getUserSubmissions,
-  getPendingSubmissions,
   getSubmissionById,
+  getPendingSubmissions,
   updateSubmissionStatus,
-  bulkUpdateSubmissionStatus,
-  deleteSubmission,
-  getSubmissionStats,
   getUserCampaignProgress as getUserCampaignProgressAll,
-  getRecentSubmissions,
-  getSubmissionsByCampaign,
-  getSubmissionsByTask,
-  getSubmissionByUserAndTask,
-  getSubmissionWithProofs
+  getOrCreateCampaignProgress,
+  updateCampaignProgress,
+  addPointsToProgress,
+  getSubmissionStats,
+  getUserTaskSubmission,
+  createOrUpdateSubmission
 } from './submission.repository'

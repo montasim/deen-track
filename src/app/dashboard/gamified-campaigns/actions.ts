@@ -272,7 +272,7 @@ export async function getUserCampaignProgress() {
   const session = await requireAuth()
 
   try {
-    return await repositories.getUserCampaignProgress(session.userId)
+    return await repositories.getUserCampaignProgressAll(session.userId)
   } catch (error) {
     console.error('Error fetching user progress:', error)
     return []

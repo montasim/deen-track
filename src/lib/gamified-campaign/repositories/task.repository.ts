@@ -34,7 +34,7 @@ export async function createCampaignTask(data: {
       disqualificationRules: data.disqualificationRules,
       startDate: data.startDate,
       endDate: data.endDate,
-      validationType: data.validationType,
+      validationType: data.validationType as any,
       imageUrl: data.imageUrl,
       directImageUrl: data.directImageUrl,
       entryById: data.entryById,
@@ -46,7 +46,7 @@ export async function createCampaignTask(data: {
       },
       dependencies: data.dependencies
         ? {
-            create: data.dependencies,
+            create: data.dependencies as any,
           }
         : undefined,
     },
@@ -141,7 +141,10 @@ export async function updateCampaignTask(
 ) {
   return await prisma.campaignTask.update({
     where: { id },
-    data,
+    data: {
+      ...data,
+      validationType: data.validationType as any | undefined,
+    },
     include: {
       achievements: true,
     },
@@ -196,7 +199,10 @@ export async function addTaskDependency(data: {
   order?: number
 }) {
   return await prisma.taskDependency.create({
-    data,
+    data: {
+      ...data,
+      dependencyType: data.dependencyType as any,
+    },
     include: {
       dependsOn: {
         select: {

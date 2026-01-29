@@ -264,7 +264,9 @@ export function UserTopbar({
               <ShoppingBag className="h-4 w-4" />
               <span>Marketplace</span>
             </Link>
-            <Link
+            {/* Marketplace feature removed */}
+            {/* Blog feature removed */}
+            {/* <Link
               href={ROUTES.blog.href}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all",
@@ -275,7 +277,7 @@ export function UserTopbar({
             >
               <FileText className="h-4 w-4" />
               <span>Blog</span>
-            </Link>
+            </Link> */}
           </nav>
         )}
 

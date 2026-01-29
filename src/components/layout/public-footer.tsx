@@ -115,16 +115,18 @@ export function PublicFooter() {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold">Explore</h3>
             <ul className="space-y-2">
-              <li>
+              {/* Blog feature removed */}
+              {/* <li>
                 <Link href={ROUTES.blog.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Blog
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* Marketplace feature removed */}
+              {/* <li>
                 <Link href={ROUTES.marketplace.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Marketplace
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 

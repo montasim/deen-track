@@ -30,9 +30,28 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { useCreateBookshelf, useUpdateBookshelf } from '@/hooks/use-bookshelves'
-import type { Bookshelf } from '@/hooks/use-bookshelves'
+// Bookshelf hooks removed - feature deleted
+// import { useCreateBookshelf, useUpdateBookshelf } from '@/hooks/use-bookshelves'
+// import type { Bookshelf } from '@/hooks/use-bookshelves'
 import { getProxiedImageUrl } from '@/lib/image-proxy'
+
+interface Bookshelf {
+  id: string
+  name: string
+  description?: string
+  image?: string | null
+  isPublic: boolean
+  books?: Array<{
+    id: string
+    title: string
+    author: string
+    coverUrl?: string
+  }>
+  _count?: {
+    items: number
+    books: number
+  }
+}
 
 interface BookshelfProps {
   bookshelf: Bookshelf
@@ -81,7 +100,7 @@ export function BookshelfCard({
                 />
               ) : bookshelf.books && bookshelf.books.length > 0 ? (
                 <div className="relative w-full h-full">
-                  {bookshelf.books.slice(0, viewMode === 'list' ? 1 : 3).map((item, index) => (
+                  {bookshelf.books.slice(0, viewMode === 'list' ? 1 : 3).map((item: any, index: number) => (
                     <div
                       key={item.id}
                       className={cn(
@@ -228,7 +247,9 @@ export function CreateBookshelfDialog({ open, onOpenChange, onSuccess }: CreateB
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isPublic, setIsPublic] = useState(false)
-  const createMutation = useCreateBookshelf()
+  // Hooks removed - feature deleted
+  const createMutation = null as any
+  // const createMutation = useCreateBookshelf()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -324,7 +345,9 @@ export function EditBookshelfDialog({ bookshelf, open, onOpenChange, onSuccess }
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isPublic, setIsPublic] = useState(false)
-  const updateMutation = useUpdateBookshelf(bookshelf?.id || '')
+  // Hooks removed - feature deleted
+  const updateMutation = null as any
+  // const updateMutation = useUpdateBookshelf(bookshelf?.id || '')
 
   // Initialize form with bookshelf data
   React.useEffect(() => {

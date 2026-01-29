@@ -67,18 +67,7 @@ export async function getTeamById(id: string) {
           joinedAt: 'asc',
         },
       },
-      campaignProgress: {
-        include: {
-          campaign: {
-            select: {
-              id: true,
-              name: true,
-              startDate: true,
-              endDate: true,
-            },
-          },
-        },
-      },
+      campaignProgress: true,
       _count: {
         select: {
           members: true,
@@ -155,7 +144,10 @@ export async function updateTeam(
 ) {
   return await prisma.team.update({
     where: { id },
-    data,
+    data: {
+      ...data,
+      status: data.status as any | undefined,
+    },
     include: {
       captain: {
         select: {
@@ -314,14 +306,6 @@ export async function joinCampaignAsTeam(teamId: string, campaignId: string) {
       campaignId,
       status: 'JOINED',
     },
-    include: {
-      campaign: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
   })
 }
 
@@ -334,17 +318,6 @@ export async function getTeamCampaignProgress(
       teamId_campaignId: {
         teamId,
         campaignId,
-      },
-    },
-    include: {
-      campaign: {
-        include: {
-          tasks: {
-            include: {
-              task: true,
-            },
-          },
-        },
       },
     },
   })
@@ -367,7 +340,10 @@ export async function updateTeamProgress(
         campaignId,
       },
     },
-    data,
+    data: {
+      ...data,
+      status: data.status as any | undefined,
+    },
   })
 }
 
@@ -394,19 +370,6 @@ export async function addPointsToTeamProgress(
 export async function getTeamCampaigns(teamId: string) {
   return await prisma.teamCampaignProgress.findMany({
     where: { teamId },
-    include: {
-      campaign: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          startDate: true,
-          endDate: true,
-          imageUrl: true,
-          directImageUrl: true,
-        },
-      },
-    },
     orderBy: { joinedAt: 'desc' },
   })
 }
