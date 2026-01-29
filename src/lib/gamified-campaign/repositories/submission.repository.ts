@@ -14,7 +14,7 @@ export async function createTaskSubmission(data: {
       taskId: data.taskId,
       campaignId: data.campaignId,
       progressId: data.progressId,
-      status: data.status,
+      status: data.status as any,
       feedback: data.feedback,
     },
     include: {
@@ -142,7 +142,7 @@ export async function updateSubmissionStatus(
   return await prisma.userTaskSubmission.update({
     where: { id },
     data: {
-      status,
+      status: status as any,
       reviewedAt: new Date(),
       reviewedById,
       feedback,
@@ -212,7 +212,10 @@ export async function updateCampaignProgress(
 ) {
   return await prisma.userCampaignProgress.update({
     where: { id: progressId },
-    data,
+    data: {
+      ...data,
+      status: data.status as any | undefined,
+    },
   })
 }
 
@@ -301,12 +304,12 @@ export async function createOrUpdateSubmission(data: {
       taskId: data.taskId,
       campaignId: data.campaignId,
       progressId: data.progressId,
-      status: data.status,
+      status: data.status as any,
       submittedAt: data.submittedAt,
       feedback: data.feedback,
     },
     update: {
-      status: data.status,
+      status: data.status as any,
       submittedAt: data.submittedAt,
       feedback: data.feedback,
     },

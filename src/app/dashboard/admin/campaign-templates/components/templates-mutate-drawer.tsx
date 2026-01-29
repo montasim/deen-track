@@ -122,9 +122,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
       minPointsToQualify: 0,
       sponsorId: undefined,
       tasks: [],
-      totalPoints: 0,
     },
-    mode: 'all', // Validate on change, blur, and submit
   })
 
   // Calculate total points from tasks
@@ -144,7 +142,9 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
       rules: '',
       disqualificationRules: '',
       points: 10,
-    })
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    } as any)
   }
 
   // Fetch sponsors on mount
@@ -277,10 +277,10 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
       if (taskData.length > 0) {
         const startDates = taskData
           .map((t: any) => t.startDate ? new Date(t.startDate) : null)
-          .filter((d): d is Date => d !== null)
+          .filter((d: any): d is Date => d !== null)
         const endDates = taskData
           .map((t: any) => t.endDate ? new Date(t.endDate) : null)
-          .filter((d): d is Date => d !== null)
+          .filter((d: any): d is Date => d !== null)
 
         if (startDates.length > 0) {
           calculatedStartDate = new Date(Math.min(...startDates.map((d: Date) => d.getTime())))

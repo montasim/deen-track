@@ -16,10 +16,10 @@ import { CheckCircle2 as Check } from 'lucide-react'
 interface Proof {
   id: string
   type: string
-  fileUrl?: string
-  directFileUrl?: string
-  url?: string
-  text?: string
+  fileUrl: string | null
+  directFileUrl: string | null
+  url: string | null
+  text: string | null
   validationStatus: string
   submission: {
     id: string

@@ -9,7 +9,10 @@ export async function createProofSubmission(data: {
   text?: string
 }) {
   return await prisma.proofSubmission.create({
-    data,
+    data: {
+      ...data,
+      type: data.type as any,
+    },
   })
 }
 
@@ -24,7 +27,10 @@ export async function createMultipleProofs(
   }>
 ) {
   return await prisma.proofSubmission.createMany({
-    data: proofs,
+    data: proofs.map(p => ({
+      ...p,
+      type: p.type as any,
+    })),
   })
 }
 
@@ -48,10 +54,10 @@ export async function getProofById(id: string) {
               name: true,
             },
           },
-          campaign: {
+          progress: {
             select: {
               id: true,
-              name: true,
+              campaignId: true,
             },
           },
         },
@@ -75,7 +81,7 @@ export async function validateProof(
   return await prisma.proofSubmission.update({
     where: { id },
     data: {
-      validationStatus,
+      validationStatus: validationStatus as any,
       validatedAt: new Date(),
       validatedById,
       adminNotes,
@@ -112,7 +118,7 @@ export async function validateMultipleProofs(
       id: { in: proofIds },
     },
     data: {
-      validationStatus,
+      validationStatus: validationStatus as any,
       validatedAt: new Date(),
       validatedById,
       adminNotes,
@@ -197,7 +203,10 @@ export async function updateProof(
 ) {
   return await prisma.proofSubmission.update({
     where: { id },
-    data,
+    data: {
+      ...data,
+      type: data.type as any | undefined,
+    },
   })
 }
 

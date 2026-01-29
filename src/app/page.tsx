@@ -124,7 +124,7 @@ export default function LandingPage() {
   const [featuredCampaigns, setFeaturedCampaigns] = useState<any[]>([])
   const [campaignsLoading, setCampaignsLoading] = useState(true)
   const [totalCampaigns, setTotalCampaigns] = useState(0)
-  const [stats, setStats] = useState([])
+  const [stats, setStats] = useState<Array<{ value: string; label: string }>>([])
   // Convert English numbers to Bangla
   const toBanglaNumber = (num: number): string => {
     const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']

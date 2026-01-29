@@ -22,7 +22,7 @@ interface CampaignCardProps {
   showRewards?: boolean
 }
 
-export function CampaignCard({ campaign, userProgress, onJoin, onEdit }: CampaignCardProps) {
+export function CampaignCard({ campaign, userProgress, onJoin, onEdit, showRewards = true }: CampaignCardProps) {
   const { user } = useAuth()
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'
   const [timeLeft, setTimeLeft] = useState<string>('')

@@ -224,7 +224,7 @@ export async function submitTaskProof(data: {
         feedback: data.notes,
         proofs: {
           create: {
-            type: data.proofType,
+            type: data.proofType as any,
             fileUrl,
             directFileUrl,
             url: data.url || null,
@@ -239,7 +239,7 @@ export async function submitTaskProof(data: {
         feedback: data.notes,
         proofs: {
           create: {
-            type: data.proofType,
+            type: data.proofType as any,
             fileUrl,
             directFileUrl,
             url: data.url || null,
@@ -332,13 +332,13 @@ export async function approveProof(proofId: string, adminNotes?: string) {
     })
 
     // Award points
-    const totalPoints = proof.submission.task.achievements.reduce(
+    const totalPoints = (proof as any).submission.task.achievements.reduce(
       (sum: number, a: any) => sum + a.points,
       0
     )
 
     await prisma.userCampaignProgress.update({
-      where: { id: proof.submission.progressId },
+      where: { id: (proof as any).submission.progressId },
       data: {
         totalPoints: { increment: totalPoints },
       },
@@ -347,10 +347,10 @@ export async function approveProof(proofId: string, adminNotes?: string) {
     // Create notification
     await prisma.notification.create({
       data: {
-        userId: proof.submission.userId,
+        userId: (proof as any).submission.userId,
         type: 'TASK_APPROVED',
         title: 'Task Approved! 🎉',
-        message: `Your submission for "${proof.submission.task.name}" has been approved. You earned ${totalPoints} points!`,
+        message: `Your submission for "${(proof as any).submission.task.name}" has been approved. You earned ${totalPoints} points!`,
         linkUrl: `/dashboard/campaigns/my-progress`,
       },
     })
@@ -412,10 +412,10 @@ export async function rejectProof(proofId: string, reason: string) {
     // Create notification
     await prisma.notification.create({
       data: {
-        userId: proof.submission.userId,
+        userId: (proof as any).submission.userId,
         type: 'TASK_REJECTED',
         title: 'Task Needs Revision',
-        message: `Your submission for "${proof.submission.task.name}" needs revision. Reason: ${reason}`,
+        message: `Your submission for "${(proof as any).submission.task.name}" needs revision. Reason: ${reason}`,
         linkUrl: `/dashboard/campaigns/my-progress`,
       },
     })
@@ -645,7 +645,7 @@ export async function getCampaignLeaderboard(campaignId: string, filters?: {
   page?: number
 }) {
   try {
-    return await repositories.getCampaignLeaderboard(campaignId, filters)
+    return await repositories.getCampaignLeaderboard(campaignId, filters || {})
   } catch (error) {
     console.error('Error fetching campaign leaderboard:', error)
     return { leaderboard: [], total: 0, pages: 0 }
@@ -954,7 +954,7 @@ export async function deleteGamifiedCampaign(campaignId: string) {
 
     await logActivity({
       userId: session.userId,
-      action: 'CAMPAIGN_GAMIFIED_DELETED',
+      action: 'CAMPAIGN_DELETED',
       resourceType: 'GAMIFIED_CAMPAIGN',
       resourceId: campaignId,
       description: 'Deleted gamified campaign',
