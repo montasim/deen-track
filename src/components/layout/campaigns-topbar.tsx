@@ -44,7 +44,7 @@ export function CampaignsTopbar({ siteName }: CampaignsTopbarProps) {
               <Trophy className="w-5 h-5 text-white" />
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent">
+            <span className="inline-block py-1 text-xl font-bold bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent">
               {siteName}
             </span>
           </Link>

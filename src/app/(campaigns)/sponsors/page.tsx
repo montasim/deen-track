@@ -127,10 +127,10 @@ export default function SponsorsPage() {
         badgeText="আমাদের সহযোগীরা"
         badgeColor="cyan"
         title={
-            <>
-                <span className="text-white">আমাদের</span>{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">স্পন্সররা</span>
-            </>
+          <>
+            <span className="text-white">আমাদের</span>{' '}
+            <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">স্পন্সররা</span>
+          </>
         }
         description="চমৎকার সব চ্যালেঞ্জ বানাতে আর আপনাদের পুরস্কার দিতে এই দুর্দান্ত কোম্পানিগুলো আমাদের সাহায্য করে! তাদের সাপোর্টে আমরা আপনাদের জন্য আরও সুন্দর অভিজ্ঞতা তৈরি করতে পারছি।"
       />

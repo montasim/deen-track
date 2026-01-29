@@ -93,14 +93,14 @@ export default function ContactPage() {
             <>
               <span className="text-white">আমাদের সাথে</span>
               <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">কথা বলুন!</span>
+              <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">কথা বলুন!</span>
             </>
           }
           description="কোনো প্রশ্ন আছে? মতামত দিতে চান? নাকি সাধারণ হ্যালো বলতে চান? আমরা শুনতে পছন্দ করবো! নিচের ফর্মটি পূরণ করুন আর আমরা শীঘ্রই আপনার সাথে যোগাযোগ করবো।"
         />
 
-      {/* Contact Section - NO white overlay, let gradient show through */}
-      <section className="relative pb-12">
+        {/* Contact Section - NO white overlay, let gradient show through */}
+        <section className="relative pb-12">
           <div className="container mx-auto max-w-7xl px-6">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-3 gap-8">

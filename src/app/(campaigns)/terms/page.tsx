@@ -48,10 +48,10 @@ export default async function TermsPage() {
           badgeText="আইনি"
           badgeColor="cyan"
           title={
-              <>
-                  <span className="text-white">ব্যবহারের</span>{' '}
-                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
-              </>
+            <>
+              <span className="text-white">ব্যবহারের</span>{' '}
+              <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">শর্তাবলী</span>
+            </>
           }
           description={`আমাদের প্ল্যাটফর্ম ব্যবহার করার আগে এই শর্তগুলো ভালো করে পড়ুন। ${siteName} ব্যবহার করার মাধ্যমে আপনি এই শর্তগুলো মেনে নিচ্ছেন বলে ধরে নেওয়া হবে।`}
           extraContent={
@@ -70,8 +70,8 @@ export default async function TermsPage() {
           }
         />
 
-      {/* Content Section - NO white overlay */}
-      <section className="relative pb-12">
+        {/* Content Section - NO white overlay */}
+        <section className="relative pb-12">
           <div className="container mx-auto max-w-7xl px-6">
             <div className="max-w-4xl mx-auto">
               <div className="p-8 lg:p-12 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:shadow-xl transition-all duration-300">

@@ -118,11 +118,11 @@ export default function PublicCampaignsPage() {
         badgeColor="cyan"
         title={
           <>
-            <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+            <span className="inline-block py-1 bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
               পুরস্কার জিততে
             </span>
             {' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+            <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
               আজই শুরু করুন!
             </span>
           </>

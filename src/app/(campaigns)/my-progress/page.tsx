@@ -205,7 +205,7 @@ export default function MyProgressPage() {
                     title={
                         <>
                             <span className="text-white">আমার</span>{' '}
-                            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">অগ্রগতি</span>
+                            <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">অগ্রগতি</span>
                         </>
                     }
                     description="চ্যালেঞ্জ কতদূর এগিয়েছেন দেখুন আর পুরস্কার জিতুন!"

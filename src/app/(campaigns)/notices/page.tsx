@@ -130,7 +130,7 @@ function NoticesPageContent() {
           <div className="relative container mx-auto max-w-7xl px-6 py-16">
             <h1 className="text-4xl sm:text-5xl lg:text-5xl font-black tracking-tight mb-6">
               <span className="block text-white">Notices &</span>
-              <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+              <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
                 Announcements
               </span>
             </h1>
@@ -140,7 +140,7 @@ function NoticesPageContent() {
 
             {/* Active Notices Badge */}
             <div className="mt-6">
-              <Badge className="bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
+              <Badge variant="outline" className="bg-gradient-to-r from-cyan-500/15 to-blue-600/15 text-cyan-400 border-cyan-500/30">
                 {validNotices.length} Active Notice{validNotices.length !== 1 ? 's' : ''}
               </Badge>
             </div>
@@ -221,7 +221,7 @@ function NoticesPageContent() {
                             )}
                           </div>
                         </div>
-                        <Badge className="bg-gradient-to-r from-emerald-500/20 to-teal-600/20 text-emerald-300 border-emerald-500/30 shrink-0">
+                        <Badge variant="outline" className="bg-gradient-to-r from-emerald-500/15 to-teal-600/15 text-emerald-400 border-emerald-500/30 shrink-0">
                           Active
                         </Badge>
                       </div>

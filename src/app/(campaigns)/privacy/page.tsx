@@ -50,7 +50,7 @@ export default async function PrivacyPage() {
           title={
             <>
               <span className="text-white">আপনার</span>{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">গোপনীয়তা</span>
+              <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">গোপনীয়তা</span>
             </>
           }
           description={`আপনার গোপনীয়তা আমাদের কাছে খুবই গুরুত্বপূর্ণ। এই নীতিতে বলা হয়েছে ${siteName} ব্যবহার করার সময় আমরা কিভাবে আপনার তথ্য সংগ্রহ করি, ব্যবহার করি এবং সুরক্ষিত রাখি তা জানুন।`}
@@ -70,8 +70,8 @@ export default async function PrivacyPage() {
           }
         />
 
-      {/* Content Section */}
-      <section className="relative pb-12">
+        {/* Content Section */}
+        <section className="relative pb-12">
           <div className="container mx-auto max-w-7xl px-6">
             <div className="max-w-4xl mx-auto">
               <div className="p-8 lg:p-12 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/10 hover:border-white/20 hover:shadow-xl transition-all duration-300">

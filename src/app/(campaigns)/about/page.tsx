@@ -157,11 +157,11 @@ export default function AboutPage() {
         badgeColor="cyan"
         title={
           <>
-            <span className="bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+            <span className="inline-block py-1 bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
               চ্যালেঞ্জ থেকে
             </span>
-              {" "}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+            {" "}
+            <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
               সাফল্যের পথে
             </span>
           </>
@@ -228,7 +228,7 @@ export default function AboutPage() {
               আমাদের পথচলা
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-violet-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="inline-block py-1 bg-gradient-to-r from-violet-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 ব্যতিক্রমী কিছু
               </span>
               <br />
@@ -278,7 +278,7 @@ export default function AboutPage() {
             আমাদের বিশ্বাস
           </Badge>
           <h2 className="text-2xl sm:text-3xl font-black mb-4">
-            <span className="bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 bg-clip-text text-transparent">
+            <span className="inline-block py-1 bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 bg-clip-text text-transparent">
               মূল আদর্শ
             </span>
           </h2>
@@ -329,7 +329,7 @@ export default function AboutPage() {
               আমাদের সদস্যবৃন্দ
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
+              <span className="inline-block py-1 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
                 নেপথ্যের কারিগরদের
               </span>
               <br />

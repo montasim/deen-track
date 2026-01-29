@@ -96,12 +96,6 @@ const features = [
     gradient: 'from-cyan-500 to-blue-600',
   },
   {
-    icon: Users,
-    title: 'দল বানান',
-    description: 'বন্ধুদের সাথে দল গঠন করুন আর একসাথে পুরস্কার জিতুন',
-    gradient: 'from-violet-500 to-purple-600',
-  },
-  {
     icon: Award,
     title: 'ব্যাজ আনলক করুন',
     description: 'চ্যালেঞ্জ শেষ করে দুর্দান্ত ব্যাজ সংগ্রহ করুন',
@@ -164,8 +158,8 @@ export default function LandingPage() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          // Map campaigns to UI format and take first 3 for featured section
-          const mappedCampaigns = data.slice(0, 3).map((campaign: Campaign, index: number) =>
+          // Map all campaigns to UI format but slice for featured section later
+          const mappedCampaigns = data.map((campaign: Campaign, index: number) =>
             mapCampaignToUI(campaign, index)
           )
           setFeaturedCampaigns(mappedCampaigns)
@@ -207,22 +201,22 @@ export default function LandingPage() {
             {/* Left Column - Content */}
             <div className="space-y-8">
               <div
-                className={`inline-flex items-center gap-3 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+                className={`inline-flex items-center gap-3 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-sm transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
                   }`}
               >
                 <Sparkles className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-300 tracking-wide">
+                <span className="text-sm font-medium text-cyan-400 tracking-wide">
                   নেক আমলের ধারাবাহিকতা বজায় রাখুন
                 </span>
               </div>
 
               <h1
-                className={`text-4xl sm:text-4xl font-black leading-[1.15] transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                className={`text-4xl sm:text-4xl font-black leading-tight transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                   }`}
               >
                 <span className="block text-white">ছোট ছোট ভালো কাজে</span>
                 <span className="block text-white">
-                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+                  <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
                     বড় পুরস্কার
                   </span>{' '}
                   জিতুন
@@ -268,7 +262,7 @@ export default function LandingPage() {
               >
                 {stats.map((stat, i) => (
                   <div key={i} className="text-center">
-                    <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent">
+                    <div className="inline-block py-1 text-3xl font-black bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent">
                       {stat.value}
                     </div>
                     <div className="text-xs font-medium text-neutral-500 mt-1">{stat.label}</div>
@@ -288,12 +282,13 @@ export default function LandingPage() {
 
                 {/* Floating Cards */}
                 <div className="relative space-y-4">
-                  {featuredCampaigns.slice(0, 2).map((campaign, index) => {
+                  {featuredCampaigns.slice(0, 3).map((campaign, index) => {
                     const Icon = campaign.icon
                     return (
-                      <div
-                        key={index}
-                        className="group relative p-6 rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
+                      <Link
+                        key={campaign.id}
+                        href={`/campaigns/${campaign.id}`}
+                        className="block group relative p-6 rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
                         style={{
                           animation: `float 6s ease-in-out infinite`,
                           animationDelay: `${index * 0.5}s`,
@@ -307,7 +302,7 @@ export default function LandingPage() {
                               <Icon className="w-6 h-6 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h3 className="text-lg font-bold text-white mb-1">{campaign.name}</h3>
+                              <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors line-clamp-1">{campaign.name}</h3>
                               <p className="text-sm text-neutral-400 line-clamp-2">{campaign.description}</p>
                               <div className="flex items-center gap-4 mt-3">
                                 <Badge className={`bg-gradient-to-r ${campaign.color} text-white border-0`}>
@@ -325,9 +320,24 @@ export default function LandingPage() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     )
                   })}
+
+                  {featuredCampaigns.length > 3 && (
+                    <div className="pt-4 flex justify-center">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 gap-2 font-semibold"
+                      >
+                        <Link href="/campaigns">
+                          আরও চ্যালেঞ্জ দেখুন
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -339,7 +349,7 @@ export default function LandingPage() {
       <section className="relative py-32 border-t border-white/5">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="text-center mb-16">
-            <Badge className="mb-4 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
+            <Badge variant="outline" className="mb-4 bg-gradient-to-r from-cyan-500/15 to-blue-600/15 text-cyan-400 border-cyan-500/30">
               জনপ্রিয় চ্যালেঞ্জ
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-4">
@@ -351,7 +361,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {featuredCampaigns.map((campaign, index) => {
+            {featuredCampaigns.slice(0, 3).map((campaign, index) => {
               const Icon = campaign.icon
               return (
                 <Card
@@ -422,7 +432,7 @@ export default function LandingPage() {
       <section className="relative py-32 border-t border-white/5 bg-neutral-900/20">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="text-center mb-20">
-            <Badge className="mb-4 bg-gradient-to-r from-violet-500/20 to-purple-600/20 text-violet-300 border-violet-500/30">
+            <Badge variant="outline" className="mb-4 bg-gradient-to-r from-violet-500/15 to-purple-600/15 text-violet-400 border-violet-500/30">
               ধাপসমূহ
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-4">
@@ -465,7 +475,7 @@ export default function LandingPage() {
       <section className="relative py-32 border-t border-white/5">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="text-center mb-20">
-            <Badge className="mb-4 bg-gradient-to-r from-emerald-500/20 to-teal-600/20 text-emerald-300 border-emerald-500/30">
+            <Badge variant="outline" className="mb-4 bg-gradient-to-r from-emerald-500/15 to-teal-600/15 text-emerald-400 border-emerald-500/30">
               বৈশিষ্ট্য
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-4">

@@ -131,13 +131,13 @@ export function CallToAction({
 
             {/* Optional Badge */}
             {badgeText && (
-              <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border-cyan-500/30">
+              <Badge variant="outline" className="mb-6 bg-gradient-to-r from-cyan-500/10 to-blue-600/10 text-cyan-400 border-cyan-500/30">
                 {badgeText}
               </Badge>
             )}
 
             {/* Title */}
-            <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-white leading-relaxed mb-6">
               {title}
             </h2>
 

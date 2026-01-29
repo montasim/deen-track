@@ -44,32 +44,32 @@ export interface PageHeaderProps {
 
 const badgeColors = {
   cyan: {
-    bg: 'bg-cyan-500/10',
-    text: 'text-cyan-300',
+    bg: 'bg-cyan-500/15',
+    text: 'text-cyan-400',
     border: 'border-cyan-500/30',
     icon: 'text-cyan-400',
   },
   emerald: {
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-300',
+    bg: 'bg-emerald-500/15',
+    text: 'text-emerald-400',
     border: 'border-emerald-500/30',
     icon: 'text-emerald-400',
   },
   violet: {
-    bg: 'bg-violet-500/10',
-    text: 'text-violet-300',
+    bg: 'bg-violet-500/15',
+    text: 'text-violet-400',
     border: 'border-violet-500/30',
     icon: 'text-violet-400',
   },
   amber: {
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-300',
+    bg: 'bg-amber-500/15',
+    text: 'text-amber-400',
     border: 'border-amber-500/30',
     icon: 'text-amber-400',
   },
   rose: {
-    bg: 'bg-rose-500/10',
-    text: 'text-rose-300',
+    bg: 'bg-rose-500/15',
+    text: 'text-rose-400',
     border: 'border-rose-500/30',
     icon: 'text-rose-400',
   },
@@ -110,7 +110,7 @@ export function PageHeader({
           )}
 
           {/* Title */}
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-normal">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-normal leading-relaxed">
             {title}
           </h1>
 

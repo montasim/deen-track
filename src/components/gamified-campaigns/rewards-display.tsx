@@ -26,43 +26,43 @@ interface RewardsDisplayProps {
 const tierConfig = {
   '1st': {
     color: 'from-amber-400 to-yellow-500',
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-300',
+    bg: 'bg-amber-500/15',
+    text: 'text-amber-400',
     border: 'border-amber-500/30',
     icon: Trophy,
   },
   '2nd': {
     color: 'from-slate-300 to-slate-400',
-    bg: 'bg-slate-400/10',
+    bg: 'bg-slate-400/15',
     text: 'text-slate-300',
     border: 'border-slate-400/30',
     icon: Award,
   },
   '3rd': {
     color: 'from-orange-400 to-orange-600',
-    bg: 'bg-orange-500/10',
-    text: 'text-orange-300',
+    bg: 'bg-orange-500/15',
+    text: 'text-orange-400',
     border: 'border-orange-500/30',
     icon: Award,
   },
   'runner-up': {
     color: 'from-blue-400 to-blue-600',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-300',
+    bg: 'bg-blue-500/15',
+    text: 'text-blue-400',
     border: 'border-blue-500/30',
     icon: Star,
   },
   'participation': {
     color: 'from-neutral-400 to-neutral-500',
-    bg: 'bg-neutral-500/10',
+    bg: 'bg-neutral-500/15',
     text: 'text-neutral-300',
     border: 'border-neutral-500/30',
     icon: Gift,
   },
   'default': {
     color: 'from-pink-500 to-rose-600',
-    bg: 'bg-pink-500/10',
-    text: 'text-pink-300',
+    bg: 'bg-pink-500/15',
+    text: 'text-pink-400',
     border: 'border-pink-500/30',
     icon: Gift,
   },
@@ -114,6 +114,7 @@ export function RewardsDisplay({
           return (
             <Badge
               key={index}
+              variant="outline"
               className={`${config.bg} ${config.border} ${config.text} border flex items-center gap-1.5 px-3 py-1`}
             >
               <Icon className="w-3 h-3" />
@@ -196,7 +197,7 @@ export function RewardsDisplay({
             <p className="text-sm text-neutral-400">এই ক্যাম্পেইনে জেতার সুযোগ</p>
           </div>
           {rewards.length > 3 && !showAll && (
-            <Badge className="ml-auto bg-pink-500/20 text-pink-300 border-pink-500/30">
+            <Badge variant="outline" className="ml-auto bg-pink-500/20 text-pink-400 border-pink-500/30">
               {rewards.length}টি পুরস্কার
             </Badge>
           )}

@@ -38,32 +38,32 @@ import { PageBackground } from '@/components/layout/page-background'
 const difficultyConfig = {
   BEGINNER: {
     color: 'from-emerald-500 to-green-600',
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-300',
+    bg: 'bg-emerald-500/15',
+    text: 'text-emerald-400',
     border: 'border-emerald-500/30',
     label: 'সহজ',
     glow: 'shadow-emerald-500/25',
   },
   INTERMEDIATE: {
     color: 'from-blue-500 to-cyan-600',
-    bg: 'bg-blue-500/10',
-    text: 'text-blue-300',
+    bg: 'bg-blue-500/15',
+    text: 'text-blue-400',
     border: 'border-blue-500/30',
     label: 'মধ্যম',
     glow: 'shadow-blue-500/25',
   },
   ADVANCED: {
     color: 'from-violet-500 to-purple-600',
-    bg: 'bg-violet-500/10',
-    text: 'text-violet-300',
+    bg: 'bg-violet-500/15',
+    text: 'text-violet-400',
     border: 'border-violet-500/30',
     label: 'উন্নত',
     glow: 'shadow-violet-500/25',
   },
   EXPERT: {
     color: 'from-red-500 to-orange-600',
-    bg: 'bg-red-500/10',
-    text: 'text-red-300',
+    bg: 'bg-red-500/15',
+    text: 'text-red-400',
     border: 'border-red-500/30',
     label: 'কঠিন',
     glow: 'shadow-red-500/25',
@@ -240,7 +240,7 @@ export default function PublicCampaignDetailPage() {
         description={campaign.description}
         extraContent={
           <div className="flex flex-wrap items-center gap-3">
-            <Badge className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>
+            <Badge variant="outline" className={`${config.bg} ${config.text} ${config.border} border flex items-center gap-2 px-4 py-2`}>
               <Target className="w-4 h-4" />
               {config.label}
             </Badge>
@@ -260,7 +260,7 @@ export default function PublicCampaignDetailPage() {
                   <Trophy className="w-4 h-4 text-amber-400" />
                   <span>মোট পয়েন্ট</span>
                 </div>
-                <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
+                <div className="inline-block py-1 text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                   {totalPoints.toLocaleString()}
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function PublicCampaignDetailPage() {
                   <Target className="w-4 h-4 text-cyan-400" />
                   <span>মোট চ্যালেঞ্জ</span>
                 </div>
-                <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
+                <div className="inline-block py-1 text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                   {campaign.tasks?.length || 0}
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function PublicCampaignDetailPage() {
                   <Users className="w-4 h-4 text-violet-400" />
                   <span>খেলছে</span>
                 </div>
-                <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
+                <div className="inline-block py-1 text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                   {campaign.participations?.length || campaign._count?.participations || 0}
                 </div>
               </div>
@@ -291,7 +291,7 @@ export default function PublicCampaignDetailPage() {
                     <Clock className="w-4 h-4 text-blue-400" />
                     <span>সময় লাগবে</span>
                   </div>
-                  <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
+                  <div className="inline-block py-1 text-3xl font-black bg-gradient-to-br from-white to-neutral-300 bg-clip-text text-transparent">
                     {campaign.estimatedDuration} ঘণ্টা
                   </div>
                 </div>
@@ -369,7 +369,7 @@ export default function PublicCampaignDetailPage() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                   {taskPoints > 0 && (
-                                    <Badge className="bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                                    <Badge variant="outline" className="bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center gap-1">
                                       <Star className="w-3 h-3" />
                                       {taskPoints}
                                     </Badge>
@@ -380,7 +380,7 @@ export default function PublicCampaignDetailPage() {
                               <div className="flex items-center justify-between gap-4">
                                 <div className="flex items-center gap-3">
                                   {isJoined ? (
-                                    <Badge className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
+                                    <Badge variant="outline" className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30 flex items-center gap-1.5 px-3 py-1.5">
                                       <Unlock className="w-3.5 h-3.5" />
                                       শুরু করুন!
                                     </Badge>
@@ -425,7 +425,7 @@ export default function PublicCampaignDetailPage() {
                                           মানা হয়েছে ❌
                                         </Badge>
                                       ) : (
-                                        <Badge className="bg-amber-500/10 text-amber-300 border-amber-500/30 flex items-center gap-1.5">
+                                        <Badge variant="outline" className="bg-amber-500/15 text-amber-400 border-amber-500/30 flex items-center gap-1.5">
                                           <Clock className="w-3.5 h-3.5" />
                                           যাচাই হচ্ছे... ⏳
                                         </Badge>
@@ -435,7 +435,7 @@ export default function PublicCampaignDetailPage() {
                                       size="sm"
                                       variant="ghost"
                                       className="text-neutral-400 hover:text-white h-8 w-8 p-0"
-                                      onClick={() => {/* TODO: Show proof details */}}
+                                      onClick={() => {/* TODO: Show proof details */ }}
                                     >
                                       <Eye className="w-4 h-4" />
                                     </Button>
@@ -539,7 +539,7 @@ export default function PublicCampaignDetailPage() {
                       <span className="text-sm text-neutral-400">মোট পয়েন্ট</span>
                       <Sparkles className="w-4 h-4 text-amber-400" />
                     </div>
-                    <div className="text-3xl font-black bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+                    <div className="inline-block py-1 text-3xl font-black bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
                       {totalPoints.toLocaleString()}
                     </div>
                   </div>

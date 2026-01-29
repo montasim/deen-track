@@ -139,12 +139,12 @@ export default function CampaignsLandingPage() {
               </div>
 
               <h1
-                className={`text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.15] transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                className={`text-5xl sm:text-6xl lg:text-7xl font-black leading-tight transition-all duration-1000 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                   }`}
               >
                 <span className="block text-white">নিয়মিত আমলই</span>
                 <span className="block text-white">
-                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+                  <span className="inline-block py-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
                     আল্লাহর
                   </span>{' '}
                   কাছে
@@ -190,7 +190,7 @@ export default function CampaignsLandingPage() {
               >
                 {stats.map((stat, i) => (
                   <div key={i} className="text-center">
-                    <div className="text-3xl font-black bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent">
+                    <div className="inline-block py-1 text-3xl font-black bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent">
                       {stat.value}
                     </div>
                     <div className="text-xs font-medium text-neutral-500 mt-1">{stat.label}</div>

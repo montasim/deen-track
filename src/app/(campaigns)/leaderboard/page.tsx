@@ -366,7 +366,7 @@ export default function PublicLeaderboardPage() {
                 badgeText="লাইভ র‍্যাঙ্কিং"
                 badgeColor="cyan"
                 title={
-                    <span className={`bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
+                    <span className={`inline-block py-1 bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent`}>
                         চ্যালেঞ্জ লিডারবোর্ড
                     </span>
                 }
@@ -535,7 +535,7 @@ export default function PublicLeaderboardPage() {
                                                 {/* Points */}
                                                 <div className="flex items-center justify-center gap-2 mb-2">
                                                     <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                                                    <span className="font-black text-white text-2xl">
+                                                    <span className="inline-block py-1 font-black text-white text-2xl">
                                                         {entry.totalPoints?.toLocaleString() || 0}
                                                     </span>
                                                 </div>
