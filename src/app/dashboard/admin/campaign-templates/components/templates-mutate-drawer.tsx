@@ -177,14 +177,14 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
         .filter((d): d is Date => d !== null)
 
       if (startDates.length > 0) {
-        const minStart = new Date(Math.min(...startDates.map(d => d.getTime())))
-        form.setValue('startDate', minStart.toISOString(), { shouldValidate: false, shouldDirty: false })
+        const minStart = new Date(Math.min(...startDates.map((d: Date) => d.getTime())))
+        form.setValue('startDate', minStart.toISOString() as any, { shouldValidate: false, shouldDirty: false })
       } else {
         form.setValue('startDate', undefined as any, { shouldValidate: false, shouldDirty: false })
       }
       if (endDates.length > 0) {
-        const maxEnd = new Date(Math.max(...endDates.map(d => d.getTime())))
-        form.setValue('endDate', maxEnd.toISOString(), { shouldValidate: false, shouldDirty: false })
+        const maxEnd = new Date(Math.max(...endDates.map((d: Date) => d.getTime())))
+        form.setValue('endDate', maxEnd.toISOString() as any, { shouldValidate: false, shouldDirty: false })
       } else {
         form.setValue('endDate', undefined as any, { shouldValidate: false, shouldDirty: false })
       }
@@ -238,30 +238,30 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
       })) || []
 
       // Calculate dates from tasks BEFORE form reset
-      let calculatedStartDate: string | undefined = undefined
-      let calculatedEndDate: string | undefined = undefined
+      let calculatedStartDate: Date | undefined = undefined
+      let calculatedEndDate: Date | undefined = undefined
       let calculatedTotalPoints: number = 0
       let calculatedDuration: number | undefined = undefined
 
       if (taskData.length > 0) {
         const startDates = taskData
-          .map(t => t.startDate ? new Date(t.startDate) : null)
+          .map((t: any) => t.startDate ? new Date(t.startDate) : null)
           .filter((d): d is Date => d !== null)
         const endDates = taskData
-          .map(t => t.endDate ? new Date(t.endDate) : null)
+          .map((t: any) => t.endDate ? new Date(t.endDate) : null)
           .filter((d): d is Date => d !== null)
 
         if (startDates.length > 0) {
-          calculatedStartDate = new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString()
+          calculatedStartDate = new Date(Math.min(...startDates.map((d: Date) => d.getTime())))
         }
         if (endDates.length > 0) {
-          calculatedEndDate = new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString()
+          calculatedEndDate = new Date(Math.max(...endDates.map((d: Date) => d.getTime())))
         }
 
         // Calculate duration from dates
         if (calculatedStartDate && calculatedEndDate) {
-          const start = new Date(calculatedStartDate)
-          const end = new Date(calculatedEndDate)
+          const start = calculatedStartDate
+          const end = calculatedEndDate
           const hours = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60))
           if (hours > 0) {
             calculatedDuration = hours
@@ -414,7 +414,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                       name="name"
                       render={({ field }) => (
                           <FormItem>
-                              <FormLabel>Template Name *</FormLabel>
+                              <FormLabel>Template Name <span className="text-destructive">*</span></FormLabel>
                               <FormControl>
                                   <Input
                                       placeholder="e.g., Weekly Fitness Challenge"
@@ -464,7 +464,6 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                           ))}
                                       </SelectContent>
                                   </Select>
-                                  <FormDescription>Optional: Select a sponsor for this campaign</FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}
@@ -483,7 +482,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                           name="difficulty"
                           render={({ field }) => (
                               <FormItem>
-                                  <FormLabel>Difficulty *</FormLabel>
+                                  <FormLabel>Difficulty <span className="text-destructive">*</span></FormLabel>
                                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                                       <FormControl>
                                           <SelectTrigger>
@@ -565,9 +564,6 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                           {...field}
                                       />
                                   </FormControl>
-                                  <FormDescription>
-                                      Points needed to qualify
-                                  </FormDescription>
                                   <FormMessage />
                               </FormItem>
                           )}
@@ -580,7 +576,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                           name="startDate"
                           render={({ field }) => (
                               <FormItem className="flex flex-col">
-                                  <FormLabel>Start Date</FormLabel>
+                                  <FormLabel>Start Date <span className="text-destructive">*</span></FormLabel>
                                   <Popover>
                                       <PopoverTrigger asChild>
                                           <FormControl>
@@ -613,12 +609,11 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                                       form.clearErrors('startDate')
                                                   }
                                               }}
-                                              initialFocus
-                                              disabled={{ date: (date) => {
+                                              disabled={(date) => {
                                                   const today = new Date()
                                                   today.setHours(0, 0, 0, 0)
                                                   return date < today
-                                              }}}
+                                              }}
                                           />
                                       </PopoverContent>
                                   </Popover>
@@ -633,7 +628,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                           name="endDate"
                           render={({ field }) => (
                               <FormItem className="flex flex-col">
-                                  <FormLabel>End Date</FormLabel>
+                                  <FormLabel>End Date <span className="text-destructive">*</span></FormLabel>
                                   <Popover>
                                       <PopoverTrigger asChild>
                                           <FormControl>
@@ -666,12 +661,11 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                                       form.clearErrors('endDate')
                                                   }
                                               }}
-                                              initialFocus
-                                              disabled={{ date: (date) => {
+                                              disabled={(date) => {
                                                   const today = new Date()
                                                   today.setHours(0, 0, 0, 0)
                                                   return date < today
-                                              }}}
+                                              }}
                                           />
                                       </PopoverContent>
                                   </Popover>
@@ -685,21 +679,18 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                   <MDXEditorFormField
                       name="rules"
                       label="Campaign Rules"
-                      description="General rules that apply to the entire campaign"
                       placeholder="Describe the overall campaign rules..."
                   />
 
                   <MDXEditorFormField
                       name="disqualificationRules"
                       label="Disqualification Rules"
-                      description="Rules that would disqualify participants"
                       placeholder="Describe disqualification criteria..."
                   />
 
                   <MDXEditorFormField
                       name="termsOfService"
                       label="Terms of Service"
-                      description="Legal terms and conditions for participants"
                       placeholder="Enter terms of service in markdown format..."
                   />
               </div>
@@ -791,7 +782,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                             name={`tasks.${index}.name`}
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Task Name *</FormLabel>
+                                <FormLabel>Task Name <span className="text-destructive">*</span></FormLabel>
                                 <FormControl>
                                   <Input
                                     placeholder="e.g., Complete 5k run"
@@ -815,7 +806,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                               name={`tasks.${index}.points`}
                               render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                  <FormLabel>Points *</FormLabel>
+                                  <FormLabel>Points <span className="text-destructive">*</span></FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
@@ -834,7 +825,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                               name={`tasks.${index}.startDate`}
                               render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                  <FormLabel>Start Date</FormLabel>
+                                  <FormLabel>Start Date <span className="text-destructive">*</span></FormLabel>
                                   <Popover>
                                     <PopoverTrigger asChild>
                                       <FormControl>
@@ -859,7 +850,6 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                         onSelect={(date) => {
                                           field.onChange(date?.toISOString())
                                         }}
-                                        initialFocus
                                       />
                                     </PopoverContent>
                                   </Popover>
@@ -873,7 +863,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                               name={`tasks.${index}.endDate`}
                               render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                  <FormLabel>End Date</FormLabel>
+                                  <FormLabel>End Date <span className="text-destructive">*</span></FormLabel>
                                   <Popover>
                                     <PopoverTrigger asChild>
                                       <FormControl>
@@ -898,7 +888,6 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                         onSelect={(date) => {
                                           field.onChange(date?.toISOString())
                                         }}
-                                        initialFocus
                                       />
                                     </PopoverContent>
                                   </Popover>
@@ -924,7 +913,6 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                           <div className="space-y-3 pt-2 border-t">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <Trophy className="h-4 w-4 text-yellow-500" />
                                 <Label className="text-sm font-semibold">
                                   Achievements ({form.watch(`tasks.${index}.achievements`)?.length || 0})
                                 </Label>

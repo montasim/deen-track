@@ -164,8 +164,20 @@ export const createTemplateSchema = z.object({
         rules: z.string().min(10),
         disqualificationRules: z.string().optional(),
         points: z.coerce.number().int().positive(),
-        startDate: z.coerce.date().optional(),
-        endDate: z.coerce.date().optional(),
+        startDate: z.coerce.date({
+          required_error: "Start date is required",
+          invalid_type_error: "Invalid start date",
+        }),
+        endDate: z.coerce.date({
+          required_error: "End date is required",
+          invalid_type_error: "Invalid end date",
+        }).refine((data) => {
+          const startDate = new Date(data.startDate)
+          const endDate = new Date(data.endDate)
+          return endDate > startDate
+        }, {
+          message: "End date must be after start date",
+        }),
         order: z.coerce.number().int().optional(),
         achievements: z.array(z.object({
           name: z.string().min(3, 'Achievement name must be at least 3 characters'),
