@@ -758,6 +758,17 @@ export async function updateCampaignTemplate(data: {
   endDate?: Date
   minPointsToQualify?: number
   sponsorId?: string
+  tasks?: Array<{
+    name: string
+    description: string
+    rules: string
+    disqualificationRules?: string
+    points?: number
+    startDate?: Date
+    endDate?: Date
+    order?: number
+    achievementsTemplate?: any
+  }>
 }) {
   const session = await requireAuth()
 
@@ -766,11 +777,21 @@ export async function updateCampaignTemplate(data: {
   }
 
   try {
-    const { templateId, ...updateData } = data
-    const template = await repositories.updateTemplate(templateId, updateData)
+    const { templateId, tasks, ...updateData } = data
 
-    revalidatePath('/dashboard/admin/campaign-templates')
-    return { success: true, template }
+    // If tasks are provided, update the template with tasks
+    if (tasks && tasks.length > 0) {
+      const template = await repositories.updateTemplateWithTasks(templateId, {
+        ...updateData,
+        tasks,
+      })
+      revalidatePath('/dashboard/admin/campaign-templates')
+      return { success: true, template }
+    } else {
+      const template = await repositories.updateTemplate(templateId, updateData)
+      revalidatePath('/dashboard/admin/campaign-templates')
+      return { success: true, template }
+    }
   } catch (error) {
     console.error('Error updating template:', error)
     return { success: false, message: 'Failed to update template' }

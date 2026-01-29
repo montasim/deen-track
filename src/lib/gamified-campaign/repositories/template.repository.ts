@@ -179,6 +179,73 @@ export async function updateTemplate(
   })
 }
 
+export async function updateTemplateWithTasks(
+  id: string,
+  data: {
+    name?: string
+    description?: string
+    category?: string
+    isPublic?: boolean
+    isSystemTemplate?: boolean
+    estimatedDuration?: number
+    difficulty?: string
+    imageUrl?: string
+    directImageUrl?: string
+    rules?: string
+    disqualificationRules?: string
+    termsOfService?: string
+    startDate?: Date
+    endDate?: Date
+    minPointsToQualify?: number
+    sponsorId?: string
+    tasks: Array<{
+      name: string
+      description: string
+      rules: string
+      disqualificationRules?: string
+      points?: number
+      startDate?: Date
+      endDate?: Date
+      order?: number
+      achievementsTemplate?: any
+    }>
+  }
+) {
+  const { tasks, ...templateData } = data
+
+  // Update the template and its tasks in a transaction
+  return await prisma.$transaction(async (tx) => {
+    // Delete all existing template tasks
+    await tx.templateTask.deleteMany({
+      where: { templateId: id },
+    })
+
+    // Update the template
+    const template = await tx.campaignTemplate.update({
+      where: { id },
+      data: templateData,
+    })
+
+    // Create new tasks
+    await tx.templateTask.createMany({
+      data: tasks.map((task) => ({
+        templateId: id,
+        ...task,
+      })),
+    })
+
+    // Return the updated template with tasks
+    return await tx.campaignTemplate.findUnique({
+      where: { id },
+      include: {
+        templateTasks: {
+          orderBy: { order: 'asc' },
+        },
+      },
+    })
+  })
+}
+
 export async function deleteTemplate(id: string) {
   return await prisma.campaignTemplate.delete({
     where: { id },

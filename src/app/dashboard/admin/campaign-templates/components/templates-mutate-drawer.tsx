@@ -34,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Plus, Trash2, Calendar as CalendarIcon, Trophy, Gift, Sparkles } from 'lucide-react'
+import { Plus, Trash2, Calendar as CalendarIcon, Trophy, Gift, Sparkles, ChevronDown, ChevronRight } from 'lucide-react'
 import { createCampaignTemplate, updateCampaignTemplate } from '../../../gamified-campaigns/actions'
 import { Loader2 } from 'lucide-react'
 import { createTemplateSchema } from '@/lib/gamified-campaign/validation'
@@ -59,6 +59,54 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
   const [sponsors, setSponsors] = useState<Array<{id: string, name: string}>>([])
   const [isLoadingSponsors, setIsLoadingSponsors] = useState(false)
 
+  // Track expanded/collapsed state for tasks and achievements
+  const [expandedTasks, setExpandedTasks] = useState<Set<number>>(new Set())
+  const [expandedAchievements, setExpandedAchievements] = useState<Record<number, Set<number>>>({})
+
+  const toggleTask = (index: number) => {
+    setExpandedTasks(prev => {
+      const next = new Set(prev)
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+      return next
+    })
+  }
+
+  const toggleAchievement = (taskIndex: number, achIndex: number) => {
+    setExpandedAchievements(prev => {
+      const taskAchievements = prev[taskIndex] || new Set()
+      const next = new Set(taskAchievements)
+      if (next.has(achIndex)) {
+        next.delete(achIndex)
+      } else {
+        next.add(achIndex)
+      }
+      return { ...prev, [taskIndex]: next }
+    })
+  }
+
+  const expandAllTasks = () => {
+    const allIndices = Array.from({ length: fields.length }, (_, i) => i)
+    setExpandedTasks(new Set(allIndices))
+  }
+
+  const collapseAllTasks = () => {
+    setExpandedTasks(new Set())
+  }
+
+  const expandAllAchievements = (taskIndex: number) => {
+    const achievements = form.watch(`tasks.${taskIndex}.achievements`) || []
+    const allIndices = Array.from({ length: achievements.length }, (_, i) => i)
+    setExpandedAchievements(prev => ({ ...prev, [taskIndex]: new Set(allIndices) }))
+  }
+
+  const collapseAllAchievements = (taskIndex: number) => {
+    setExpandedAchievements(prev => ({ ...prev, [taskIndex]: new Set() }))
+  }
+
   const form = useForm<TemplatesForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,14 +121,21 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
       minPointsToQualify: 0,
       sponsorId: undefined,
       tasks: [],
+      totalPoints: 0,
     },
-    mode: 'onChange',
+    mode: 'all', // Validate on change, blur, and submit
   })
+
+  // Calculate total points from tasks
+  const totalPoints = form.watch('tasks')?.reduce((sum: number, task: any) => sum + (Number(task.points) || 0), 0) || 0
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'tasks',
   })
+
+  const { formState: { isValid, dirtyFields } } = form
+  const hasChanges = Object.keys(dirtyFields).length > 0
 
   const addTask = () => {
     append({
@@ -112,44 +167,111 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
   }, [])
 
   // Auto-calculate campaign dates from task dates
-  useEffect(() => {
-    const tasks = form.watch('tasks') || []
-    if (tasks.length > 0) {
+  const calculateDatesFromTasks = (tasks: any[]) => {
+    if (tasks && tasks.length > 0) {
       const startDates = tasks
-        .map(t => t.startDate ? new Date(t.startDate) : null)
+        .map((t: any) => t.startDate ? new Date(t.startDate) : null)
         .filter((d): d is Date => d !== null)
       const endDates = tasks
-        .map(t => t.endDate ? new Date(t.endDate) : null)
+        .map((t: any) => t.endDate ? new Date(t.endDate) : null)
         .filter((d): d is Date => d !== null)
 
       if (startDates.length > 0) {
         const minStart = new Date(Math.min(...startDates.map(d => d.getTime())))
-        form.setValue('startDate', minStart.toISOString())
+        form.setValue('startDate', minStart.toISOString(), { shouldValidate: false, shouldDirty: false })
+      } else {
+        form.setValue('startDate', undefined as any, { shouldValidate: false, shouldDirty: false })
       }
       if (endDates.length > 0) {
         const maxEnd = new Date(Math.max(...endDates.map(d => d.getTime())))
-        form.setValue('endDate', maxEnd.toISOString())
+        form.setValue('endDate', maxEnd.toISOString(), { shouldValidate: false, shouldDirty: false })
+      } else {
+        form.setValue('endDate', undefined as any, { shouldValidate: false, shouldDirty: false })
       }
     }
-  }, [form.watch('tasks')])
+  }
+
+  // Watch for task changes and auto-calculate
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (name === 'tasks' || type === 'change') {
+        const tasks = value.tasks || []
+        calculateDatesFromTasks(tasks)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [form])
 
   // Auto-calculate duration from campaign dates
   useEffect(() => {
-    const startDate = form.watch('startDate')
-    const endDate = form.watch('endDate')
-    if (startDate && endDate) {
-      const start = new Date(startDate)
-      const end = new Date(endDate)
-      const hours = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60))
-      if (hours > 0) {
-        form.setValue('estimatedDuration', hours)
+    const subscription = form.watch((value, { name }) => {
+      const startDate = value.startDate
+      const endDate = value.endDate
+
+      // Calculate duration when dates change
+      if ((name === 'startDate' || name === 'endDate' || name === 'tasks') && startDate && endDate) {
+        const start = new Date(startDate)
+        const end = new Date(endDate)
+        const hours = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60))
+        if (hours > 0) {
+          form.setValue('estimatedDuration', hours, { shouldValidate: false, shouldDirty: false })
+        } else {
+          form.setValue('estimatedDuration', undefined as any, { shouldValidate: false, shouldDirty: false })
+        }
       }
-    }
-  }, [form.watch('startDate'), form.watch('endDate')])
+    })
+    return () => subscription.unsubscribe()
+  }, [form])
 
   // Populate form when editing
   useEffect(() => {
     if (template) {
+      const taskData = template.templateTasks?.map((task: any) => ({
+        name: task.name || '',
+        description: task.description || '',
+        rules: task.rules || '',
+        disqualificationRules: task.disqualificationRules || '',
+        points: task.points || 10,
+        startDate: task.startDate ? new Date(task.startDate).toISOString() : undefined,
+        endDate: task.endDate ? new Date(task.endDate).toISOString() : undefined,
+        achievements: task.achievementsTemplate || [],
+      })) || []
+
+      // Calculate dates from tasks BEFORE form reset
+      let calculatedStartDate: string | undefined = undefined
+      let calculatedEndDate: string | undefined = undefined
+      let calculatedTotalPoints: number = 0
+      let calculatedDuration: number | undefined = undefined
+
+      if (taskData.length > 0) {
+        const startDates = taskData
+          .map(t => t.startDate ? new Date(t.startDate) : null)
+          .filter((d): d is Date => d !== null)
+        const endDates = taskData
+          .map(t => t.endDate ? new Date(t.endDate) : null)
+          .filter((d): d is Date => d !== null)
+
+        if (startDates.length > 0) {
+          calculatedStartDate = new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString()
+        }
+        if (endDates.length > 0) {
+          calculatedEndDate = new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString()
+        }
+
+        // Calculate duration from dates
+        if (calculatedStartDate && calculatedEndDate) {
+          const start = new Date(calculatedStartDate)
+          const end = new Date(calculatedEndDate)
+          const hours = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60))
+          if (hours > 0) {
+            calculatedDuration = hours
+          }
+        }
+
+        // Calculate total points
+        calculatedTotalPoints = taskData.reduce((sum: number, task: any) => sum + (Number(task.points) || 0), 0)
+      }
+
       form.reset({
         name: template.name || '',
         description: template.description || '',
@@ -157,22 +279,14 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
         disqualificationRules: template.disqualificationRules || '',
         termsOfService: template.termsOfService || '',
         category: template.category || '',
-        estimatedDuration: template.estimatedDuration || undefined,
+        estimatedDuration: calculatedDuration,
         difficulty: template.difficulty || 'INTERMEDIATE',
-        startDate: template.startDate ? new Date(template.startDate).toISOString() : undefined,
-        endDate: template.endDate ? new Date(template.endDate).toISOString() : undefined,
+        startDate: calculatedStartDate,
+        endDate: calculatedEndDate,
         minPointsToQualify: template.minPointsToQualify || 0,
         sponsorId: template.sponsorId || undefined,
-        tasks: template.templateTasks?.map((task: any) => ({
-          name: task.name || '',
-          description: task.description || '',
-          rules: task.rules || '',
-          disqualificationRules: task.disqualificationRules || '',
-          points: task.points || 10,
-          startDate: task.startDate ? new Date(task.startDate).toISOString() : undefined,
-          endDate: task.endDate ? new Date(task.endDate).toISOString() : undefined,
-          achievements: task.achievementsTemplate || [],
-        })) || [],
+        totalPoints: calculatedTotalPoints,
+        tasks: taskData,
       })
     } else {
       form.reset({
@@ -186,6 +300,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
         difficulty: 'INTERMEDIATE',
         minPointsToQualify: 0,
         sponsorId: undefined,
+        totalPoints: 0,
         tasks: [],
       })
     }
@@ -210,6 +325,17 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
             endDate: values.endDate ? new Date(values.endDate) : undefined,
             minPointsToQualify: values.minPointsToQualify || undefined,
             sponsorId: values.sponsorId || undefined,
+            tasks: values.tasks.map((task, index) => ({
+              name: task.name,
+              description: task.description,
+              rules: task.rules,
+              disqualificationRules: task.disqualificationRules,
+              points: task.points,
+              startDate: task.startDate ? new Date(task.startDate) : undefined,
+              endDate: task.endDate ? new Date(task.endDate) : undefined,
+              order: index,
+              achievementsTemplate: task.achievements || undefined,
+            })),
           })
         : await createCampaignTemplate({
             name: values.name,
@@ -283,24 +409,24 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
             {/* Template Details */}
 
               <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                      <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Template Name *</FormLabel>
-                                  <FormControl>
-                                      <Input
-                                          placeholder="e.g., Weekly Fitness Challenge"
-                                          {...field}
-                                      />
-                                  </FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                          )}
-                      />
+                  <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Template Name *</FormLabel>
+                              <FormControl>
+                                  <Input
+                                      placeholder="e.g., Weekly Fitness Challenge"
+                                      {...field}
+                                  />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
 
+                  <div className="grid grid-cols-2 gap-4">
                       <FormField
                           control={form.control}
                           name="category"
@@ -317,33 +443,33 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                               </FormItem>
                           )}
                       />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="sponsorId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Sponsor</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || undefined}>
-                          <FormControl>
-                            <SelectTrigger disabled={isLoadingSponsors}>
-                              <SelectValue placeholder={isLoadingSponsors ? "Loading sponsors..." : "Select sponsor"} />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {sponsors.map((sponsor) => (
-                              <SelectItem key={sponsor.id} value={sponsor.id}>
-                                {sponsor.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>Optional: Select a sponsor for this campaign</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                          control={form.control}
+                          name="sponsorId"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Sponsor</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value || undefined}>
+                                      <FormControl>
+                                          <SelectTrigger disabled={isLoadingSponsors}>
+                                              <SelectValue placeholder={isLoadingSponsors ? "Loading sponsors..." : "Select sponsor"} />
+                                          </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                          {sponsors.map((sponsor) => (
+                                              <SelectItem key={sponsor.id} value={sponsor.id}>
+                                                  {sponsor.name}
+                                              </SelectItem>
+                                          ))}
+                                      </SelectContent>
+                                  </Select>
+                                  <FormDescription>Optional: Select a sponsor for this campaign</FormDescription>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
 
                   <MDXEditorFormField
                       name="description"
@@ -351,7 +477,7 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                       placeholder="Describe what this template is for..."
                   />
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
                       <FormField
                           control={form.control}
                           name="difficulty"
@@ -394,6 +520,31 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                                   </FormControl>
                                   <FormDescription>
                                       Automatically calculated from start and end dates
+                                  </FormDescription>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+
+                      <FormField
+                          control={form.control}
+                          name="totalPoints"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Total Points</FormLabel>
+                                  <FormControl>
+                                      <Input
+                                          type="number"
+                                          min="0"
+                                          placeholder="0"
+                                          {...field}
+                                          value={totalPoints}
+                                          readOnly
+                                          className="bg-muted"
+                                      />
+                                  </FormControl>
+                                  <FormDescription>
+                                      Sum of all task points
                                   </FormDescription>
                                   <FormMessage />
                               </FormItem>
@@ -557,16 +708,38 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
             <div>
               <div>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Tasks</CardTitle>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addTask}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Task
-                  </Button>
+                  <CardTitle className="text-base">Tasks ({fields.length})</CardTitle>
+                  <div className="flex items-center gap-2">
+                    {fields.length > 0 && (
+                      <>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={expandAllTasks}
+                        >
+                          Expand All
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={collapseAllTasks}
+                        >
+                          Collapse All
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addTask}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Task
+                    </Button>
+                  </div>
                 </div>
                 <CardDescription>
                   Define tasks with points, rules, and timeframes
@@ -585,7 +758,22 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                       <Card key={field.id} className="">
                         <CardHeader className="pb-2">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-sm">Task {index + 1}</CardTitle>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => toggleTask(index)}
+                              >
+                                {expandedTasks.has(index) ? (
+                                  <ChevronDown className="h-4 w-4" />
+                                ) : (
+                                  <ChevronRight className="h-4 w-4" />
+                                )}
+                              </Button>
+                              <CardTitle className="text-sm">Task {index + 1}</CardTitle>
+                            </div>
                             <Button
                               type="button"
                               variant="ghost"
@@ -596,7 +784,8 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                             </Button>
                           </div>
                         </CardHeader>
-                        <CardContent className="space-y-4 pt-4">
+                        {expandedTasks.has(index) && (
+                          <CardContent className="space-y-4 pt-4">
                           <FormField
                             control={form.control}
                             name={`tasks.${index}.name`}
@@ -625,16 +814,16 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                               control={form.control}
                               name={`tasks.${index}.points`}
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="flex flex-col">
                                   <FormLabel>Points *</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      min="1"
-                                      placeholder="10"
-                                      {...field}
-                                    />
-                                  </FormControl>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            min="1"
+                                            placeholder="10"
+                                            {...field}
+                                        />
+                                    </FormControl>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -736,114 +925,160 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <Trophy className="h-4 w-4 text-yellow-500" />
-                                <Label className="text-sm font-semibold">Achievements</Label>
+                                <Label className="text-sm font-semibold">
+                                  Achievements ({form.watch(`tasks.${index}.achievements`)?.length || 0})
+                                </Label>
                               </div>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const currentAchievements = form.watch(`tasks.${index}.achievements`) || []
-                                  form.setValue(`tasks.${index}.achievements`, [
-                                    ...currentAchievements,
-                                    { name: '', description: '', points: 10, howToAchieve: '', icon: '' }
-                                  ])
-                                }}
-                              >
-                                <Plus className="h-3 w-3 mr-1" />
-                                Add Achievement
-                              </Button>
-                            </div>
-
-                            {form.watch(`tasks.${index}.achievements`)?.map((_, achIndex) => (
-                              <Card key={achIndex} className="bg-muted/50">
-                                <CardContent className="pt-4 space-y-3">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium">Achievement {achIndex + 1}</span>
+                              <div className="flex items-center gap-2">
+                                {((form.watch(`tasks.${index}.achievements`)?.length || 0) > 1) && (
+                                  <>
                                     <Button
                                       type="button"
                                       variant="ghost"
                                       size="sm"
-                                      onClick={() => {
-                                        const currentAchievements = form.watch(`tasks.${index}.achievements`) || []
-                                        form.setValue(`tasks.${index}.achievements`,
-                                          currentAchievements.filter((_, i) => i !== achIndex)
-                                        )
-                                      }}
+                                      onClick={() => expandAllAchievements(index)}
                                     >
-                                      <Trash2 className="h-3 w-3" />
+                                      Expand All
                                     </Button>
-                                  </div>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => collapseAllAchievements(index)}
+                                    >
+                                      Collapse All
+                                    </Button>
+                                  </>
+                                )}
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const currentAchievements = form.watch(`tasks.${index}.achievements`) || []
+                                    form.setValue(`tasks.${index}.achievements`, [
+                                      ...currentAchievements,
+                                      { name: '', description: '', points: 10, howToAchieve: '', icon: '' }
+                                    ])
+                                  }}
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Add Achievement
+                                </Button>
+                              </div>
+                            </div>
 
-                                  <div className="grid grid-cols-2 gap-3">
-                                    <FormField
-                                      control={form.control}
-                                      name={`tasks.${index}.achievements.${achIndex}.name`}
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel className="text-xs">Achievement Name</FormLabel>
-                                          <FormControl>
-                                            <Input placeholder="e.g., Speed Champion" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
+                            {form.watch(`tasks.${index}.achievements`)?.map((_, achIndex) => {
+                              const isExpanded = expandedAchievements[index]?.has(achIndex)
+                              return (
+                                <Card key={achIndex}>
+                                  <CardHeader className="pb-2">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-6 w-6 p-0"
+                                          onClick={() => toggleAchievement(index, achIndex)}
+                                        >
+                                          {isExpanded ? (
+                                            <ChevronDown className="h-3 w-3" />
+                                          ) : (
+                                            <ChevronRight className="h-3 w-3" />
+                                          )}
+                                        </Button>
+                                        <span className="text-sm font-medium">Achievement {achIndex + 1}</span>
+                                      </div>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          const currentAchievements = form.watch(`tasks.${index}.achievements`) || []
+                                          form.setValue(`tasks.${index}.achievements`,
+                                            currentAchievements.filter((_, i) => i !== achIndex)
+                                          )
+                                        }}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </CardHeader>
+                                  {isExpanded && (
+                                    <CardContent className="space-y-3">
+                                        <FormField
+                                            control={form.control}
+                                            name={`tasks.${index}.achievements.${achIndex}.name`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-xs">Achievement Name</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g., Speed Champion" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                    <FormField
-                                      control={form.control}
-                                      name={`tasks.${index}.achievements.${achIndex}.points`}
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel className="text-xs">Points</FormLabel>
-                                          <FormControl>
-                                            <Input type="number" min="1" placeholder="10" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
+                                      <div className="grid grid-cols-2 gap-3">
+                                        <FormField
+                                          control={form.control}
+                                          name={`tasks.${index}.achievements.${achIndex}.points`}
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel className="text-xs">Points</FormLabel>
+                                              <FormControl>
+                                                <Input type="number" min="1" placeholder="10" {...field} />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
 
-                                  <FormField
-                                    control={form.control}
-                                    name={`tasks.${index}.achievements.${achIndex}.icon`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-xs">Icon (emoji or icon name)</FormLabel>
-                                        <FormControl>
-                                          <Input placeholder="e.g., 🏆 or trophy" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
+                                          <FormField
+                                              control={form.control}
+                                              name={`tasks.${index}.achievements.${achIndex}.icon`}
+                                              render={({ field }) => (
+                                                  <FormItem>
+                                                      <FormLabel className="text-xs">Icon (emoji or icon name)</FormLabel>
+                                                      <FormControl>
+                                                          <Input placeholder="e.g., 🏆 or trophy" {...field} />
+                                                      </FormControl>
+                                                      <FormMessage />
+                                                  </FormItem>
+                                              )}
+                                          />
+                                      </div>
 
-                                  <MDXEditorFormField
-                                    name={`tasks.${index}.achievements.${achIndex}.description`}
-                                    label="Achievement Description"
-                                    placeholder="Describe this achievement..."
-                                    minHeight="100px"
-                                  />
+                                      <MDXEditorFormField
+                                        name={`tasks.${index}.achievements.${achIndex}.description`}
+                                        label="Achievement Description"
+                                        placeholder="Describe this achievement..."
+                                        minHeight="150px"
+                                      />
 
-                                  <MDXEditorFormField
-                                    name={`tasks.${index}.achievements.${achIndex}.howToAchieve`}
-                                    label="How to Achieve"
-                                    placeholder="Instructions on how to unlock this achievement..."
-                                    minHeight="100px"
-                                  />
-                                </CardContent>
-                              </Card>
-                            ))}
+                                      <MDXEditorFormField
+                                        name={`tasks.${index}.achievements.${achIndex}.howToAchieve`}
+                                        label="How to Achieve"
+                                        placeholder="Instructions on how to unlock this achievement..."
+                                        minHeight="150px"
+                                      />
+                                    </CardContent>
+                                  )}
+                                </Card>
+                              )
+                            })}
 
                             {(!form.watch(`tasks.${index}.achievements`) ||
-                              form.watch(`tasks.${index}.achievements`).length === 0) && (
+                              (form.watch(`tasks.${index}.achievements`)?.length || 0) === 0) && (
                               <p className="text-xs text-muted-foreground text-center py-2">
                                 No achievements added. Optional: Add achievements to reward users.
                               </p>
                             )}
                           </div>
                         </CardContent>
+                        )}
                       </Card>
                     ))}
                   </div>
@@ -857,7 +1092,15 @@ export function TemplatesMutateDrawer({ open, onOpenChange, onSuccess, template 
                   Cancel
                 </Button>
               </SheetClose>
-              <Button type="submit" disabled={isSubmitting || fields.length === 0}>
+              <Button
+                type="submit"
+                disabled={
+                  isSubmitting ||
+                  fields.length === 0 ||
+                  !isValid ||
+                  (template ? !hasChanges : false)
+                }
+              >
                 {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {template ? 'Update Template' : 'Create Template'}
               </Button>

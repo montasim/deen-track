@@ -155,6 +155,7 @@ export const createTemplateSchema = z.object({
   endDate: z.coerce.date().optional(),
   minPointsToQualify: z.coerce.number().int().min(0).optional(),
   sponsorId: z.string().uuid().optional(),
+  totalPoints: z.coerce.number().int().min(0).optional(),
   tasks: z
     .array(
       z.object({
