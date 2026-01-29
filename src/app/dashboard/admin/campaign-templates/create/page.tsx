@@ -4,6 +4,8 @@ import { requireAuth } from '@/lib/auth/session'
 import { TemplateCreateForm } from '@/components/gamified-campaigns/template-create-form'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CreateTemplatePage() {
   const session = await requireAuth()
 
